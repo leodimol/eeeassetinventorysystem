@@ -1008,7 +1008,7 @@ function App() {
       <div className="min-h-screen flex items-center justify-center bg-[var(--bg-primary)] px-4 py-8">
         <div className="w-full max-w-md rounded-[24px] border border-[var(--border-color)] bg-[var(--bg-secondary)] p-8 shadow-[0_35px_60px_rgba(0,0,0,0.12)]">
           <div className="mb-6 text-center">
-            <img src="/sidebar.logo.png" alt="Logo" className="mx-auto mb-4 h-16 w-16 rounded-2xl object-cover" style={{ backgroundColor: 'white', padding: 0 }} />
+            <img src="/sidebar.logo.png" alt="Logo" className="mx-auto mb-4 h-16 w-16 object-contain" />
             <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Sign in</h1>
             <p className="mt-2 text-sm text-[var(--text-secondary)]">Access the equipment inventory and hub dashboard.</p>
           </div>
