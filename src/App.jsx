@@ -353,12 +353,12 @@ function App() {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.as = 'image';
-    link.href = '/logo.png.png';
+    link.href = '/sidebar.logo.png';
     document.head.appendChild(link);
 
     // Also preload via Image object
     const img = new Image();
-    img.src = '/logo.png.png';
+    img.src = '/sidebar.logo.png';
 
     return () => {
       document.head.removeChild(link);
