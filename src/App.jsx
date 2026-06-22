@@ -1342,6 +1342,104 @@ function App() {
         >
           {activePage === 'dashboard' && (
             <div className="max-w-7xl mx-auto space-y-6 page-transition">
+              {/* Alert Section */}
+              {alerts.total > 0 && (
+                <div className="glass-card-modern p-6" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                      <Bell size={16} style={{ color: 'var(--accent-orange)' }} />
+                      Alerts ({alerts.total})
+                    </h4>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {/* Warranty Expiry Alerts */}
+                    {alerts.warrantyExpiry.length > 0 && (
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                          Warranty Expiring Soon
+                        </p>
+                        <div className="space-y-2">
+                          {alerts.warrantyExpiry.slice(0, 5).map((alert, index) => (
+                            <div 
+                              key={index}
+                              className="flex items-center justify-between p-2 rounded-lg"
+                              style={{
+                                backgroundColor: alert.severity === 'critical' ? 'var(--bg-red)' : 
+                                                  alert.severity === 'warning' ? 'var(--bg-yellow)' : 'var(--bg-blue)',
+                                border: `1px solid ${alert.severity === 'critical' ? 'var(--border-red)' : 
+                                                    alert.severity === 'warning' ? 'var(--border-yellow)' : 'var(--border-blue)'}`
+                              }}
+                            >
+                              <div className="flex-1">
+                                <p className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
+                                  {alert.item.asset_tag || 'Unknown'} - {alert.item.brand} {alert.item.model}
+                                </p>
+                                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                  {alert.daysLeft <= 0 ? 'Expired' : `${alert.daysLeft} days remaining`}
+                                </p>
+                              </div>
+                              <span className="text-xs font-bold px-2 py-1 rounded" style={{
+                                backgroundColor: alert.severity === 'critical' ? 'var(--text-red)' : 
+                                                  alert.severity === 'warning' ? 'var(--text-yellow)' : 'var(--text-blue)',
+                                color: 'white'
+                              }}>
+                                {alert.severity.toUpperCase()}
+                              </span>
+                            </div>
+                          ))}
+                          {alerts.warrantyExpiry.length > 5 && (
+                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                              +{alerts.warrantyExpiry.length - 5} more
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Maintenance Due Alerts */}
+                    {alerts.maintenanceDue.length > 0 && (
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>
+                          Long-term Maintenance
+                        </p>
+                        <div className="space-y-2">
+                          {alerts.maintenanceDue.slice(0, 5).map((alert, index) => (
+                            <div 
+                              key={index}
+                              className="flex items-center justify-between p-2 rounded-lg"
+                              style={{
+                                backgroundColor: alert.severity === 'critical' ? 'var(--bg-red)' : 'var(--bg-yellow)',
+                                border: `1px solid ${alert.severity === 'critical' ? 'var(--border-red)' : 'var(--border-yellow)'}`
+                              }}
+                            >
+                              <div className="flex-1">
+                                <p className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
+                                  {alert.item.asset_tag || 'Unknown'} - {alert.item.brand} {alert.item.model}
+                                </p>
+                                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                  {alert.daysInMaintenance} days in maintenance
+                                </p>
+                              </div>
+                              <span className="text-xs font-bold px-2 py-1 rounded" style={{
+                                backgroundColor: alert.severity === 'critical' ? 'var(--text-red)' : 'var(--text-yellow)',
+                                color: 'white'
+                              }}>
+                                {alert.severity.toUpperCase()}
+                              </span>
+                            </div>
+                          ))}
+                          {alerts.maintenanceDue.length > 5 && (
+                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                              +{alerts.maintenanceDue.length - 5} more
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               <AnalyticsDashboard equipment={equipment} />
             </div>
           )}
@@ -1645,105 +1743,6 @@ function App() {
                       <p className="stat-value" style={{ color: 'var(--accent-red)' }}>{dashboardStats.retired}</p>
                     </div>
                   </div>
-
-                  {/* Alert Section */}
-                  {alerts.total > 0 && (
-                    <div className="glass-card-modern p-6" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-sm font-bold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                          <Bell size={16} style={{ color: 'var(--accent-orange)' }} />
-                          Alerts ({alerts.total})
-                        </h4>
-                      </div>
-                      
-                      <div className="space-y-4">
-                        {/* Warranty Expiry Alerts */}
-                        {alerts.warrantyExpiry.length > 0 && (
-                          <div>
-                            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                              Warranty Expiring Soon
-                            </p>
-                            <div className="space-y-2">
-                              {alerts.warrantyExpiry.slice(0, 5).map((alert, index) => (
-                                <div 
-                                  key={index}
-                                  className="flex items-center justify-between p-2 rounded-lg"
-                                  style={{
-                                    backgroundColor: alert.severity === 'critical' ? 'var(--bg-red)' : 
-                                                      alert.severity === 'warning' ? 'var(--bg-yellow)' : 'var(--bg-blue)',
-                                    border: `1px solid ${alert.severity === 'critical' ? 'var(--border-red)' : 
-                                                        alert.severity === 'warning' ? 'var(--border-yellow)' : 'var(--border-blue)'}`
-                                  }}
-                                >
-                                  <div className="flex-1">
-                                    <p className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
-                                      {alert.item.asset_tag || 'Unknown'} - {alert.item.brand} {alert.item.model}
-                                    </p>
-                                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                                      {alert.daysLeft <= 0 ? 'Expired' : `${alert.daysLeft} days remaining`}
-                                    </p>
-                                  </div>
-                                  <span className="text-xs font-bold px-2 py-1 rounded" style={{
-                                    backgroundColor: alert.severity === 'critical' ? 'var(--text-red)' : 
-                                                      alert.severity === 'warning' ? 'var(--text-yellow)' : 'var(--text-blue)',
-                                    color: 'white'
-                                  }}>
-                                    {alert.severity.toUpperCase()}
-                                  </span>
-                                </div>
-                              ))}
-                              {alerts.warrantyExpiry.length > 5 && (
-                                <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                                  +{alerts.warrantyExpiry.length - 5} more
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Maintenance Due Alerts */}
-                        {alerts.maintenanceDue.length > 0 && (
-                          <div>
-                            <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-tertiary)' }}>
-                              Long-term Maintenance
-                            </p>
-                            <div className="space-y-2">
-                              {alerts.maintenanceDue.slice(0, 5).map((alert, index) => (
-                                <div 
-                                  key={index}
-                                  className="flex items-center justify-between p-2 rounded-lg"
-                                  style={{
-                                    backgroundColor: alert.severity === 'critical' ? 'var(--bg-red)' : 'var(--bg-yellow)',
-                                    border: `1px solid ${alert.severity === 'critical' ? 'var(--border-red)' : 'var(--border-yellow)'}`
-                                  }}
-                                >
-                                  <div className="flex-1">
-                                    <p className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>
-                                      {alert.item.asset_tag || 'Unknown'} - {alert.item.brand} {alert.item.model}
-                                    </p>
-                                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-                                      {alert.daysInMaintenance} days in maintenance
-                                    </p>
-                                  </div>
-                                  <span className="text-xs font-bold px-2 py-1 rounded" style={{
-                                    backgroundColor: alert.severity === 'critical' ? 'var(--text-red)' : 'var(--text-yellow)',
-                                    color: 'white'
-                                  }}>
-                                    {alert.severity.toUpperCase()}
-                                  </span>
-                                </div>
-                              ))}
-                              {alerts.maintenanceDue.length > 5 && (
-                                <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
-                                  +{alerts.maintenanceDue.length - 5} more
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
 
                   {/* Dashboard Charts */}
                   <div className="mt-8 grid gap-6 lg:grid-cols-3">
