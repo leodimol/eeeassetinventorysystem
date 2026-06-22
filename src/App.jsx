@@ -1440,6 +1440,74 @@ function App() {
                   </div>
                 </div>
               )}
+              
+              {/* Dashboard Charts */}
+              <div className="grid gap-6 lg:grid-cols-3">
+                {/* Category Pie Chart */}
+                <div className="glass-card-modern p-6">
+                  <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Category</h4>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Location Bar Chart */}
+                <div className="glass-card-modern p-6">
+                  <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Location</h4>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={locationData}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-glass)" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                      <YAxis tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'var(--bg-secondary)', 
+                          border: '1px solid var(--border-glass)',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Bar dataKey="value" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Status Summary Chart */}
+                <div className="glass-card-modern p-6">
+                  <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Status Summary</h4>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={statusData} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border-glass)" />
+                      <XAxis type="number" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                      <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={80} stroke="var(--text-secondary)" />
+                      <Tooltip 
+                        contentStyle={{ 
+                          backgroundColor: 'var(--bg-secondary)', 
+                          border: '1px solid var(--border-glass)',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Bar dataKey="value" fill="var(--accent-secondary)" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              
               <AnalyticsDashboard equipment={equipment} />
             </div>
           )}
@@ -1741,73 +1809,6 @@ function App() {
                     <div className="inventory-stat">
                       <p className="stat-label">Retired</p>
                       <p className="stat-value" style={{ color: 'var(--accent-red)' }}>{dashboardStats.retired}</p>
-                    </div>
-                  </div>
-
-                  {/* Dashboard Charts */}
-                  <div className="mt-8 grid gap-6 lg:grid-cols-3">
-                    {/* Category Pie Chart */}
-                    <div className="glass-card-modern p-6">
-                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Category</h4>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <PieChart>
-                          <Pie
-                            data={categoryData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={60}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {categoryData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    {/* Location Bar Chart */}
-                    <div className="glass-card-modern p-6">
-                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Location</h4>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <BarChart data={locationData}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-glass)" />
-                          <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
-                          <YAxis tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'var(--bg-secondary)', 
-                              border: '1px solid var(--border-glass)',
-                              borderRadius: '8px'
-                            }}
-                          />
-                          <Bar dataKey="value" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-
-                    {/* Status Summary Chart */}
-                    <div className="glass-card-modern p-6">
-                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Status Summary</h4>
-                      <ResponsiveContainer width="100%" height={200}>
-                        <BarChart data={statusData} layout="vertical">
-                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border-glass)" />
-                          <XAxis type="number" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
-                          <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={80} stroke="var(--text-secondary)" />
-                          <Tooltip 
-                            contentStyle={{ 
-                              backgroundColor: 'var(--bg-secondary)', 
-                              border: '1px solid var(--border-glass)',
-                              borderRadius: '8px'
-                            }}
-                          />
-                          <Bar dataKey="value" fill="var(--accent-secondary)" radius={[0, 4, 4, 0]} />
-                        </BarChart>
-                      </ResponsiveContainer>
                     </div>
                   </div>
                 </div>
