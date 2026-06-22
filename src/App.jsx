@@ -1629,19 +1629,19 @@ function App() {
 
                   <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="glass-card-modern p-4 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Total Assets</p>
+                      <p className="text-[9px] font-bold uppercase tracking-normal" style={{ color: 'var(--text-tertiary)' }}>Total Assets</p>
                       <p className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>{dashboardStats.total}</p>
                     </div>
                     <div className="glass-card-modern p-4 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Active</p>
+                      <p className="text-[9px] font-bold uppercase tracking-normal" style={{ color: 'var(--text-tertiary)' }}>Active</p>
                       <p className="text-2xl font-black" style={{ color: 'var(--accent-green)' }}>{dashboardStats.active}</p>
                     </div>
                     <div className="glass-card-modern p-4 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Maintenance</p>
+                      <p className="text-[9px] font-bold uppercase tracking-normal" style={{ color: 'var(--text-tertiary)' }}>Maint.</p>
                       <p className="text-2xl font-black" style={{ color: 'var(--accent-orange)' }}>{dashboardStats.maintenance}</p>
                     </div>
                     <div className="glass-card-modern p-4 flex items-center justify-between">
-                      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>Retired</p>
+                      <p className="text-[9px] font-bold uppercase tracking-normal" style={{ color: 'var(--text-tertiary)' }}>Retired</p>
                       <p className="text-2xl font-black" style={{ color: 'var(--accent-red)' }}>{dashboardStats.retired}</p>
                     </div>
                   </div>
