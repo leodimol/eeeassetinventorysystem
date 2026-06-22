@@ -1656,15 +1656,15 @@ function App() {
                       className="hidden"
                     />
                     <Button variant="secondary" className="w-full h-12 px-5 gap-2 sm:w-auto" onClick={downloadTemplate}>
-                      <FileDown size={18} strokeWidth={2} />
+                      <FileDown size={22} strokeWidth={2} />
                       Download Template
                     </Button>
                     <Button variant="secondary" className="w-full h-12 px-5 gap-2 sm:w-auto" onClick={() => fileInputRef.current?.click()}>
-                      <FileUp size={18} strokeWidth={2} />
+                      <FileUp size={22} strokeWidth={2} />
                       Import
                     </Button>
                     <Button variant="secondary" className="w-full h-12 px-5 gap-2 sm:w-auto" onClick={exportCSV}>
-                      <FileDown size={18} strokeWidth={2} />
+                      <FileDown size={22} strokeWidth={2} />
                       Export Excel
                     </Button>
                     {/* PDF export temporarily disabled due to deployment issues */}
