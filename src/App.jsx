@@ -1,5 +1,9 @@
  import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { supabase } from './lib/supabase';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import {
   LayoutDashboard,
   Laptop,
@@ -602,6 +606,44 @@ function App() {
     });
   }, [allEquipment, filters, searchQuery]);
 
+  // Dashboard key numbers
+  const dashboardStats = useMemo(() => {
+    const total = allEquipment.length;
+    const active = allEquipment.filter(item => item.status === 'available' || item.status === 'idle').length;
+    const maintenance = allEquipment.filter(item => item.status === 'maintenance').length;
+    const retired = allEquipment.filter(item => item.status === 'retired').length;
+    
+    return { total, active, maintenance, retired };
+  }, [allEquipment]);
+
+  // Chart data calculations
+  const categoryData = useMemo(() => {
+    const categories = {};
+    allEquipment.forEach(item => {
+      const category = item.equipment_type || item.category || 'Other';
+      categories[category] = (categories[category] || 0) + 1;
+    });
+    return Object.entries(categories).map(([name, value]) => ({ name, value }));
+  }, [allEquipment]);
+
+  const locationData = useMemo(() => {
+    const locations = {};
+    allEquipment.forEach(item => {
+      const location = item.location || 'Unknown';
+      locations[location] = (locations[location] || 0) + 1;
+    });
+    return Object.entries(locations).map(([name, value]) => ({ name, value }));
+  }, [allEquipment]);
+
+  const statusData = useMemo(() => {
+    const statuses = {};
+    allEquipment.forEach(item => {
+      const status = item.status || 'Unknown';
+      statuses[status] = (statuses[status] || 0) + 1;
+    });
+    return Object.entries(statuses).map(([name, value]) => ({ name, value }));
+  }, [allEquipment]);
+
   // Debounce search query to reduce API calls
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -817,6 +859,41 @@ function App() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Inventory');
     XLSX.writeFile(wb, `inventory-${new Date().toISOString().split('T')[0]}.xlsx`);
+  };
+
+  // Export to PDF
+  const exportPDF = () => {
+    const doc = new jsPDF();
+    const exportData = equipment.map(item => [
+      item.asset_tag || '',
+      item.brand || '',
+      item.model || '',
+      item.serial || '',
+      item.equipment_type || item.category || '',
+      item.status || '',
+      item.condition || '',
+      item.location || '',
+      item.hub || '',
+      item.assigned_to || '',
+      item.purchase_date || '',
+      item.warranty_date || ''
+    ]);
+
+    doc.setFontSize(18);
+    doc.text('Equipment Inventory Report', 14, 22);
+    doc.setFontSize(11);
+    doc.text(`Exported: ${new Date().toLocaleDateString()}`, 14, 30);
+    doc.text(`Total Assets: ${equipment.length}`, 14, 38);
+
+    autoTable(doc, {
+      head: [['Asset Tag', 'Brand', 'Model', 'Serial', 'Category', 'Status', 'Condition', 'Location', 'Hub', 'Assigned To', 'Purchase Date', 'Warranty Date']],
+      body: exportData,
+      startY: 45,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [59, 130, 246] }
+    });
+
+    doc.save(`inventory-export-${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
   // Download Excel Template for bulk import
@@ -1533,23 +1610,94 @@ function App() {
                     Global tracking across {hubs.length} active logistics hubs.
                   </p>
 
-                  <div className="inventory-summary mt-6 grid gap-4 sm:grid-cols-3">
+                  <div className="inventory-summary mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div className="inventory-stat">
                       <p className="stat-label">Total Assets</p>
-                      <p className="stat-value">{totalCount}</p>
+                      <p className="stat-value">{dashboardStats.total}</p>
                     </div>
                     <div className="inventory-stat">
-                      <p className="stat-label">Current View</p>
-                      <p className="stat-value">{equipment.length} items</p>
+                      <p className="stat-label">Active</p>
+                      <p className="stat-value" style={{ color: 'var(--accent-green)' }}>{dashboardStats.active}</p>
                     </div>
                     <div className="inventory-stat">
-                      <p className="stat-label">Total Hubs</p>
-                      <p className="stat-value">{hubs.length}</p>
+                      <p className="stat-label">Maintenance</p>
+                      <p className="stat-value" style={{ color: 'var(--accent-orange)' }}>{dashboardStats.maintenance}</p>
+                    </div>
+                    <div className="inventory-stat">
+                      <p className="stat-label">Retired</p>
+                      <p className="stat-value" style={{ color: 'var(--accent-red)' }}>{dashboardStats.retired}</p>
+                    </div>
+                  </div>
+
+                  {/* Dashboard Charts */}
+                  <div className="mt-8 grid gap-6 lg:grid-cols-3">
+                    {/* Category Pie Chart */}
+                    <div className="glass-card-modern p-6">
+                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Category</h4>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <PieChart>
+                          <Pie
+                            data={categoryData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            outerRadius={60}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {categoryData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Location Bar Chart */}
+                    <div className="glass-card-modern p-6">
+                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Assets by Location</h4>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={locationData}>
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border-glass)" />
+                          <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                          <YAxis tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'var(--bg-secondary)', 
+                              border: '1px solid var(--border-glass)',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Bar dataKey="value" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Status Summary Chart */}
+                    <div className="glass-card-modern p-6">
+                      <h4 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Status Summary</h4>
+                      <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={statusData} layout="vertical">
+                          <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="var(--border-glass)" />
+                          <XAxis type="number" tick={{ fontSize: 10 }} stroke="var(--text-secondary)" />
+                          <YAxis dataKey="name" type="category" tick={{ fontSize: 10 }} width={80} stroke="var(--text-secondary)" />
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: 'var(--bg-secondary)', 
+                              border: '1px solid var(--border-glass)',
+                              borderRadius: '8px'
+                            }}
+                          />
+                          <Bar dataKey="value" fill="var(--accent-secondary)" radius={[0, 4, 4, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
                   </div>
                 </div>
                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-                  <div className="grid gap-3 sm:grid-cols-3 bg-[var(--bg-glass-light)] p-4 rounded-[24px] border border-[var(--border-glass)] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 bg-[var(--bg-glass-light)] p-4 rounded-[24px] border border-[var(--border-glass)] shadow-[0_16px_50px_rgba(0,0,0,0.08)]">
                     <input
                       type="file"
                       ref={fileInputRef}
@@ -1567,7 +1715,11 @@ function App() {
                     </Button>
                     <Button variant="secondary" className="w-full h-12 px-5 gap-2 sm:w-auto" onClick={exportCSV}>
                       <FileDown size={18} strokeWidth={2} />
-                      Export CSV
+                      Export Excel
+                    </Button>
+                    <Button variant="secondary" className="w-full h-12 px-5 gap-2 sm:w-auto" onClick={exportPDF}>
+                      <FileDown size={18} strokeWidth={2} />
+                      Export PDF
                     </Button>
                   </div>
                   <div className="flex justify-end lg:justify-end">
