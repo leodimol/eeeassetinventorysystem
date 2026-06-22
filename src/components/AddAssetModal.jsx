@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { X, ArrowLeft, ArrowRight, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { checkDuplicates } from '../utils/duplicateCheck';
 import { logAudit } from '../utils/auditLog';
@@ -7,6 +7,7 @@ import Toast from './ui/Toast';
 
 const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => {
   const isEditMode = Boolean(asset?.id);
+  const isRetired = asset?.status === 'retired';
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
@@ -479,6 +480,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
         office_notes: formData.office_notes || null,
         ...(isEditMode ? { updated_at: new Date().toISOString() } : { created_at: new Date().toISOString() })
       };
+
+      // Prevent saving retired assets
+      if (isRetired) {
+        setToast({
+          message: 'Cannot edit retired assets. This asset is permanently removed from service.',
+          type: 'error'
+        });
+        setLoading(false);
+        return;
+      }
 
       let savedAsset;
       
@@ -2359,6 +2370,40 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
           </button>
         </div>
 
+        {/* Retired Asset Warning Banner */}
+        {isRetired && (
+          <div style={{
+            padding: '12px 16px',
+            margin: '0 24px',
+            backgroundColor: 'var(--bg-red)',
+            border: '1px solid var(--border-red)',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <AlertCircle size={20} style={{ color: 'var(--text-red)' }} />
+            <div>
+              <p style={{ 
+                color: 'var(--text-red)', 
+                fontWeight: '600', 
+                fontSize: '14px',
+                margin: 0
+              }}>
+                Retired Asset - View Only
+              </p>
+              <p style={{ 
+                color: 'var(--text-red)', 
+                fontSize: '12px',
+                margin: '4px 0 0 0',
+                opacity: 0.8
+              }}>
+                This asset has been permanently removed from service and cannot be edited.
+              </p>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           {currentStep === 1 && renderCategorySelection()}
           {currentStep === 2 && selectedCategory === 'logistics' && renderLogisticsTypeSelection()}
@@ -2377,10 +2422,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || isRetired}
                 className="btn btn-primary"
+                style={isRetired ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
               >
-                {loading ? 'Saving...' : (isEditMode ? 'Update' : 'Add Equipment')}
+                {isRetired ? 'View Only' : (loading ? 'Saving...' : (isEditMode ? 'Update' : 'Add Equipment'))}
               </button>
             </div>
           )}
