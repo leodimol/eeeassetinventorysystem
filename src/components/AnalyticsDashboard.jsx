@@ -275,6 +275,7 @@ const AnalyticsDashboard = ({ equipment, filters, compact }) => {
       else if (age >= 1) future++;
     });
 
+    const result = { immediate, upcoming, future };
     return result;
   }, [filteredEquipment]);
 
