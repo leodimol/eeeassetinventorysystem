@@ -9,6 +9,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
   const isEditMode = Boolean(asset?.id);
   const isRetired = asset?.status === 'retired';
   const [loading, setLoading] = useState(false);
+  const [updateReason, setUpdateReason] = useState('');
   const [errors, setErrors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -270,6 +271,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
     if (!formData.asset_tag) validationErrors.asset_tag = 'Asset tag is required';
     if (!formData.added_by) validationErrors.added_by = 'Added By is required';
 
+    // Require reason for update when editing
+    if (isEditMode && !updateReason.trim()) {
+      validationErrors.updateReason = 'Reason for update is required';
+    }
+
     // Date format validation
     if (formData.purchase_date) {
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -520,7 +526,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
         action: isEditMode ? 'UPDATE' : 'CREATE',
         oldValues: isEditMode ? asset : null,
         newValues: savedAsset,
-        changedBy: formData.added_by || authUser?.email || 'system'
+        changedBy: formData.added_by || authUser?.email || 'system',
+        reason: isEditMode ? updateReason : null
       });
 
       if (onSaved) onSaved(savedAsset);
@@ -2409,6 +2416,30 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
           {currentStep === 2 && selectedCategory === 'logistics' && renderLogisticsTypeSelection()}
           {currentStep === 2 && selectedCategory === 'office' && renderOfficeTypeSelection()}
           {currentStep === 3 && renderEquipmentDetails()}
+
+          {/* Update Reason Field (only shown in edit mode) */}
+          {isEditMode && currentStep === 3 && (
+            <div style={{ padding: '0 24px 16px' }}>
+              <div className="form-group">
+                <label className="form-label">
+                  Reason for Update <span style={{ color: 'var(--accent-red)' }}>*</span>
+                </label>
+                <textarea
+                  value={updateReason}
+                  onChange={(e) => setUpdateReason(e.target.value)}
+                  className="form-textarea"
+                  rows="2"
+                  placeholder="Please explain why you are updating this asset..."
+                  style={errors.updateReason ? { borderColor: 'var(--accent-red)' } : {}}
+                />
+                {errors.updateReason && (
+                  <p style={{ color: 'var(--accent-red)', fontSize: '12px', marginTop: '4px' }}>
+                    {errors.updateReason}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Form Actions */}
           {currentStep === 3 && (
