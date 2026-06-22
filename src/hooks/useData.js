@@ -220,6 +220,8 @@ export function useEquipmentStats(hubId) {
       const { count, error: countError } = await countQuery;
       if (countError) throw countError;
 
+      console.log('Stats fetch - Total count:', count);
+
       // Get data for detailed stats (only fetch needed columns)
       let dataQuery = supabase.from('equipment').select('equipment_type, status, condition, assigned_to, hub, accessories');
       if (hubId && hubId !== 'all') {
@@ -308,6 +310,7 @@ export function useEquipmentStats(hubId) {
       });
 
       setStats(counts);
+      console.log('Stats calculated:', counts);
     } catch (err) {
       console.error('Stats fetch error:', err);
     } finally {
