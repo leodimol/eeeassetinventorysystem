@@ -552,6 +552,12 @@ function App() {
     totalPages,
     itemsPerPage
   } = useEquipment(selectedHub, currentPage, filters, debouncedSearchQuery, false);
+
+  // Fetch all equipment for sidebar count (regardless of selected hub)
+  const {
+    equipment: allEquipmentForSidebar,
+    loading: sidebarEquipLoading,
+  } = useEquipment('all', 1, {}, '', false);
   const { theme, setTheme, themes, effectiveTheme } = useTheme();
 
   // Client-side filtering (only for additional filtering not handled by server)
@@ -1356,7 +1362,7 @@ function App() {
         <Sidebar
           activePage={activePage}
           setActivePage={setActivePage}
-          inventoryCount={allEquipment.length}
+          inventoryCount={allEquipmentForSidebar.length}
           hubsCount={hubs.length}
           effectiveTheme={effectiveTheme}
           isCollapsed={isSidebarCollapsed}
@@ -1366,7 +1372,7 @@ function App() {
       </div>
 
       {/* Debug: Log equipment count */}
-      {console.log('Sidebar count debug - allEquipment.length:', allEquipment.length, 'equipLoading:', equipLoading)}
+      {console.log('Sidebar count debug - allEquipmentForSidebar.length:', allEquipmentForSidebar.length, 'sidebarEquipLoading:', sidebarEquipLoading)}
 
       <div className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ${isSidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
 
