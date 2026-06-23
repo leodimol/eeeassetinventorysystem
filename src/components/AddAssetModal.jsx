@@ -560,8 +560,25 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
     } catch (err) {
       console.error('Error saving asset:', err);
       console.error('Error details:', err.message, err.details, err.hint);
+
+      // Handle specific database errors with user-friendly messages
+      let errorMessage = 'Failed to save asset. Please check your data and try again.';
+
+      if (err.code === '23505') {
+        // Unique constraint violation
+        if (err.message.includes('asset_tag')) {
+          errorMessage = 'This asset tag already exists. Please use a different asset tag.';
+        } else if (err.message.includes('serial')) {
+          errorMessage = 'This serial number already exists. Please use a different serial number.';
+        } else {
+          errorMessage = 'This record already exists. Please check your data and try again.';
+        }
+      } else if (err.message) {
+        errorMessage = `Failed to save asset: ${err.message}`;
+      }
+
       setToast({
-        message: `Failed to save asset: ${err.message || 'Please check your data and try again.'}`,
+        message: errorMessage,
         type: 'error'
       });
     } finally {
