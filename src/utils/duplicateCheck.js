@@ -38,13 +38,13 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
       }
     }
 
-    // Check asset tag
+    // Check asset tag (exact match)
     if (assetTag && assetTag.trim()) {
       let query = supabase
         .from('equipment')
         .select('id, model, asset_tag, serial, status')
-        .ilike('asset_tag', assetTag.trim());
-      
+        .eq('asset_tag', assetTag.trim());
+
       if (excludeId) {
         query = query.neq('id', excludeId);
       }
@@ -55,10 +55,10 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
         console.error('Error checking asset tag duplicates:', assetError);
       } else if (assetDups && assetDups.length > 0) {
         // Avoid adding same equipment twice if both serial and asset tag match
-        const newDups = assetDups.filter(dup => 
+        const newDups = assetDups.filter(dup =>
           !result.duplicates.some(existing => existing.id === dup.id)
         );
-        
+
         if (newDups.length > 0) {
           result.hasDuplicates = true;
           result.duplicates.push(...newDups);
