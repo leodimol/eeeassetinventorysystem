@@ -83,7 +83,6 @@ import EquipmentModal from './components/AddAssetModal';
 import EquipmentHistoryModal from './components/AssetHistoryModal';
 import { useEquipment, useEquipmentStats, useHubs } from './hooks/useData';
 import { useTheme, themes } from './context/ThemeContext';
-import { checkDuplicates } from './utils/duplicateCheck';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import Toast from './components/ui/Toast';
 
