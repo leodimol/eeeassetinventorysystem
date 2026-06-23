@@ -392,11 +392,22 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-    
+
+    console.log('Form submission started', formData);
+
+    const isValid = validateForm();
+    console.log('Form validation result:', isValid, errors);
+
+    if (!isValid) {
+      setToast({
+        message: 'Please fix the validation errors before submitting.',
+        type: 'error'
+      });
+      return;
+    }
+
     setLoading(true);
-    
+
     try {
       // Check for duplicates
       const duplicateCheck = await checkDuplicates({
@@ -405,6 +416,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
         excludeId: asset?.id
       });
 
+      console.log('Duplicate check result:', duplicateCheck);
+
       if (duplicateCheck.hasDuplicates) {
         setToast({
           message: `Duplicate detected: ${duplicateCheck.messages.join(', ')}. Please review before continuing.`,
@@ -412,7 +425,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
         });
         const confirmed = window.confirm(
           `Warning: ${duplicateCheck.messages.join('\n')}\n\n` +
-          `Existing assets:\n${duplicateCheck.duplicates.map(d => 
+          `Existing assets:\n${duplicateCheck.duplicates.map(d =>
             `- ${d.model || 'Unknown'} (${d.asset_tag || 'No Tag'}) - ${d.status || 'Unknown'}`
           ).join('\n')}\n\nDo you want to continue saving?`
         );
