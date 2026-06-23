@@ -221,13 +221,16 @@ export function useEquipmentStats(hubId) {
       if (countError) throw countError;
 
       // Get data for detailed stats (only fetch needed columns)
-      let dataQuery = supabase.from('equipment').select('equipment_type, status, condition, assigned_to, hub, accessories');
+      let dataQuery = supabase.from('equipment').select('equipment_type, status, condition, assigned_to, hub');
       if (hubId && hubId !== 'all') {
         dataQuery = dataQuery.eq('hub', hubId);
       }
 
       const { data, error } = await dataQuery;
-      if (error) throw error;
+      if (error) {
+        console.error('Stats data fetch error:', error);
+        throw error;
+      }
 
       // Calculate stats from data
       const counts = {
@@ -264,15 +267,6 @@ export function useEquipmentStats(hubId) {
         else if (type.includes('monitor')) counts.monitors++;
         else if (type.includes('printer')) counts.printers++;
         else if (type.includes('scanner')) counts.scanners++;
-
-        // Count accessories
-        let accessories = item.accessories;
-        if (typeof accessories === 'string') {
-          try { accessories = JSON.parse(accessories); } catch (e) { accessories = null; }
-        }
-        if (accessories && Array.isArray(accessories)) {
-          counts.accessories += accessories.length;
-        }
 
         // Count by status
         const status = (item.status || '').toLowerCase();
