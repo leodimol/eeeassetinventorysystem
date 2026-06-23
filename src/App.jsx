@@ -22,6 +22,7 @@ import {
 } from 'recharts';
 import * as XLSX from 'xlsx';
 import ExcelJS from 'exceljs';
+import ConfirmDialog from './components/ui/ConfirmDialog';
 import {
   LayoutDashboard,
   Laptop,
@@ -309,6 +310,7 @@ function App() {
   const [toast, setToast] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEquipment, setEditingEquipment] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, onConfirm: null, title: '', message: '', type: 'warning' });
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [authUser, setAuthUser] = useState(null);
@@ -788,13 +790,26 @@ function App() {
       });
 
       if (duplicateCheck.hasDuplicates) {
-        const confirmed = window.confirm(
-          `Warning: ${duplicateCheck.messages.join('\n')}\n\n` +
-          `Existing equipment:\n${duplicateCheck.duplicates.map(d =>
+        setConfirmDialog({
+          isOpen: true,
+          title: 'Duplicate Detected',
+          message: `${duplicateCheck.messages.join('\n')}\n\nExisting equipment:\n${duplicateCheck.duplicates.map(d =>
             `- ${d.model} (${d.asset_tag || 'No Tag'}) - ${d.status}`
-          ).join('\n')}\n\nDo you want to continue saving?`
-        );
-        if (!confirmed) return;
+          ).join('\n')}\n\nDo you want to continue saving?`,
+          type: 'warning',
+          onConfirm: async () => {
+            if (editingEquipment) {
+              await updateEquipment(editingEquipment.id, formData, 'system');
+              setToast({ message: 'Equipment updated successfully', type: 'success' });
+            } else {
+              await addEquipment(formData, 'system');
+              setToast({ message: 'Equipment added successfully', type: 'success' });
+            }
+            setIsModalOpen(false);
+            setEditingEquipment(null);
+          }
+        });
+        return;
       }
 
       if (editingEquipment) {
@@ -2278,18 +2293,24 @@ function App() {
                                     >
                                       <Edit3 size={12} />
                                     </button>
-                                    <button 
+                                    <button
                                       className="p-1 border border-[var(--border-color)] rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-red)] hover:border-[var(--border-red)] hover:text-[var(--text-red)] transition-colors"
                                       title="Delete"
-                                      onClick={async () => {
-                                        if(window.confirm(`Delete ${item.model}?`)) {
-                                          try {
-                                            await deleteEquipment(item.id);
-                                            setToast({ message: `${item.model} deleted successfully`, type: 'success' });
-                                          } catch (err) {
-                                            setToast({ message: 'Error deleting equipment: ' + err.message, type: 'error' });
+                                      onClick={() => {
+                                        setConfirmDialog({
+                                          isOpen: true,
+                                          title: 'Delete Equipment',
+                                          message: `Are you sure you want to delete ${item.model}? This action cannot be undone.`,
+                                          type: 'danger',
+                                          onConfirm: async () => {
+                                            try {
+                                              await deleteEquipment(item.id);
+                                              setToast({ message: `${item.model} deleted successfully`, type: 'success' });
+                                            } catch (err) {
+                                              setToast({ message: 'Error deleting equipment: ' + err.message, type: 'error' });
+                                            }
                                           }
-                                        }
+                                        });
                                       }}
                                     >
                                       <Trash2 size={12} />
@@ -2365,6 +2386,15 @@ function App() {
           onClose={() => setToast(null)}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        type={confirmDialog.type}
+      />
 
       {/* Auto-logout warning modal */}
       {logoutWarning && (
