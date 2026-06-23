@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowLeft, ArrowRight, AlertCircle } from 'lucide-react';
+import { X, ArrowLeft, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { checkDuplicates } from '../utils/duplicateCheck';
 import { logAudit } from '../utils/auditLog';
@@ -2458,12 +2458,41 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
                 className="btn btn-primary"
                 style={isRetired ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
               >
-                {isRetired ? 'View Only' : (loading ? 'Saving...' : (isEditMode ? 'Update' : 'Add Equipment'))}
+                {isRetired ? 'View Only' : (loading ? <Loader2 className="animate-spin" size={20} /> : (isEditMode ? 'Update' : 'Add Equipment'))}
               </button>
             </div>
           )}
         </form>
       </div>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 100,
+            borderRadius: '24px'
+          }}
+        >
+          <Loader2 className="animate-spin" size={48} style={{ color: 'var(--accent-primary)', marginBottom: '16px' }} />
+          <p style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: '600' }}>
+            {isEditMode ? 'Updating Equipment...' : 'Adding Equipment...'}
+          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: '8px' }}>
+            Please wait
+          </p>
+        </div>
+      )}
 
       {/* Toast Notification */}
       {toast && (
