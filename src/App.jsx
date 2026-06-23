@@ -2347,7 +2347,7 @@ function App() {
           setEditingEquipment(null);
         }}
         asset={editingEquipment}
-        onSaved={handleSaveEquipment}
+        onSaved={null}
         authUser={authUser}
       />
       
