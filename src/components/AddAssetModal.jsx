@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { checkDuplicates } from '../utils/duplicateCheck';
 import { logAudit } from '../utils/auditLog';
 import Toast from './ui/Toast';
+import ConfirmDialog from './ui/ConfirmDialog';
 
 const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => {
   const isEditMode = Boolean(asset?.id);
@@ -16,6 +17,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
   const [selectedLogisticsType, setSelectedLogisticsType] = useState('');
   const [selectedOfficeType, setSelectedOfficeType] = useState('');
   const [toast, setToast] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, onConfirm: null, title: '', message: '', type: 'warning' });
 
   const categories = [
     { id: 'transport', name: 'Transport Equipment', icon: '🚛' },
@@ -393,51 +395,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
     }
   }, [formData.location, formData.assigned_to, formData.released_by, formData.release_datetime, formData.idle_release]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    console.log('Form submission started', formData);
-
-    const isValid = validateForm();
-    console.log('Form validation result:', isValid, errors);
-
-    if (!isValid) {
-      setToast({
-        message: 'Please fix the validation errors before submitting.',
-        type: 'error'
-      });
-      return;
-    }
-
+  const saveAsset = async () => {
     setLoading(true);
 
     try {
-      // Check for duplicates
-      const duplicateCheck = await checkDuplicates({
-        serial: formData.serial,
-        assetTag: formData.asset_tag,
-        excludeId: asset?.id
-      });
-
-      console.log('Duplicate check result:', duplicateCheck);
-
-      if (duplicateCheck.hasDuplicates) {
-        setToast({
-          message: `Duplicate detected: ${duplicateCheck.messages.join(', ')}. Please review before continuing.`,
-          type: 'warning'
-        });
-        const confirmed = window.confirm(
-          `Warning: ${duplicateCheck.messages.join('\n')}\n\n` +
-          `Existing assets:\n${duplicateCheck.duplicates.map(d =>
-            `- ${d.model || 'Unknown'} (${d.asset_tag || 'No Tag'}) - ${d.status || 'Unknown'}`
-          ).join('\n')}\n\nDo you want to continue saving?`
-        );
-        if (!confirmed) {
-          setLoading(false);
-          return;
-        }
-      }
-
       // Create payload with all form fields
       const payload = {
         brand: formData.brand,
@@ -518,7 +479,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
       }
 
       let savedAsset;
-      
+
       if (isEditMode) {
         const { data, error } = await supabase
           .from('equipment')
@@ -526,7 +487,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
           .eq('id', asset.id)
           .select()
           .single();
-        
+
         if (error) throw error;
         savedAsset = data;
       } else {
@@ -535,7 +496,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
           .insert(payload)
           .select()
           .single();
-        
+
         if (error) throw error;
         savedAsset = data;
       }
@@ -557,18 +518,68 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
       setSelectedLogisticsType('');
       setSelectedOfficeType('');
       setFormData(emptyForm);
-      setToast({ 
-        message: isEditMode ? 'Equipment updated successfully! Changes have been saved.' : 'Equipment added successfully! You can now view it in the inventory.', 
-        type: 'success' 
+      setToast({
+        message: isEditMode ? 'Equipment updated successfully! Changes have been saved.' : 'Equipment added successfully! You can now view it in the inventory.',
+        type: 'success'
       });
     } catch (err) {
       console.error('Error saving asset:', err);
       console.error('Error details:', err.message, err.details, err.hint);
-      setToast({ 
-        message: `Failed to save asset: ${err.message || 'Please check your data and try again.'}`, 
-        type: 'error' 
+      setToast({
+        message: `Failed to save asset: ${err.message || 'Please check your data and try again.'}`,
+        type: 'error'
       });
     } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log('Form submission started', formData);
+
+    const isValid = validateForm();
+    console.log('Form validation result:', isValid, errors);
+
+    if (!isValid) {
+      setToast({
+        message: 'Please fix the validation errors before submitting.',
+        type: 'error'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Check for duplicates
+      const duplicateCheck = await checkDuplicates({
+        serial: formData.serial,
+        assetTag: formData.asset_tag,
+        excludeId: asset?.id
+      });
+
+      console.log('Duplicate check result:', duplicateCheck);
+
+      if (duplicateCheck.hasDuplicates) {
+        setConfirmDialog({
+          isOpen: true,
+          title: 'Duplicate Detected',
+          message: `${duplicateCheck.messages.join('\n')}\n\nExisting assets:\n${duplicateCheck.duplicates.map(d =>
+            `- ${d.model || 'Unknown'} (${d.asset_tag || 'No Tag'}) - ${d.status || 'Unknown'}`
+          ).join('\n')}\n\nDo you want to continue saving?`,
+          type: 'warning',
+          onConfirm: saveAsset
+        });
+        setLoading(false);
+        return;
+      }
+
+      // No duplicates, proceed with save
+      await saveAsset();
+    } catch (err) {
+      console.error('Error in handleSubmit:', err);
       setLoading(false);
     }
   };
@@ -2521,6 +2532,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
           onClose={() => setToast(null)}
         />
       )}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ ...confirmDialog, isOpen: false })}
+        onConfirm={confirmDialog.onConfirm}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        type={confirmDialog.type}
+      />
     </div>
   );
 };

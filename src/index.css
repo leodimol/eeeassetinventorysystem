@@ -269,8 +269,21 @@ select::-ms-expand {
 /* Error Text */
 .error-text {
   color: var(--accent-danger);
-  font-size: 12px;
-  margin-top: 4px;
+  font-size: 13px;
+  margin-top: 6px;
+  padding: 8px 12px;
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid var(--accent-danger);
+  border-radius: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-text::before {
+  content: '⚠';
+  font-size: 14px;
 }
 
 /* Form Section Styling */
