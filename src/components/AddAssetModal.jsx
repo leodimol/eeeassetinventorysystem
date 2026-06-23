@@ -2088,19 +2088,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         );
 
       default:
-        return (
-          <div className="form-group">
-            <label className="form-label">Notes</label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleChange}
-              className="form-textarea"
-              rows="3"
-              placeholder="Additional details about the equipment"
-            />
-          </div>
-        );
+        return null;
     }
   };
 
