@@ -536,27 +536,38 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser }) => 
         savedAsset = data;
       }
 
-      // Log audit entry
-      await logAudit({
-        equipmentId: savedAsset.id,
-        action: isEditMode ? 'UPDATE' : 'CREATE',
-        oldValues: isEditMode ? asset : null,
-        newValues: savedAsset,
-        changedBy: formData.added_by || authUser?.email || 'system',
-        reason: isEditMode ? updateReason : null
-      });
+      // Log audit entry (don't fail if this errors)
+      try {
+        await logAudit({
+          equipmentId: savedAsset.id,
+          action: isEditMode ? 'UPDATE' : 'CREATE',
+          oldValues: isEditMode ? asset : null,
+          newValues: savedAsset,
+          changedBy: formData.added_by || authUser?.email || 'system',
+          reason: isEditMode ? updateReason : null
+        });
+      } catch (auditErr) {
+        console.error('Audit log failed:', auditErr);
+      }
 
-      if (onSaved) onSaved(savedAsset);
-      onClose();
-      setCurrentStep(1);
-      setSelectedCategory('');
-      setSelectedLogisticsType('');
-      setSelectedOfficeType('');
-      setFormData(emptyForm);
+      // Show success message immediately after successful save
       setToast({
         message: isEditMode ? 'Equipment updated successfully! Changes have been saved.' : 'Equipment added successfully! You can now view it in the inventory.',
         type: 'success'
       });
+
+      // Close modal and reset form (don't fail if these error)
+      try {
+        if (onSaved) onSaved(savedAsset);
+        onClose();
+        setCurrentStep(1);
+        setSelectedCategory('');
+        setSelectedLogisticsType('');
+        setSelectedOfficeType('');
+        setFormData(emptyForm);
+      } catch (cleanupErr) {
+        console.error('Cleanup failed:', cleanupErr);
+      }
     } catch (err) {
       console.error('Error saving asset:', err);
       console.error('Error details:', err.message, err.details, err.hint);
