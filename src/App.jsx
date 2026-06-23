@@ -759,10 +759,22 @@ function App() {
 
   const handleSaveEquipment = async (formData) => {
     try {
-      // Validate required fields
-      const requiredFields = ['brand', 'model', 'asset_tag', 'serial'];
+      // Validate required fields based on category
+      const category = formData.category || formData.equipment_type;
+      let requiredFields = ['asset_tag'];
+
+      // Brand and Model are not required for logistics and office
+      if (category !== 'logistics' && category !== 'office') {
+        requiredFields.push('brand', 'model');
+      }
+
+      // Serial is not required for transport, logistics, and office
+      if (category !== 'transport' && category !== 'logistics' && category !== 'office') {
+        requiredFields.push('serial');
+      }
+
       const missingFields = requiredFields.filter(field => !formData[field] || formData[field].trim() === '');
-      
+
       if (missingFields.length > 0) {
         alert(`Please fill in required fields: ${missingFields.map(f => f.replace('_', ' ').toUpperCase()).join(', ')}`);
         return;
@@ -778,7 +790,7 @@ function App() {
       if (duplicateCheck.hasDuplicates) {
         const confirmed = window.confirm(
           `Warning: ${duplicateCheck.messages.join('\n')}\n\n` +
-          `Existing equipment:\n${duplicateCheck.duplicates.map(d => 
+          `Existing equipment:\n${duplicateCheck.duplicates.map(d =>
             `- ${d.model} (${d.asset_tag || 'No Tag'}) - ${d.status}`
           ).join('\n')}\n\nDo you want to continue saving?`
         );
