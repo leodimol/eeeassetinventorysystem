@@ -1655,15 +1655,15 @@ function App() {
                       accept=".csv,.xlsx,.xls"
                       className="hidden"
                     />
-                    <Button variant="secondary" className="w-full h-12 px-4 gap-2" onClick={downloadTemplate}>
+                    <Button variant="secondary" className="w-full h-12 px-4 gap-2 flex items-center justify-center" onClick={downloadTemplate}>
                       <FileDown size={26} strokeWidth={2} />
                       Download Template
                     </Button>
-                    <Button variant="secondary" className="w-full h-12 px-4 gap-2" onClick={() => fileInputRef.current?.click()}>
+                    <Button variant="secondary" className="w-full h-12 px-4 gap-2 flex items-center justify-center" onClick={() => fileInputRef.current?.click()}>
                       <FileUp size={26} strokeWidth={2} />
                       Import
                     </Button>
-                    <Button variant="secondary" className="w-full h-12 px-4 gap-2" onClick={exportCSV}>
+                    <Button variant="secondary" className="w-full h-12 px-4 gap-2 flex items-center justify-center" onClick={exportCSV}>
                       <FileDown size={26} strokeWidth={2} />
                       Export Excel
                     </Button>
