@@ -2116,18 +2116,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             </div>
 
             <div className="form-group">
-              <label className="form-label">Specifications</label>
-              <textarea
-                name="specs"
-                value={formData.specs}
-                onChange={handleChange}
-                className="form-textarea"
-                rows="2"
-                placeholder="Brief description or specifications"
-              />
-            </div>
-
-            <div className="form-group">
               <label className="form-label">Quantity</label>
               <input
                 type="text"
@@ -2318,6 +2306,19 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.warranty_date}
           onChange={handleChange}
           className="form-input"
+        />
+      </div>
+
+      {/* Description - Optional for all categories */}
+      <div className="form-group">
+        <label className="form-label">Description (Optional)</label>
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          className="form-textarea"
+          rows="3"
+          placeholder="Additional details about the equipment"
         />
       </div>
 
