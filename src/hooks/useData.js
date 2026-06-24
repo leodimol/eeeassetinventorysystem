@@ -69,8 +69,9 @@ export function useEquipment(hubId, page = 1, filters = {}, searchQuery = '', us
       // Get total count first
       const { count, error: countError } = await countQuery;
       if (countError) throw countError;
-      
+
       const total = count || 0;
+      console.log('useEquipment - Total count from DB:', total, 'for hubId:', hubId, 'filters:', filters);
       setTotalCount(total);
       setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
       
@@ -231,6 +232,8 @@ export function useEquipmentStats(hubId) {
       // Get total count first
       const { count, error: countError } = await countQuery;
       if (countError) throw countError;
+
+      console.log('useEquipmentStats - Total count from DB:', count, 'for hubId:', hubId);
 
       // Get data for detailed stats (only fetch needed columns)
       let dataQuery = supabase.from('equipment').select('equipment_type, status, condition, assigned_to');
