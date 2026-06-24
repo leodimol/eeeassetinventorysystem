@@ -626,11 +626,13 @@ function App() {
   // Dashboard key numbers
   const dashboardStats = useMemo(() => {
     const total = totalCount; // Use totalCount from useEquipment instead of allEquipment.length
-    const active = allEquipment.filter(item => item.status === 'available' || item.status === 'idle' || item.status === 'in_use').length;
+    const available = allEquipment.filter(item => item.status === 'available').length;
+    const idle = allEquipment.filter(item => item.status === 'idle').length;
+    const inUse = allEquipment.filter(item => item.status === 'in_use').length;
     const maintenance = allEquipment.filter(item => item.status === 'maintenance').length;
     const retired = allEquipment.filter(item => item.status === 'retired').length;
 
-    return { total, active, maintenance, retired };
+    return { total, available, idle, inUse, maintenance, retired };
   }, [allEquipment, totalCount]);
 
   // Chart data calculations
@@ -1638,14 +1640,22 @@ function App() {
                     Global tracking across {hubs.length} active logistics hubs.
                   </p>
 
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
                     <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
                       <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Total Assets</p>
                       <p className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>{dashboardStats.total}</p>
                     </div>
                     <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Active</p>
-                      <p className="text-2xl font-black" style={{ color: 'var(--accent-green)' }}>{dashboardStats.active}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Available</p>
+                      <p className="text-2xl font-black" style={{ color: 'var(--accent-cyan)' }}>{dashboardStats.available}</p>
+                    </div>
+                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
+                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Idle</p>
+                      <p className="text-2xl font-black" style={{ color: 'var(--accent-secondary)' }}>{dashboardStats.idle}</p>
+                    </div>
+                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
+                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>In Use</p>
+                      <p className="text-2xl font-black" style={{ color: 'var(--accent-green)' }}>{dashboardStats.inUse}</p>
                     </div>
                     <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
                       <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Maintenance</p>
