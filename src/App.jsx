@@ -632,6 +632,11 @@ function App() {
     const maintenance = allEquipment.filter(item => item.status === 'maintenance').length;
     const retired = allEquipment.filter(item => item.status === 'retired').length;
 
+    // Debug: log all statuses found
+    const allStatuses = allEquipment.map(item => item.status);
+    console.log('All statuses in allEquipment:', allStatuses);
+    console.log('Idle count:', idle, 'Available count:', available, 'In Use count:', inUse);
+
     return { total, available, idle, inUse, maintenance, retired };
   }, [allEquipment, totalCount]);
 
