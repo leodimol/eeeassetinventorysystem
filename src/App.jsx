@@ -755,6 +755,7 @@ function App() {
   };
 
   const handleEditEquipment = (item) => {
+    console.log('Edit button clicked for item:', item);
     setEditingEquipment(item);
     setIsModalOpen(true);
   };
@@ -2264,7 +2265,11 @@ function App() {
                                     <button
                                       className="p-1 border border-[var(--border-color)] rounded text-[var(--text-tertiary)] hover:bg-[var(--bg-blue)] hover:border-[var(--border-blue)] hover:text-[var(--text-blue)] transition-colors"
                                       title="Edit"
-                                      onClick={(e) => { e.stopPropagation(); handleEditEquipment(item); }}
+                                      onClick={(e) => {
+                                        console.log('Edit button clicked', item);
+                                        e.stopPropagation();
+                                        handleEditEquipment(item);
+                                      }}
                                     >
                                       <Edit3 size={12} />
                                     </button>
