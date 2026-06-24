@@ -199,10 +199,21 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           office_cut_type: asset.office_cut_type || '',
           office_notes: asset.office_notes || ''
         });
-        setSelectedCategory(asset.category || asset.equipment_type || '');
+        const category = asset.category || asset.equipment_type || '';
+        setSelectedCategory(category);
         setSelectedLogisticsType(asset.logistics_type || '');
         setSelectedOfficeType(asset.office_type || '');
-        setCurrentStep((asset.category || asset.equipment_type) === 'logistics' && asset.logistics_type ? 3 : (asset.category || asset.equipment_type) === 'office' && asset.office_type ? 3 : 2);
+        // For transport and other categories, go directly to step 3
+        // For logistics and office, go to step 3 only if sub-type is already selected
+        if (category === 'transport' || category === 'other') {
+          setCurrentStep(3);
+        } else if (category === 'logistics' && asset.logistics_type) {
+          setCurrentStep(3);
+        } else if (category === 'office' && asset.office_type) {
+          setCurrentStep(3);
+        } else {
+          setCurrentStep(2);
+        }
       } else {
         setFormData(emptyForm);
         setSelectedCategory('');
