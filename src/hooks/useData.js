@@ -250,6 +250,8 @@ export function useEquipmentStats(hubId) {
         throw error;
       }
 
+      console.log('useEquipmentStats - Fetched data length:', data?.length);
+
       // Calculate stats from data
       const counts = {
         total: count || 0,
