@@ -632,10 +632,6 @@ function App() {
     const maintenance = stats.maintenance || 0;
     const retired = stats.retired || 0;
 
-    console.log('Dashboard stats:', { total, available, idle, inUse, maintenance, retired });
-    console.log('Raw stats from useEquipmentStats:', stats);
-    console.log('totalCount from useEquipment:', totalCount);
-
     return { total, available, idle, inUse, maintenance, retired };
   }, [stats, totalCount]);
 
