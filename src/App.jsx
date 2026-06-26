@@ -1985,17 +1985,39 @@ function App() {
                           className="text-[11px] font-bold uppercase tracking-widest"
                           style={{ color: 'var(--text-tertiary)' }}
                         >
-                          Showing {equipment.length} of {totalCount} Assets
+                          Showing {equipment.length} of {totalCount} Assets (Page {currentPage} of {totalPages})
                         </p>
-                        <Button
-                          variant="outline"
-                          className="h-10 px-4 gap-2 border-[1.5px] border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-white"
-                          title="Toggle full inventory table view"
-                          onClick={() => setIsFullView(!isFullView)}
-                        >
-                          {isFullView ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-                          {isFullView ? 'Exit Full View' : 'Full View'}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          {totalPages > 1 && (
+                            <>
+                              <Button
+                                variant="outline"
+                                className="h-10 px-3 gap-2 border-[1.5px] border-[var(--border-glass)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                disabled={currentPage === 1}
+                              >
+                                <ChevronLeft size={16} />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                className="h-10 px-3 gap-2 border-[1.5px] border-[var(--border-glass)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]"
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                disabled={currentPage === totalPages}
+                              >
+                                <ChevronRight size={16} />
+                              </Button>
+                            </>
+                          )}
+                          <Button
+                            variant="outline"
+                            className="h-10 px-4 gap-2 border-[1.5px] border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-white"
+                            title="Toggle full inventory table view"
+                            onClick={() => setIsFullView(!isFullView)}
+                          >
+                            {isFullView ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
+                            {isFullView ? 'Exit Full View' : 'Full View'}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
