@@ -632,10 +632,8 @@ function App() {
     const maintenance = stats.maintenance || 0;
     const retired = stats.retired || 0;
 
-    console.log('Dashboard stats from useEquipmentStats (independent):', { total, available, idle, inUse, maintenance, retired, statsTotal: stats.total, statsLoading });
-
     return { total, available, idle, inUse, maintenance, retired };
-  }, [stats, statsLoading]);
+  }, [stats]);
 
   // Chart data calculations
   const categoryData = useMemo(() => {

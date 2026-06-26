@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { logAudit } from '../utils/auditLog';
 
 const ITEMS_PER_PAGE = 50;
+const MAX_ITEMS_PER_PAGE = 10000; // For fetching all data without pagination
 
 export function useEquipment(hubId, page = 1, filters = {}, searchQuery = '', useServerFiltering = true) {
   const [equipment, setEquipment] = useState([]);
@@ -73,17 +74,21 @@ export function useEquipment(hubId, page = 1, filters = {}, searchQuery = '', us
       const total = count || 0;
       console.log('useEquipment - Total count from DB:', total, 'for hubId:', hubId, 'filters:', filters);
       setTotalCount(total);
-      setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
-      
+
+      // If fetching all data for dashboard/sidebar (hubId='all', no filters, no search), fetch all without pagination
+      const shouldFetchAll = hubId === 'all' && !filters.category && !filters.status && !filters.condition && !searchQuery;
+      const itemsPerPage = shouldFetchAll ? MAX_ITEMS_PER_PAGE : ITEMS_PER_PAGE;
+      setTotalPages(Math.ceil(total / itemsPerPage));
+
       // Apply pagination range
-      const start = (page - 1) * ITEMS_PER_PAGE;
-      const end = start + ITEMS_PER_PAGE - 1;
+      const start = (page - 1) * itemsPerPage;
+      const end = start + itemsPerPage - 1;
       dataQuery = dataQuery.range(start, end).order('updated_at', { ascending: false });
       
       const { data, error: dataError } = await dataQuery;
       if (dataError) throw dataError;
       
-      console.log(`Fetched ${data?.length || 0} items (page ${page} of ${Math.ceil(total / ITEMS_PER_PAGE)}, total: ${total})`);
+      console.log(`Fetched ${data?.length || 0} items (page ${page} of ${Math.ceil(total / itemsPerPage)}, total: ${total}, shouldFetchAll: ${shouldFetchAll})`);
       setEquipment(data || []);
     } catch (err) {
       setError(err.message);
