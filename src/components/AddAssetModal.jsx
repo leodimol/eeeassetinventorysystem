@@ -124,6 +124,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const statusOptions = [
     { value: 'available', label: '✅ Available - Working, ready for assignment' },
     { value: 'idle', label: '✅ Idle - Working, currently not in use' },
+    { value: 'in_use', label: '🔄 In Use - Currently assigned to someone' },
     { value: 'maintenance', label: '⚠️ Under Maintenance - Temporarily out of service' },
     { value: 'retired', label: '❌ Retired/Disposed - Permanently removed' }
   ];
@@ -956,22 +957,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="defective">Defective</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="idle">Idle</option>
-                    <option value="for_repair">For Repair</option>
-                    <option value="disposed">Disposed</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1039,20 +1024,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="damaged">Damaged</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1111,19 +1082,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1182,19 +1140,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="attached">Attached</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1266,19 +1211,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="service">Service</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1332,20 +1264,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="good">Good</option>
                     <option value="paper_feed_issue">Paper feed issue</option>
                     <option value="low_toner">Low toner</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="operational">Operational</option>
-                    <option value="for_maintenance">For maintenance</option>
                   </select>
                 </div>
               </>
@@ -1405,19 +1323,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1476,19 +1381,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="idle">Idle</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1547,19 +1439,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1619,19 +1498,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1706,19 +1572,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="available">Available</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1781,19 +1634,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </select>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1868,20 +1708,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="damaged">Damaged</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1943,20 +1769,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="damaged">Damaged</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="available">Available</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1999,20 +1811,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="good">Good</option>
                     <option value="fair">Fair</option>
                     <option value="poor">Poor</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
                   </select>
                 </div>
 
@@ -2233,24 +2031,22 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         </div>
       </div>
 
-      {/* Status - Only for transport and logistics */}
-      {selectedCategory !== 'office' && (
-        <div className="form-group">
-          <label className="form-label">Status</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="form-input asset-category-select"
-          >
-            {statusOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      {/* Status - For all categories */}
+      <div className="form-group">
+        <label className="form-label">Status</label>
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          className="form-input asset-category-select"
+        >
+          {statusOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Condition - Only for transport and logistics */}
       {selectedCategory !== 'office' && (
