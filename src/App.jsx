@@ -1398,7 +1398,7 @@ function App() {
         />
       )}
 
-      <div className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ease-in-out lg:ml-0 ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'} ${isMobileSidebarOpen ? 'lg:ml-0' : ''}`}>
+      <div className={`flex-1 flex flex-col min-w-0 overflow-hidden transition-all duration-300 ease-in-out ${isSidebarCollapsed ? 'lg:ml-20' : 'lg:ml-64'}`}>
 
         {/* Page Content */}
         <div
