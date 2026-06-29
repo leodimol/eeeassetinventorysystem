@@ -22,7 +22,9 @@ import {
   Clock,
   AlertTriangle,
   CheckCircle2,
-  Package
+  Package,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 const COLORS = {
@@ -144,6 +146,8 @@ const AnalyticsDashboard = ({ equipment, filters, compact }) => {
     });
   }, [equipment, filters]);
   const [activeView, setActiveView] = useState('summary');
+  const [hubPage, setHubPage] = useState(1);
+  const HUBS_PER_PAGE = 10;
 
   // Calculate comprehensive metrics
   const comprehensiveMetrics = useMemo(() => {
@@ -222,8 +226,30 @@ const AnalyticsDashboard = ({ equipment, filters, compact }) => {
       color: CHART_COLORS[Object.keys(hubCounts).indexOf(name) % CHART_COLORS.length]
     })).sort((a, b) => b.value - a.value);
 
+    // Apply pagination
+    const startIndex = (hubPage - 1) * HUBS_PER_PAGE;
+    const endIndex = startIndex + HUBS_PER_PAGE;
+    result = result.slice(startIndex, endIndex);
+
     return result;
+  }, [filteredEquipment, hubPage]);
+
+  // Calculate total hub count for pagination
+  const totalHubCount = useMemo(() => {
+    const hubCounts = filteredEquipment.reduce((acc, item) => {
+      const hub = item.location || 'Unknown';
+      acc[hub] = (acc[hub] || 0) + 1;
+      return acc;
+    }, {});
+    return Object.keys(hubCounts).length;
   }, [filteredEquipment]);
+
+  const totalHubPages = Math.ceil(totalHubCount / HUBS_PER_PAGE);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setHubPage(1);
+  }, [filters]);
 
   // Condition Distribution
   const conditionData = useMemo(() => {
@@ -462,35 +488,58 @@ const AnalyticsDashboard = ({ equipment, filters, compact }) => {
 
           {/* Hub Distribution */}
           <div className="bg-[var(--bg-glass-light)] rounded-lg p-4 border border-[var(--border-glass)]">
-            <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3">Location Distribution</h3>
-            <div className="h-48 overflow-x-auto">
-              <div style={{ minWidth: `${Math.max(hubData.length * 60, 100)}%` }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={hubData} margin={{ top: 15, right: 20, left: 15, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
-                    <XAxis
-                      dataKey="name"
-                      stroke="var(--text-tertiary)"
-                      tick={{ fill: 'var(--text-secondary)', fontSize: 10 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      stroke="var(--text-tertiary)"
-                      tick={{ fill: 'var(--text-secondary)', fontSize: 10 }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                      {hubData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                      <LabelList dataKey="value" position="top" fill="var(--text-primary)" fontSize={11} fontWeight="bold" />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Location Distribution</h3>
+              {totalHubPages > 1 && (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setHubPage(prev => Math.max(prev - 1, 1))}
+                    disabled={hubPage === 1}
+                    className="p-1 rounded hover:bg-[var(--bg-tertiary)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="text-xs font-medium" style={{ color: 'var(--text-tertiary)' }}>
+                    {hubPage} / {totalHubPages}
+                  </span>
+                  <button
+                    onClick={() => setHubPage(prev => Math.min(prev + 1, totalHubPages))}
+                    disabled={hubPage === totalHubPages}
+                    className="p-1 rounded hover:bg-[var(--bg-tertiary)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    style={{ color: 'var(--text-secondary)' }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={hubData} margin={{ top: 15, right: 20, left: 15, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" vertical={false} />
+                  <XAxis
+                    dataKey="name"
+                    stroke="var(--text-tertiary)"
+                    tick={{ fill: 'var(--text-secondary)', fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    stroke="var(--text-tertiary)"
+                    tick={{ fill: 'var(--text-secondary)', fontSize: 10 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {hubData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                    <LabelList dataKey="value" position="top" fill="var(--text-primary)" fontSize={11} fontWeight="bold" />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
