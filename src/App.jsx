@@ -820,16 +820,16 @@ function App() {
     const now = new Date();
 
     allEquipment.forEach(item => {
-      // Warranty expiry alerts (notify 1 month ahead)
+      // Warranty expiry alerts (notify 90 days ahead)
       if (item.warranty_date) {
         const warrantyDate = new Date(item.warranty_date);
         const daysUntilExpiry = Math.ceil((warrantyDate - now) / (1000 * 60 * 60 * 24));
 
-        if (daysUntilExpiry <= 30 && daysUntilExpiry > 0) {
+        if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
           warrantyExpiry.push({
             item,
             daysLeft: daysUntilExpiry,
-            severity: daysUntilExpiry <= 15 ? 'critical' : 'warning'
+            severity: daysUntilExpiry <= 30 ? 'critical' : 'warning'
           });
         }
       }
