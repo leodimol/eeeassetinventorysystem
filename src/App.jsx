@@ -1714,84 +1714,6 @@ function App() {
                       <p className="text-2xl font-black" style={{ color: 'var(--accent-red)' }}>{dashboardStats.retired}</p>
                     </div>
                   </div>
-
-                  {/* Alerts Section */}
-                  {alerts.total > 0 && (
-                    <div className="mt-6 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <AlertTriangle size={20} style={{ color: 'var(--accent-orange)' }} />
-                        <h3 className="text-sm font-bold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>
-                          Active Alerts ({alerts.total})
-                        </h3>
-                      </div>
-
-                      {/* Warranty Expiry Alerts */}
-                      {alerts.warrantyExpiry.length > 0 && (
-                        <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-xl p-4" style={{ borderLeft: '4px solid var(--accent-orange)' }}>
-                          <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--accent-orange)' }}>
-                            Warranty Expiring Soon ({alerts.warrantyExpiry.length})
-                          </p>
-                          <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                            {alerts.warrantyExpiry.slice(0, 5).map((alert, idx) => (
-                              <div key={idx} className="flex items-center justify-between text-xs py-1.5 px-2 rounded-lg hover:bg-[var(--bg-glass-light)] transition-colors">
-                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                  <span className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || alert.item.asset_tag || 'Unknown'}
-                                  </span>
-                                  {alert.severity === 'critical' && (
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)' }}>
-                                      CRITICAL
-                                    </span>
-                                  )}
-                                </div>
-                                <span className="text-[10px] font-medium flex-shrink-0 ml-2" style={{ color: 'var(--text-secondary)' }}>
-                                  {alert.daysLeft <= 0 ? 'Expired' : `${alert.daysLeft}d`}
-                                </span>
-                              </div>
-                            ))}
-                            {alerts.warrantyExpiry.length > 5 && (
-                              <p className="text-[10px] text-center py-1.5" style={{ color: 'var(--text-tertiary)' }}>
-                                +{alerts.warrantyExpiry.length - 5} more
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Maintenance Due Alerts */}
-                      {alerts.maintenanceDue.length > 0 && (
-                        <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-xl p-4" style={{ borderLeft: '4px solid var(--accent-yellow)' }}>
-                          <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--accent-yellow)' }}>
-                            Long-term Maintenance ({alerts.maintenanceDue.length})
-                          </p>
-                          <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                            {alerts.maintenanceDue.slice(0, 5).map((alert, idx) => (
-                              <div key={idx} className="flex items-center justify-between text-xs py-1.5 px-2 rounded-lg hover:bg-[var(--bg-glass-light)] transition-colors">
-                                <div className="flex items-center gap-2 flex-1 min-w-0">
-                                  <span className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || alert.item.asset_tag || 'Unknown'}
-                                  </span>
-                                  {alert.severity === 'critical' && (
-                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)' }}>
-                                      OVERDUE
-                                    </span>
-                                  )}
-                                </div>
-                                <span className="text-[10px] font-medium flex-shrink-0 ml-2" style={{ color: 'var(--text-secondary)' }}>
-                                  {alert.daysInMaintenance}d
-                                </span>
-                              </div>
-                            ))}
-                            {alerts.maintenanceDue.length > 5 && (
-                              <p className="text-[10px] text-center py-1.5" style={{ color: 'var(--text-tertiary)' }}>
-                                +{alerts.maintenanceDue.length - 5} more
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
                   <div className="flex-1 grid gap-3 sm:grid-cols-3">
@@ -2259,21 +2181,69 @@ function App() {
                                       <div className="flex items-center gap-1.5">
                                         <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || 'Unknown'}</p>
                                         {(() => {
+                                          const warnings = [];
+
+                                          // Check for warranty expiry
+                                          if (item.warranty_date) {
+                                            const warrantyDate = new Date(item.warranty_date);
+                                            const daysUntilExpiry = Math.ceil((warrantyDate - new Date()) / (1000 * 60 * 60 * 24));
+                                            if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
+                                              warnings.push({
+                                                type: 'warranty',
+                                                severity: daysUntilExpiry <= 30 ? 'critical' : 'warning',
+                                                message: daysUntilExpiry <= 0 ? 'Warranty expired' : `Warranty expires in ${daysUntilExpiry} days`
+                                              });
+                                            } else if (daysUntilExpiry <= 0) {
+                                              warnings.push({
+                                                type: 'warranty',
+                                                severity: 'critical',
+                                                message: 'Warranty expired'
+                                              });
+                                            }
+                                          }
+
+                                          // Check for long-term maintenance
+                                          if (item.status === 'maintenance' && item.updated_at) {
+                                            const lastUpdated = new Date(item.updated_at);
+                                            const daysInMaintenance = Math.floor((new Date() - lastUpdated) / (1000 * 60 * 60 * 24));
+                                            if (daysInMaintenance > 30) {
+                                              warnings.push({
+                                                type: 'maintenance',
+                                                severity: daysInMaintenance > 60 ? 'critical' : 'warning',
+                                                message: `${daysInMaintenance} days in maintenance`
+                                              });
+                                            }
+                                          }
+
+                                          // Check for assignment status mismatch
                                           const isAvailable = item.status && item.status.toLowerCase() === 'available';
                                           const hasAssignment = item.assigned_to && item.assigned_to.trim();
                                           if (isAvailable && hasAssignment) {
-                                            const warningMsg = `Warning: Assigned to "${item.assigned_to.trim()}" but status is "Available"`;
-                                            return (
-                                              <span 
-                                                title={warningMsg}
-                                                className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap cursor-help"
-                                                style={{ background: 'var(--accent-orange)', color: 'white' }}
-                                              >
-                                                ⚠️ CHECK
-                                              </span>
-                                            );
+                                            warnings.push({
+                                              type: 'assignment',
+                                              severity: 'warning',
+                                              message: `Assigned to "${item.assigned_to.trim()}" but status is "Available"`
+                                            });
                                           }
-                                          return null;
+
+                                          // Display warnings
+                                          return warnings.length > 0 ? (
+                                            <div className="flex items-center gap-1">
+                                              {warnings.map((warning, idx) => (
+                                                <span
+                                                  key={idx}
+                                                  title={warning.message}
+                                                  className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap cursor-help"
+                                                  style={{
+                                                    background: warning.severity === 'critical' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)',
+                                                    color: warning.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
+                                                  }}
+                                                >
+                                                  {warning.type === 'warranty' ? '📅' : warning.type === 'maintenance' ? '🔧' : '⚠️'}
+                                                </span>
+                                              ))}
+                                            </div>
+                                          ) : null;
                                         })()}
                                       </div>
                                       <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
