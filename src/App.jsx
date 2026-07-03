@@ -787,41 +787,39 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Get the most recent timestamp for each category
-    const getMostRecentTimestamp = (arr) => {
-      if (arr.length === 0) return new Date(0);
-      return arr.reduce((latest, current) => {
-        const latestDate = new Date(latest.timestamp || 0);
-        const currentDate = new Date(current.timestamp || 0);
-        return currentDate > latestDate ? current : latest;
-      }).timestamp || new Date(0);
-    };
+    // Sort all notifications by timestamp (newest first), then group by type
+    const sortedAllNotifications = allNotifications.sort((a, b) => {
+      const aDate = new Date(a.timestamp || 0);
+      const bDate = new Date(b.timestamp || 0);
+      return bDate - aDate;
+    });
 
-    const warrantyLatest = getMostRecentTimestamp(warrantyExpiry);
-    const maintenanceLatest = getMostRecentTimestamp(maintenanceDue);
-    const recentLatest = getMostRecentTimestamp(recentlyAdded);
+    // Group sorted notifications by type
+    const warrantySorted = sortedAllNotifications.filter(n => n.id.startsWith('warranty'));
+    const maintenanceSorted = sortedAllNotifications.filter(n => n.id.startsWith('maintenance'));
+    const recentSorted = sortedAllNotifications.filter(n => n.id.startsWith('recent'));
 
-    // Create section objects with their latest timestamps
+    // Create section objects with their data
     const sections = [];
-    if (warrantyExpiry.length > 0) {
+    if (warrantySorted.length > 0) {
       sections.push({
         type: 'warranty',
-        data: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
-        latest: warrantyLatest
+        data: warrantySorted,
+        latest: warrantySorted[0].timestamp
       });
     }
-    if (maintenanceDue.length > 0) {
+    if (maintenanceSorted.length > 0) {
       sections.push({
         type: 'maintenance',
-        data: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
-        latest: maintenanceLatest
+        data: maintenanceSorted,
+        latest: maintenanceSorted[0].timestamp
       });
     }
-    if (recentlyAdded.length > 0) {
+    if (recentSorted.length > 0) {
       sections.push({
         type: 'recent',
-        data: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
-        latest: recentLatest
+        data: recentSorted,
+        latest: recentSorted[0].timestamp
       });
     }
 
