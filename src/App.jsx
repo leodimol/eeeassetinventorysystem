@@ -1605,8 +1605,9 @@ function App() {
                                 key={idx}
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1623,7 +1624,9 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                    NEW
+                                  </div>
                                 )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
@@ -1686,8 +1689,9 @@ function App() {
                                 key={idx}
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1704,7 +1708,9 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                    NEW
+                                  </div>
                                 )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
@@ -1767,8 +1773,9 @@ function App() {
                                 key={idx}
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1785,7 +1792,9 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                    NEW
+                                  </div>
                                 )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
