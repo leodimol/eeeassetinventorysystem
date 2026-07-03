@@ -104,9 +104,9 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
         />
         
         {/* Modal */}
-        <div 
-          className="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-[20px] overflow-hidden"
-          style={{ 
+        <div
+          className="relative w-full max-w-2xl max-h-[85vh] flex flex-col rounded-[20px] overflow-hidden mx-4"
+          style={{
             background: 'var(--bg-secondary)',
             border: '1px solid var(--border-glass)',
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
@@ -200,7 +200,7 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
                           </span>
                         </div>
                         
-                        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        <p className="text-sm mt-1 break-words" style={{ color: 'var(--text-secondary)' }}>
                           {log.description}
                         </p>
 
@@ -210,18 +210,18 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
                             <p className="text-xs font-semibold" style={{ color: 'var(--text-tertiary)' }}>
                               Reason:
                             </p>
-                            <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+                            <p className="text-sm mt-1 break-words" style={{ color: 'var(--text-secondary)' }}>
                               {log.reason}
                             </p>
                           </div>
                         )}
 
                         {/* User Info with Photo */}
-                        <div className="flex items-center gap-2 mt-2 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                        <div className="flex items-center gap-2 mt-2 text-xs flex-wrap" style={{ color: 'var(--text-tertiary)' }}>
                           <User size={12} />
-                          <span>{log.changed_by_name || log.changed_by || 'System'}</span>
+                          <span className="break-all">{log.changed_by_name || log.changed_by || 'System'}</span>
                           {log.changed_by_dept && <span>•</span>}
-                          {log.changed_by_dept && <span>{log.changed_by_dept}</span>}
+                          {log.changed_by_dept && <span className="break-all">{log.changed_by_dept}</span>}
                         </div>
 
                         {/* Photos Section */}
@@ -278,19 +278,19 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
                         {log.field_changes && Object.keys(log.field_changes).length > 0 && (
                           <div className="mt-2 space-y-1">
                             {Object.entries(log.field_changes).slice(0, 3).map(([field, change]) => (
-                              <div 
+                              <div
                                 key={field}
-                                className="text-xs flex items-center gap-2 px-2 py-1.5 rounded-lg"
+                                className="text-xs flex items-start gap-2 px-2 py-1.5 rounded-lg flex-wrap"
                                 style={{ background: 'var(--bg-secondary)' }}
                               >
-                                <span style={{ color: 'var(--text-tertiary)' }}>
+                                <span className="flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
                                   {field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
                                 </span>
-                                <span style={{ color: 'var(--accent-red)' }} className="line-through">
+                                <span className="break-all" style={{ color: 'var(--accent-red)' }}>
                                   {typeof change.old === 'object' ? JSON.stringify(change.old) : (change.old || 'empty')}
                                 </span>
-                                <span style={{ color: 'var(--text-tertiary)' }}>→</span>
-                                <span style={{ color: 'var(--accent-green)' }}>
+                                <span className="flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>→</span>
+                                <span className="break-all" style={{ color: 'var(--accent-green)' }}>
                                   {typeof change.new === 'object' ? JSON.stringify(change.new) : (change.new || 'empty')}
                                 </span>
                               </div>
