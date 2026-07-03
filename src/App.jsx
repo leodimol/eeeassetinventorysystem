@@ -823,22 +823,6 @@ function App() {
     }
   }, [statsLoading, equipLoading]);
 
-  // Mark notifications as read when visiting notifications page
-  useEffect(() => {
-    if (activePage === 'notifications') {
-      const allNotificationIds = [
-        ...alerts.warrantyExpiry.map(n => n.id),
-        ...alerts.maintenanceDue.map(n => n.id),
-        ...alerts.recentlyAdded.map(n => n.id)
-      ];
-      setReadNotifications(prev => {
-        const newRead = [...new Set([...prev, ...allNotificationIds])];
-        localStorage.setItem('readNotifications', JSON.stringify(newRead));
-        return newRead;
-      });
-    }
-  }, [activePage, alerts]);
-
   // Save read notifications to localStorage
   useEffect(() => {
     localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
@@ -1503,6 +1487,25 @@ function App() {
                     Stay informed about warranty expirations, maintenance, and new equipment.
                   </p>
                 </div>
+                {alerts.unreadCount > 0 && (
+                  <button
+                    onClick={() => {
+                      const allNotificationIds = [
+                        ...alerts.warrantyExpiry.map(n => n.id),
+                        ...alerts.maintenanceDue.map(n => n.id),
+                        ...alerts.recentlyAdded.map(n => n.id)
+                      ];
+                      setReadNotifications(prev => {
+                        const newRead = [...new Set([...prev, ...allNotificationIds])];
+                        return newRead;
+                      });
+                    }}
+                    className="px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
+                    style={{ background: 'var(--accent-primary)', color: 'white' }}
+                  >
+                    Mark All as Read
+                  </button>
+                )}
               </div>
 
               {alerts.total === 0 ? (
@@ -1550,6 +1553,13 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
                               setHighlightedAssetId(alert.item.id);
                               setActivePage('inventory');
                             }}
@@ -1619,6 +1629,13 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
                               setHighlightedAssetId(alert.item.id);
                               setActivePage('inventory');
                             }}
@@ -1688,6 +1705,13 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
                               setHighlightedAssetId(alert.item.id);
                               setActivePage('inventory');
                             }}
