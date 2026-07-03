@@ -789,10 +789,12 @@ function App() {
 
     // Get the most recent timestamp for each category
     const getMostRecentTimestamp = (arr) => {
-      if (arr.length === 0) return null;
+      if (arr.length === 0) return new Date(0);
       return arr.reduce((latest, current) => {
-        return new Date(current.timestamp) > new Date(latest.timestamp) ? current : latest;
-      }).timestamp;
+        const latestDate = new Date(latest.timestamp || 0);
+        const currentDate = new Date(current.timestamp || 0);
+        return currentDate > latestDate ? current : latest;
+      }).timestamp || new Date(0);
     };
 
     const warrantyLatest = getMostRecentTimestamp(warrantyExpiry);
@@ -831,7 +833,9 @@ function App() {
       if (aUnread && !bUnread) return -1;
       if (!aUnread && bUnread) return 1;
       
-      return new Date(b.latest) - new Date(a.latest);
+      const aDate = new Date(a.latest || 0);
+      const bDate = new Date(b.latest || 0);
+      return bDate - aDate;
     });
 
     return {
