@@ -1501,71 +1501,6 @@ function App() {
                 </div>
               ) : (
                 <>
-                  {alerts.recentlyAdded.length > 0 && (
-                    <div
-                      className="rounded-[16px] p-6"
-                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderLeft: '4px solid var(--accent-green)' }}
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.2)' }}>
-                            <span className="text-xl">✨</span>
-                          </div>
-                          <div>
-                            <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
-                              Recently Added
-                            </h3>
-                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 7 days</p>
-                          </div>
-                        </div>
-                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: 'rgba(34, 197, 94, 0.2)', color: 'var(--accent-green)' }}>
-                          {alerts.recentlyAdded.length}
-                        </span>
-                      </div>
-                      <div className="space-y-2">
-                        {alerts.recentlyAdded.map((alert, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 rounded-lg flex items-center gap-4"
-                            style={{
-                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                              border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.6 : 1
-                            }}
-                          >
-                            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} style={{ color: 'var(--accent-primary)' }} />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                {alert.item.model || 'Unknown Model'}
-                              </p>
-                              <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                                <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span>•</span>
-                                <span>Serial: {alert.item.serial || 'N/A'}</span>
-                              </div>
-                            </div>
-                            <div className="text-right flex-shrink-0">
-                              <span
-                                className="text-xs font-bold px-3 py-1 rounded-full"
-                                style={{
-                                  background: 'rgba(34, 197, 94, 0.2)',
-                                  color: 'var(--accent-green)'
-                                }}
-                              >
-                                {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
-                              </span>
-                              <div className="flex items-center gap-2 text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                                <span>📍 {alert.item.location || 'Unknown'}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
                   {alerts.warrantyExpiry.length > 0 && (
                     <div
                       className="rounded-[16px] p-6"
@@ -1685,6 +1620,71 @@ function App() {
                                 }}
                               >
                                 {alert.daysInMaintenance} days
+                              </span>
+                              <div className="flex items-center gap-2 text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                                <span>📍 {alert.item.location || 'Unknown'}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {alerts.recentlyAdded.length > 0 && (
+                    <div
+                      className="rounded-[16px] p-6"
+                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderLeft: '4px solid var(--accent-green)' }}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.2)' }}>
+                            <span className="text-xl">✨</span>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                              Recently Added
+                            </h3>
+                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 7 days</p>
+                          </div>
+                        </div>
+                        <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: 'rgba(34, 197, 94, 0.2)', color: 'var(--accent-green)' }}>
+                          {alerts.recentlyAdded.length}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {alerts.recentlyAdded.map((alert, idx) => (
+                          <div
+                            key={idx}
+                            className="p-4 rounded-lg flex items-center gap-4"
+                            style={{
+                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                              border: '1px solid var(--border-glass)',
+                              opacity: alert.read ? 0.6 : 1
+                            }}
+                          >
+                            <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} style={{ color: 'var(--accent-primary)' }} />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                {alert.item.model || 'Unknown Model'}
+                              </p>
+                              <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                <span>•</span>
+                                <span>Serial: {alert.item.serial || 'N/A'}</span>
+                              </div>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <span
+                                className="text-xs font-bold px-3 py-1 rounded-full"
+                                style={{
+                                  background: 'rgba(34, 197, 94, 0.2)',
+                                  color: 'var(--accent-green)'
+                                }}
+                              >
+                                {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
                               </span>
                               <div className="flex items-center gap-2 text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
                                 <span>📍 {alert.item.location || 'Unknown'}</span>
