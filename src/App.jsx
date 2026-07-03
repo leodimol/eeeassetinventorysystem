@@ -1677,7 +1677,7 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
@@ -1761,7 +1761,7 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
@@ -1845,7 +1845,7 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
@@ -1929,7 +1929,7 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
@@ -2013,7 +2013,7 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
