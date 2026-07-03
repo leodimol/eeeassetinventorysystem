@@ -741,7 +741,8 @@ function App() {
             item,
             daysLeft: daysUntilExpiry,
             severity: daysUntilExpiry <= 30 ? 'critical' : 'warning',
-            read: readNotifications.includes(notificationId)
+            read: readNotifications.includes(notificationId),
+            timestamp: item.updated_at || item.created_at || now.toISOString()
           });
         }
       }
@@ -758,7 +759,8 @@ function App() {
             item,
             daysInMaintenance,
             severity: daysInMaintenance > 60 ? 'critical' : 'warning',
-            read: readNotifications.includes(notificationId)
+            read: readNotifications.includes(notificationId),
+            timestamp: item.updated_at
           });
         }
       }
@@ -775,7 +777,8 @@ function App() {
             item,
             daysSinceAdded,
             severity: 'info',
-            read: readNotifications.includes(notificationId)
+            read: readNotifications.includes(notificationId),
+            timestamp: item.created_at || item.updated_at
           });
         }
       }
@@ -784,7 +787,55 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
+    // Get the most recent timestamp for each category
+    const getMostRecentTimestamp = (arr) => {
+      if (arr.length === 0) return null;
+      return arr.reduce((latest, current) => {
+        return new Date(current.timestamp) > new Date(latest.timestamp) ? current : latest;
+      }).timestamp;
+    };
+
+    const warrantyLatest = getMostRecentTimestamp(warrantyExpiry);
+    const maintenanceLatest = getMostRecentTimestamp(maintenanceDue);
+    const recentLatest = getMostRecentTimestamp(recentlyAdded);
+
+    // Create section objects with their latest timestamps
+    const sections = [];
+    if (warrantyExpiry.length > 0) {
+      sections.push({
+        type: 'warranty',
+        data: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
+        latest: warrantyLatest
+      });
+    }
+    if (maintenanceDue.length > 0) {
+      sections.push({
+        type: 'maintenance',
+        data: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
+        latest: maintenanceLatest
+      });
+    }
+    if (recentlyAdded.length > 0) {
+      sections.push({
+        type: 'recent',
+        data: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
+        latest: recentLatest
+      });
+    }
+
+    // Sort sections by most recent notification (unread first, then by timestamp)
+    sections.sort((a, b) => {
+      const aUnread = a.data.some(n => !n.read);
+      const bUnread = b.data.some(n => !n.read);
+      
+      if (aUnread && !bUnread) return -1;
+      if (!aUnread && bUnread) return 1;
+      
+      return new Date(b.latest) - new Date(a.latest);
+    });
+
     return {
+      sections,
       warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
       maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
       recentlyAdded: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
@@ -1524,236 +1575,244 @@ function App() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {alerts.warrantyExpiry.length > 0 && (
-                    <div
-                      className="rounded-2xl p-6"
-                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-orange)' }}
-                    >
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.15)' }}>
-                            <span className="text-2xl">📅</span>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                              Warranty Expiring
-                            </h3>
-                            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment warranty expiring within 90 days</p>
-                          </div>
-                        </div>
-                        <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(251, 191, 36, 0.15)', color: 'var(--accent-orange)' }}>
-                          {alerts.warrantyExpiry.length}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {alerts.warrantyExpiry.map((alert, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
-                            style={{
-                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                              border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.8 : 1
-                            }}
-                            title="Double-click to view asset details"
-                            onDoubleClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
-                            }}
-                          >
-                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
-                            </div>
-                            <div className="flex-1 min-w-0 w-full">
-                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                {alert.item.model || 'Unknown Model'}
-                              </p>
-                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                <span>Serial: {alert.item.serial || 'N/A'}</span>
+                  {alerts.sections.map((section) => {
+                    if (section.type === 'warranty') {
+                      return (
+                        <div
+                          key="warranty"
+                          className="rounded-2xl p-6"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-orange)' }}
+                        >
+                          <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(251, 191, 36, 0.15)' }}>
+                                <span className="text-2xl">📅</span>
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                                  Warranty Expiring
+                                </h3>
+                                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment warranty expiring within 90 days</p>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                              <span
-                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                            <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(251, 191, 36, 0.15)', color: 'var(--accent-orange)' }}>
+                              {section.data.length}
+                            </span>
+                          </div>
+                          <div className="space-y-3">
+                            {section.data.map((alert, idx) => (
+                              <div
+                                key={idx}
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                                 style={{
-                                  background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)',
-                                  color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                                  border: '1px solid var(--border-glass)',
+                                  opacity: alert.read ? 0.8 : 1
+                                }}
+                                title="Double-click to view asset details"
+                                onDoubleClick={() => {
+                                  setReadNotifications(prev => {
+                                    if (!prev.includes(alert.id)) {
+                                      const newRead = [...prev, alert.id];
+                                      return newRead;
+                                    }
+                                    return prev;
+                                  });
+                                  setHighlightedAssetId(alert.item.id);
+                                  setActivePage('inventory');
                                 }}
                               >
-                                {alert.daysLeft} days left
-                              </span>
-                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                <span>📍 {alert.item.location || 'Unknown'}</span>
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                </div>
+                                <div className="flex-1 min-w-0 w-full">
+                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    {alert.item.model || 'Unknown Model'}
+                                  </p>
+                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
+                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
+                                  </div>
+                                </div>
+                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
+                                  <span
+                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                                    style={{
+                                      background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)',
+                                      color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
+                                    }}
+                                  >
+                                    {alert.daysLeft} days left
+                                  </span>
+                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {alerts.maintenanceDue.length > 0 && (
-                    <div
-                      className="rounded-2xl p-6"
-                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-yellow)' }}
-                    >
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(234, 179, 8, 0.15)' }}>
-                            <span className="text-2xl">🔧</span>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                              Maintenance Due
-                            </h3>
-                            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment in maintenance for over 30 days</p>
+                            ))}
                           </div>
                         </div>
-                        <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-yellow)' }}>
-                          {alerts.maintenanceDue.length}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {alerts.maintenanceDue.map((alert, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
-                            style={{
-                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                              border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.8 : 1
-                            }}
-                            title="Double-click to view asset details"
-                            onDoubleClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
-                            }}
-                          >
-                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
-                            </div>
-                            <div className="flex-1 min-w-0 w-full">
-                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                {alert.item.model || 'Unknown Model'}
-                              </p>
-                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                <span>Serial: {alert.item.serial || 'N/A'}</span>
+                      );
+                    } else if (section.type === 'maintenance') {
+                      return (
+                        <div
+                          key="maintenance"
+                          className="rounded-2xl p-6"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-yellow)' }}
+                        >
+                          <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(234, 179, 8, 0.15)' }}>
+                                <span className="text-2xl">🔧</span>
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                                  Maintenance Due
+                                </h3>
+                                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment in maintenance for over 30 days</p>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                              <span
-                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                            <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(234, 179, 8, 0.15)', color: 'var(--accent-yellow)' }}>
+                              {section.data.length}
+                            </span>
+                          </div>
+                          <div className="space-y-3">
+                            {section.data.map((alert, idx) => (
+                              <div
+                                key={idx}
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                                 style={{
-                                  background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
-                                  color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                                  border: '1px solid var(--border-glass)',
+                                  opacity: alert.read ? 0.8 : 1
+                                }}
+                                title="Double-click to view asset details"
+                                onDoubleClick={() => {
+                                  setReadNotifications(prev => {
+                                    if (!prev.includes(alert.id)) {
+                                      const newRead = [...prev, alert.id];
+                                      return newRead;
+                                    }
+                                    return prev;
+                                  });
+                                  setHighlightedAssetId(alert.item.id);
+                                  setActivePage('inventory');
                                 }}
                               >
-                                {alert.daysInMaintenance} days
-                              </span>
-                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                <span>📍 {alert.item.location || 'Unknown'}</span>
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                </div>
+                                <div className="flex-1 min-w-0 w-full">
+                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    {alert.item.model || 'Unknown Model'}
+                                  </p>
+                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
+                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
+                                  </div>
+                                </div>
+                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
+                                  <span
+                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                                    style={{
+                                      background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+                                      color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
+                                    }}
+                                  >
+                                    {alert.daysInMaintenance} days
+                                  </span>
+                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {alerts.recentlyAdded.length > 0 && (
-                    <div
-                      className="rounded-2xl p-6"
-                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-green)' }}
-                    >
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.15)' }}>
-                            <span className="text-2xl">✨</span>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
-                              Recently Added
-                            </h3>
-                            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 30 days</p>
+                            ))}
                           </div>
                         </div>
-                        <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(34, 197, 94, 0.15)', color: 'var(--accent-green)' }}>
-                          {alerts.recentlyAdded.length}
-                        </span>
-                      </div>
-                      <div className="space-y-3">
-                        {alerts.recentlyAdded.map((alert, idx) => (
-                          <div
-                            key={idx}
-                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
-                            style={{
-                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                              border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.8 : 1
-                            }}
-                            title="Double-click to view asset details"
-                            onDoubleClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
-                            }}
-                          >
-                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
-                            </div>
-                            <div className="flex-1 min-w-0 w-full">
-                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                {alert.item.model || 'Unknown Model'}
-                              </p>
-                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                <span>Serial: {alert.item.serial || 'N/A'}</span>
+                      );
+                    } else if (section.type === 'recent') {
+                      return (
+                        <div
+                          key="recent"
+                          className="rounded-2xl p-6"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-green)' }}
+                        >
+                          <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34, 197, 94, 0.15)' }}>
+                                <span className="text-2xl">✨</span>
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                                  Recently Added
+                                </h3>
+                                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 30 days</p>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                              <span
-                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                            <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(34, 197, 94, 0.15)', color: 'var(--accent-green)' }}>
+                              {section.data.length}
+                            </span>
+                          </div>
+                          <div className="space-y-3">
+                            {section.data.map((alert, idx) => (
+                              <div
+                                key={idx}
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                                 style={{
-                                  background: 'rgba(34, 197, 94, 0.15)',
-                                  color: 'var(--accent-green)'
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                                  border: '1px solid var(--border-glass)',
+                                  opacity: alert.read ? 0.8 : 1
+                                }}
+                                title="Double-click to view asset details"
+                                onDoubleClick={() => {
+                                  setReadNotifications(prev => {
+                                    if (!prev.includes(alert.id)) {
+                                      const newRead = [...prev, alert.id];
+                                      return newRead;
+                                    }
+                                    return prev;
+                                  });
+                                  setHighlightedAssetId(alert.item.id);
+                                  setActivePage('inventory');
                                 }}
                               >
-                                {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
-                              </span>
-                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                <span>📍 {alert.item.location || 'Unknown'}</span>
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                </div>
+                                <div className="flex-1 min-w-0 w-full">
+                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    {alert.item.model || 'Unknown Model'}
+                                  </p>
+                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
+                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
+                                  </div>
+                                </div>
+                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
+                                  <span
+                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                                    style={{
+                                      background: 'rgba(34, 197, 94, 0.15)',
+                                      color: 'var(--accent-green)'
+                                    }}
+                                  >
+                                    {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
+                                  </span>
+                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
               )}
             </div>
