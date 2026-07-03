@@ -760,12 +760,12 @@ function App() {
         }
       }
 
-      // Recently added notifications (items added in the last 7 days)
-      if (item.created_at) {
-        const createdAt = new Date(item.created_at);
+      // Recently added notifications (items added in the last 30 days)
+      const createdAt = item.created_at ? new Date(item.created_at) : (item.updated_at ? new Date(item.updated_at) : null);
+      if (createdAt) {
         const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 
-        if (daysSinceAdded <= 7) {
+        if (daysSinceAdded <= 30) {
           const notificationId = `recent-${item.id}-${daysSinceAdded}`;
           recentlyAdded.push({
             id: notificationId,
@@ -1645,7 +1645,7 @@ function App() {
                             <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
                               Recently Added
                             </h3>
-                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 7 days</p>
+                            <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>Equipment added in the last 30 days</p>
                           </div>
                         </div>
                         <span className="px-3 py-1 rounded-full text-xs font-bold" style={{ background: 'rgba(34, 197, 94, 0.2)', color: 'var(--accent-green)' }}>
