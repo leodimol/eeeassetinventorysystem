@@ -1502,25 +1502,6 @@ function App() {
                   <p className="text-sm font-medium mt-2" style={{ color: 'var(--text-secondary)' }}>
                     Stay informed about warranty expirations, maintenance, and new equipment.
                   </p>
-
-                  <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Total Alerts</p>
-                      <p className="text-2xl font-black" style={{ color: 'var(--text-primary)' }}>{alerts.total}</p>
-                    </div>
-                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Unread</p>
-                      <p className="text-2xl font-black" style={{ color: 'var(--accent-orange)' }}>{alerts.unreadCount}</p>
-                    </div>
-                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Warranty</p>
-                      <p className="text-2xl font-black" style={{ color: 'var(--accent-orange)' }}>{alerts.warrantyExpiry.length}</p>
-                    </div>
-                    <div className="bg-[var(--bg-secondary)] border border-[var(--border-glass)] rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden" style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.1)', minHeight: '80px' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-normal whitespace-normal break-words" style={{ color: 'var(--text-tertiary)' }}>Maintenance</p>
-                      <p className="text-2xl font-black" style={{ color: 'var(--accent-yellow)' }}>{alerts.maintenanceDue.length}</p>
-                    </div>
-                  </div>
                 </div>
               </div>
 
