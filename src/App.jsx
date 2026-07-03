@@ -1486,6 +1486,9 @@ function App() {
                   <p className="text-sm font-medium mt-2" style={{ color: 'var(--text-secondary)' }}>
                     Stay informed about warranty expirations, maintenance, and new equipment.
                   </p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+                    💡 Double-click on any notification to view the asset details
+                  </p>
                 </div>
                 {alerts.unreadCount > 0 && (
                   <button
@@ -1552,6 +1555,7 @@ function App() {
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
+                            title="Double-click to view asset details"
                             onDoubleClick={() => {
                               setReadNotifications(prev => {
                                 if (!prev.includes(alert.id)) {
@@ -1628,6 +1632,7 @@ function App() {
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
+                            title="Double-click to view asset details"
                             onDoubleClick={() => {
                               setReadNotifications(prev => {
                                 if (!prev.includes(alert.id)) {
@@ -1704,6 +1709,7 @@ function App() {
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
+                            title="Double-click to view asset details"
                             onDoubleClick={() => {
                               setReadNotifications(prev => {
                                 if (!prev.includes(alert.id)) {
