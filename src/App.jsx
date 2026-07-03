@@ -82,7 +82,7 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'inventory', label: 'Asset', icon: <Package size={20} />, badge: inventoryCount > 0 ? inventoryCount : null },
-    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, badge: alerts?.total > 0 ? alerts.total : null },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, badge: alerts?.unreadCount > 0 ? alerts.unreadCount : null },
   ];
 
   const adminItems = [
@@ -347,6 +347,19 @@ function App() {
   // Loading state
   const [isLoading, setIsLoading] = useState(true);
   const [pageLoading, setPageLoading] = useState(false);
+
+  // Read notifications state
+  const [readNotifications, setReadNotifications] = useState(() => {
+    const saved = localStorage.getItem('readNotifications');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  });
 
   // General Settings state
   const [generalSettings, setGeneralSettings] = useState(() => {
@@ -719,10 +732,13 @@ function App() {
         const daysUntilExpiry = Math.ceil((warrantyDate - now) / (1000 * 60 * 60 * 24));
 
         if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
+          const notificationId = `warranty-${item.id}-${daysUntilExpiry}`;
           warrantyExpiry.push({
+            id: notificationId,
             item,
             daysLeft: daysUntilExpiry,
-            severity: daysUntilExpiry <= 30 ? 'critical' : 'warning'
+            severity: daysUntilExpiry <= 30 ? 'critical' : 'warning',
+            read: readNotifications.includes(notificationId)
           });
         }
       }
@@ -733,10 +749,13 @@ function App() {
         const daysInMaintenance = Math.floor((now - lastUpdated) / (1000 * 60 * 60 * 24));
 
         if (daysInMaintenance > 30) {
+          const notificationId = `maintenance-${item.id}-${daysInMaintenance}`;
           maintenanceDue.push({
+            id: notificationId,
             item,
             daysInMaintenance,
-            severity: daysInMaintenance > 60 ? 'critical' : 'warning'
+            severity: daysInMaintenance > 60 ? 'critical' : 'warning',
+            read: readNotifications.includes(notificationId)
           });
         }
       }
@@ -747,22 +766,29 @@ function App() {
         const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 
         if (daysSinceAdded <= 7) {
+          const notificationId = `recent-${item.id}-${daysSinceAdded}`;
           recentlyAdded.push({
+            id: notificationId,
             item,
             daysSinceAdded,
-            severity: 'info'
+            severity: 'info',
+            read: readNotifications.includes(notificationId)
           });
         }
       }
     });
 
+    const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded];
+    const unreadCount = allNotifications.filter(n => !n.read).length;
+
     return {
       warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
       maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
       recentlyAdded: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
-      total: warrantyExpiry.length + maintenanceDue.length + recentlyAdded.length
+      total: allNotifications.length,
+      unreadCount
     };
-  }, [allEquipment]);
+  }, [allEquipment, readNotifications]);
 
   // Debounce search query to reduce API calls
   useEffect(() => {
@@ -793,6 +819,27 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [statsLoading, equipLoading]);
+
+  // Mark notifications as read when visiting notifications page
+  useEffect(() => {
+    if (activePage === 'notifications') {
+      const allNotificationIds = [
+        ...alerts.warrantyExpiry.map(n => n.id),
+        ...alerts.maintenanceDue.map(n => n.id),
+        ...alerts.recentlyAdded.map(n => n.id)
+      ];
+      setReadNotifications(prev => {
+        const newRead = [...new Set([...prev, ...allNotificationIds])];
+        localStorage.setItem('readNotifications', JSON.stringify(newRead));
+        return newRead;
+      });
+    }
+  }, [activePage, alerts]);
+
+  // Save read notifications to localStorage
+  useEffect(() => {
+    localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
+  }, [readNotifications]);
 
   // Manage page-specific loading state
   useEffect(() => {
@@ -1433,7 +1480,7 @@ function App() {
                 </div>
                 <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-tertiary)' }}>
                   <Bell size={16} />
-                  <span>{alerts.total} active notifications</span>
+                  <span>{alerts.unreadCount} unread of {alerts.total} notifications</span>
                 </div>
               </div>
 
@@ -1464,7 +1511,11 @@ function App() {
                           <div
                             key={idx}
                             className="p-4 rounded-lg"
-                            style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}
+                            style={{
+                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                              border: '1px solid var(--border-glass)',
+                              opacity: alert.read ? 0.6 : 1
+                            }}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1 min-w-0">
@@ -1511,7 +1562,11 @@ function App() {
                           <div
                             key={idx}
                             className="p-4 rounded-lg"
-                            style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}
+                            style={{
+                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                              border: '1px solid var(--border-glass)',
+                              opacity: alert.read ? 0.6 : 1
+                            }}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1 min-w-0">
@@ -1558,7 +1613,11 @@ function App() {
                           <div
                             key={idx}
                             className="p-4 rounded-lg"
-                            style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}
+                            style={{
+                              background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
+                              border: '1px solid var(--border-glass)',
+                              opacity: alert.read ? 0.6 : 1
+                            }}
                           >
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1 min-w-0">
