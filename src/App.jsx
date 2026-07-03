@@ -1603,10 +1603,10 @@ function App() {
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: '1px solid var(--border-glass)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1622,6 +1622,9 @@ function App() {
                                   setActivePage('inventory');
                                 }}
                               >
+                                {!alert.read && (
+                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
@@ -1681,10 +1684,10 @@ function App() {
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: '1px solid var(--border-glass)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1700,6 +1703,9 @@ function App() {
                                   setActivePage('inventory');
                                 }}
                               >
+                                {!alert.read && (
+                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
@@ -1759,10 +1765,10 @@ function App() {
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
-                                  border: '1px solid var(--border-glass)',
+                                  border: alert.read ? '1px solid var(--border-glass)' : '2px solid var(--accent-primary)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
                                 title="Double-click to view asset details"
@@ -1778,6 +1784,9 @@ function App() {
                                   setActivePage('inventory');
                                 }}
                               >
+                                {!alert.read && (
+                                  <div className="absolute top-2 right-2 w-3 h-3 rounded-full" style={{ background: 'var(--accent-primary)', boxShadow: '0 0 0 2px var(--bg-secondary)' }}></div>
+                                )}
                                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
