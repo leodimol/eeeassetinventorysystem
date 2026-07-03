@@ -364,9 +364,6 @@ function App() {
   // Highlighted asset ID state
   const [highlightedAssetId, setHighlightedAssetId] = useState(null);
 
-  // Notification confirmation dialog state
-  const [notificationConfirmDialog, setNotificationConfirmDialog] = useState({ show: false, notificationId: null, assetId: null });
-
   // General Settings state
   const [generalSettings, setGeneralSettings] = useState(() => {
     const saved = localStorage.getItem('generalSettings');
@@ -1479,13 +1476,13 @@ function App() {
 
           {activePage === 'notifications' && (
             <div className="max-w-7xl mx-auto space-y-8 animate-slide-in">
-              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                   <h3
                     className="text-[11px] font-bold uppercase tracking-[0.2em] mb-2"
                     style={{ color: 'var(--accent-orange)' }}
                   >Notifications</h3>
-                  <h2 className="text-3xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>System Alerts</h2>
+                  <h2 className="text-2xl md:text-3xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>System Alerts</h2>
                   <p className="text-sm font-medium mt-2" style={{ color: 'var(--text-secondary)' }}>
                     Stay informed about warranty expirations, maintenance, and new equipment.
                   </p>
@@ -1503,7 +1500,7 @@ function App() {
                         return newRead;
                       });
                     }}
-                    className="px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
+                    className="px-4 py-2.5 md:px-6 md:py-3 rounded-xl text-xs md:text-sm font-semibold transition-all duration-200 hover:scale-105 w-full md:w-auto"
                     style={{ background: 'var(--accent-primary)', color: 'white' }}
                   >
                     Mark All as Read
@@ -1549,32 +1546,40 @@ function App() {
                         {alerts.warrantyExpiry.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-5 rounded-xl flex items-center gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
-                            onClick={() => {
-                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                            onDoubleClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
-                            <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={24} style={{ color: 'var(--accent-primary)' }} />}
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                            <div className="flex-1 min-w-0 w-full">
+                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
+                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                 <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0">
+                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
                               <span
-                                className="text-sm font-bold px-4 py-2 rounded-full"
+                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
                                 style={{
                                   background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)',
                                   color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
@@ -1582,7 +1587,7 @@ function App() {
                               >
                                 {alert.daysLeft} days left
                               </span>
-                              <div className="flex items-center gap-2 text-sm mt-2" style={{ color: 'var(--text-tertiary)' }}>
+                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                 <span>📍 {alert.item.location || 'Unknown'}</span>
                               </div>
                             </div>
@@ -1617,32 +1622,40 @@ function App() {
                         {alerts.maintenanceDue.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-5 rounded-xl flex items-center gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
-                            onClick={() => {
-                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                            onDoubleClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
-                            <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={24} style={{ color: 'var(--accent-primary)' }} />}
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                            <div className="flex-1 min-w-0 w-full">
+                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
+                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                 <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0">
+                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
                               <span
-                                className="text-sm font-bold px-4 py-2 rounded-full"
+                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
                                 style={{
                                   background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
                                   color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
@@ -1650,7 +1663,7 @@ function App() {
                               >
                                 {alert.daysInMaintenance} days
                               </span>
-                              <div className="flex items-center gap-2 text-sm mt-2" style={{ color: 'var(--text-tertiary)' }}>
+                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                 <span>📍 {alert.item.location || 'Unknown'}</span>
                               </div>
                             </div>
@@ -1685,32 +1698,40 @@ function App() {
                         {alerts.recentlyAdded.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-5 rounded-xl flex items-center gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
+                            className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.8 : 1
                             }}
-                            onClick={() => {
-                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                            onDoubleClick={() => {
+                              setReadNotifications(prev => {
+                                if (!prev.includes(alert.id)) {
+                                  const newRead = [...prev, alert.id];
+                                  return newRead;
+                                }
+                                return prev;
+                              });
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
-                            <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={24} style={{ color: 'var(--accent-primary)' }} />}
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                              {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                            <div className="flex-1 min-w-0 w-full">
+                              <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
+                              <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                 <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
-                            <div className="text-right flex-shrink-0">
+                            <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
                               <span
-                                className="text-sm font-bold px-4 py-2 rounded-full"
+                                className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
                                 style={{
                                   background: 'rgba(34, 197, 94, 0.15)',
                                   color: 'var(--accent-green)'
@@ -1718,7 +1739,7 @@ function App() {
                               >
                                 {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
                               </span>
-                              <div className="flex items-center gap-2 text-sm mt-2" style={{ color: 'var(--text-tertiary)' }}>
+                              <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                 <span>📍 {alert.item.location || 'Unknown'}</span>
                               </div>
                             </div>
@@ -1729,55 +1750,6 @@ function App() {
                   )}
                 </div>
               )}
-            </div>
-          )}
-
-          {/* Notification Confirmation Dialog */}
-          {notificationConfirmDialog.show && (
-            <div
-              className="fixed inset-0 flex items-center justify-center z-50"
-              style={{ background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(4px)' }}
-              onClick={() => setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null })}
-            >
-              <div
-                className="rounded-2xl p-6 max-w-md w-full mx-4"
-                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-                  View Asset Details
-                </h3>
-                <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
-                  This will mark the notification as read and navigate to the asset in the inventory table. Do you want to continue?
-                </p>
-                <div className="flex gap-3 justify-end">
-                  <button
-                    onClick={() => setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null })}
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
-                    style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      setReadNotifications(prev => {
-                        if (!prev.includes(notificationConfirmDialog.notificationId)) {
-                          const newRead = [...prev, notificationConfirmDialog.notificationId];
-                          return newRead;
-                        }
-                        return prev;
-                      });
-                      setHighlightedAssetId(notificationConfirmDialog.assetId);
-                      setActivePage('inventory');
-                      setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null });
-                    }}
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
-                    style={{ background: 'var(--accent-primary)', color: 'white' }}
-                  >
-                    Continue
-                  </button>
-                </div>
-              </div>
             </div>
           )}
 
