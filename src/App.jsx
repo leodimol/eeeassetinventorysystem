@@ -364,8 +364,8 @@ function App() {
   // Highlighted asset ID state
   const [highlightedAssetId, setHighlightedAssetId] = useState(null);
 
-  // Confirmation dialog state
-  const [confirmDialog, setConfirmDialog] = useState({ show: false, notificationId: null, assetId: null });
+  // Notification confirmation dialog state
+  const [notificationConfirmDialog, setNotificationConfirmDialog] = useState({ show: false, notificationId: null, assetId: null });
 
   // General Settings state
   const [generalSettings, setGeneralSettings] = useState(() => {
@@ -1556,7 +1556,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1624,7 +1624,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1692,7 +1692,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
+                              setNotificationConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1732,12 +1732,12 @@ function App() {
             </div>
           )}
 
-          {/* Confirmation Dialog */}
-          {confirmDialog.show && (
+          {/* Notification Confirmation Dialog */}
+          {notificationConfirmDialog.show && (
             <div
               className="fixed inset-0 flex items-center justify-center z-50"
               style={{ background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(4px)' }}
-              onClick={() => setConfirmDialog({ show: false, notificationId: null, assetId: null })}
+              onClick={() => setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null })}
             >
               <div
                 className="rounded-2xl p-6 max-w-md w-full mx-4"
@@ -1752,7 +1752,7 @@ function App() {
                 </p>
                 <div className="flex gap-3 justify-end">
                   <button
-                    onClick={() => setConfirmDialog({ show: false, notificationId: null, assetId: null })}
+                    onClick={() => setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null })}
                     className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
                     style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
                   >
@@ -1761,15 +1761,15 @@ function App() {
                   <button
                     onClick={() => {
                       setReadNotifications(prev => {
-                        if (!prev.includes(confirmDialog.notificationId)) {
-                          const newRead = [...prev, confirmDialog.notificationId];
+                        if (!prev.includes(notificationConfirmDialog.notificationId)) {
+                          const newRead = [...prev, notificationConfirmDialog.notificationId];
                           return newRead;
                         }
                         return prev;
                       });
-                      setHighlightedAssetId(confirmDialog.assetId);
+                      setHighlightedAssetId(notificationConfirmDialog.assetId);
                       setActivePage('inventory');
-                      setConfirmDialog({ show: false, notificationId: null, assetId: null });
+                      setNotificationConfirmDialog({ show: false, notificationId: null, assetId: null });
                     }}
                     className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
                     style={{ background: 'var(--accent-primary)', color: 'white' }}
