@@ -710,22 +710,16 @@ function App() {
     const now = new Date();
 
     allEquipment.forEach(item => {
-      // Warranty expiry alerts
+      // Warranty expiry alerts (notify 1 month ahead)
       if (item.warranty_date) {
         const warrantyDate = new Date(item.warranty_date);
         const daysUntilExpiry = Math.ceil((warrantyDate - now) / (1000 * 60 * 60 * 24));
-        
-        if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
+
+        if (daysUntilExpiry <= 30 && daysUntilExpiry > 0) {
           warrantyExpiry.push({
             item,
             daysLeft: daysUntilExpiry,
-            severity: daysUntilExpiry <= 30 ? 'critical' : daysUntilExpiry <= 60 ? 'warning' : 'info'
-          });
-        } else if (daysUntilExpiry <= 0) {
-          warrantyExpiry.push({
-            item,
-            daysLeft: daysUntilExpiry,
-            severity: 'critical'
+            severity: daysUntilExpiry <= 15 ? 'critical' : 'warning'
           });
         }
       }
@@ -2183,21 +2177,15 @@ function App() {
                                         {(() => {
                                           const warnings = [];
 
-                                          // Check for warranty expiry
+                                          // Check for warranty expiry (notify 1 month ahead)
                                           if (item.warranty_date) {
                                             const warrantyDate = new Date(item.warranty_date);
                                             const daysUntilExpiry = Math.ceil((warrantyDate - new Date()) / (1000 * 60 * 60 * 24));
-                                            if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
+                                            if (daysUntilExpiry <= 30 && daysUntilExpiry > 0) {
                                               warnings.push({
                                                 type: 'warranty',
-                                                severity: daysUntilExpiry <= 30 ? 'critical' : 'warning',
-                                                message: daysUntilExpiry <= 0 ? 'Warranty expired' : `Warranty expires in ${daysUntilExpiry} days`
-                                              });
-                                            } else if (daysUntilExpiry <= 0) {
-                                              warnings.push({
-                                                type: 'warranty',
-                                                severity: 'critical',
-                                                message: 'Warranty expired'
+                                                severity: daysUntilExpiry <= 15 ? 'critical' : 'warning',
+                                                message: `Warranty expires in ${daysUntilExpiry} days`
                                               });
                                             }
                                           }
