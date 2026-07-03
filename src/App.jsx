@@ -787,22 +787,24 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Sort all notifications by timestamp (newest first), then group by type
-    const sortedAllNotifications = allNotifications.sort((a, b) => {
-      const aDate = new Date(a.timestamp || 0);
-      const bDate = new Date(b.timestamp || 0);
-      return bDate - aDate;
-    });
-
-    // Group sorted notifications by type
-    const warrantySorted = sortedAllNotifications.filter(n => n.id.startsWith('warranty'));
-    const maintenanceSorted = sortedAllNotifications.filter(n => n.id.startsWith('maintenance'));
-    const recentSorted = sortedAllNotifications.filter(n => n.id.startsWith('recent'));
-
     // Sort within each section by their specific criteria
-    const warrantyData = warrantySorted.sort((a, b) => a.daysLeft - b.daysLeft);
-    const maintenanceData = maintenanceSorted.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance);
-    const recentData = recentSorted.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded);
+    const warrantyData = warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft);
+    const maintenanceData = maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance);
+    const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+    // Get the most recent timestamp for each category
+    const getMostRecentTimestamp = (arr) => {
+      if (arr.length === 0) return new Date(0);
+      return arr.reduce((latest, current) => {
+        const latestDate = new Date(latest.timestamp || 0);
+        const currentDate = new Date(current.timestamp || 0);
+        return currentDate > latestDate ? current : latest;
+      }).timestamp || new Date(0);
+    };
+
+    const warrantyLatest = getMostRecentTimestamp(warrantyData);
+    const maintenanceLatest = getMostRecentTimestamp(maintenanceData);
+    const recentLatest = getMostRecentTimestamp(recentData);
 
     // Create section objects with their data
     const sections = [];
@@ -810,21 +812,21 @@ function App() {
       sections.push({
         type: 'warranty',
         data: warrantyData,
-        latest: warrantyData[0].timestamp
+        latest: warrantyLatest
       });
     }
     if (maintenanceData.length > 0) {
       sections.push({
         type: 'maintenance',
         data: maintenanceData,
-        latest: maintenanceData[0].timestamp
+        latest: maintenanceLatest
       });
     }
     if (recentData.length > 0) {
       sections.push({
         type: 'recent',
         data: recentData,
-        latest: recentData[0].timestamp
+        latest: recentLatest
       });
     }
 
