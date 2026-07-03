@@ -206,41 +206,104 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
                 </button>
                 {item.isNotification && showNotifications && alerts?.total > 0 && (
                   <div
-                    className="absolute left-full ml-2 top-0 w-72 rounded-xl p-3 shadow-xl z-50"
+                    className="absolute left-full ml-2 top-0 w-96 rounded-xl p-4 shadow-xl z-50"
                     style={{
                       background: 'var(--bg-secondary)',
                       border: '1px solid var(--border-glass)',
-                      maxHeight: '300px',
+                      maxHeight: '400px',
                       overflowY: 'auto'
                     }}
                   >
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Alerts ({alerts.total})
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>
+                        Alerts ({alerts.total})
+                      </p>
+                      <button
+                        onClick={() => setShowNotifications(false)}
+                        className="p-1 rounded hover:bg-[var(--bg-glass-light)] transition-colors"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
                     {alerts.warrantyExpiry.length > 0 && (
-                      <div className="mb-2">
-                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-orange)' }}>
+                      <div className="mb-3">
+                        <p className="text-[10px] font-bold mb-2 flex items-center gap-1" style={{ color: 'var(--accent-orange)' }}>
+                          <span>📅</span>
                           Warranty Expiring ({alerts.warrantyExpiry.length})
                         </p>
-                        {alerts.warrantyExpiry.slice(0, 3).map((alert, idx) => (
-                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
-                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
-                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysLeft}d</span>
+                        {alerts.warrantyExpiry.slice(0, 5).map((alert, idx) => (
+                          <div key={idx} className="p-2 rounded-lg mb-2" style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}>
+                            <div className="flex items-start justify-between mb-1">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+                                  {alert.item.model || 'Unknown Model'}
+                                </p>
+                                <p className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
+                                  Tag: {alert.item.asset_tag || 'N/A'} | Serial: {alert.item.serial || 'N/A'}
+                                </p>
+                              </div>
+                              <span
+                                className="text-[9px] font-bold px-1.5 py-0.5 rounded ml-2 flex-shrink-0"
+                                style={{
+                                  background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)',
+                                  color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
+                                }}
+                              >
+                                {alert.daysLeft}d left
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                              <span>📍 {alert.item.location || 'Unknown'}</span>
+                              {alert.item.assigned_to && <span>👤 {alert.item.assigned_to}</span>}
+                            </div>
                           </div>
                         ))}
+                        {alerts.warrantyExpiry.length > 5 && (
+                          <p className="text-[10px] text-center py-1" style={{ color: 'var(--text-tertiary)' }}>
+                            +{alerts.warrantyExpiry.length - 5} more
+                          </p>
+                        )}
                       </div>
                     )}
                     {alerts.maintenanceDue.length > 0 && (
                       <div>
-                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-yellow)' }}>
+                        <p className="text-[10px] font-bold mb-2 flex items-center gap-1" style={{ color: 'var(--accent-yellow)' }}>
+                          <span>🔧</span>
                           Maintenance Due ({alerts.maintenanceDue.length})
                         </p>
-                        {alerts.maintenanceDue.slice(0, 3).map((alert, idx) => (
-                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
-                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
-                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysInMaintenance}d</span>
+                        {alerts.maintenanceDue.slice(0, 5).map((alert, idx) => (
+                          <div key={idx} className="p-2 rounded-lg mb-2" style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}>
+                            <div className="flex items-start justify-between mb-1">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+                                  {alert.item.model || 'Unknown Model'}
+                                </p>
+                                <p className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
+                                  Tag: {alert.item.asset_tag || 'N/A'} | Serial: {alert.item.serial || 'N/A'}
+                                </p>
+                              </div>
+                              <span
+                                className="text-[9px] font-bold px-1.5 py-0.5 rounded ml-2 flex-shrink-0"
+                                style={{
+                                  background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)',
+                                  color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
+                                }}
+                              >
+                                {alert.daysInMaintenance}d
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                              <span>📍 {alert.item.location || 'Unknown'}</span>
+                              {alert.item.assigned_to && <span>👤 {alert.item.assigned_to}</span>}
+                            </div>
                           </div>
                         ))}
+                        {alerts.maintenanceDue.length > 5 && (
+                          <p className="text-[10px] text-center py-1" style={{ color: 'var(--text-tertiary)' }}>
+                            +{alerts.maintenanceDue.length - 5} more
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
