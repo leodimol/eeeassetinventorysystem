@@ -799,27 +799,32 @@ function App() {
     const maintenanceSorted = sortedAllNotifications.filter(n => n.id.startsWith('maintenance'));
     const recentSorted = sortedAllNotifications.filter(n => n.id.startsWith('recent'));
 
+    // Sort within each section by their specific criteria
+    const warrantyData = warrantySorted.sort((a, b) => a.daysLeft - b.daysLeft);
+    const maintenanceData = maintenanceSorted.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance);
+    const recentData = recentSorted.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded);
+
     // Create section objects with their data
     const sections = [];
-    if (warrantySorted.length > 0) {
+    if (warrantyData.length > 0) {
       sections.push({
         type: 'warranty',
-        data: warrantySorted,
-        latest: warrantySorted[0].timestamp
+        data: warrantyData,
+        latest: warrantyData[0].timestamp
       });
     }
-    if (maintenanceSorted.length > 0) {
+    if (maintenanceData.length > 0) {
       sections.push({
         type: 'maintenance',
-        data: maintenanceSorted,
-        latest: maintenanceSorted[0].timestamp
+        data: maintenanceData,
+        latest: maintenanceData[0].timestamp
       });
     }
-    if (recentSorted.length > 0) {
+    if (recentData.length > 0) {
       sections.push({
         type: 'recent',
-        data: recentSorted,
-        latest: recentSorted[0].timestamp
+        data: recentData,
+        latest: recentData[0].timestamp
       });
     }
 
