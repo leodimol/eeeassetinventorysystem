@@ -2233,10 +2233,12 @@ function App() {
                                                 <span
                                                   key={idx}
                                                   title={warning.message}
-                                                  className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold whitespace-nowrap cursor-help"
+                                                  className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap cursor-help animate-pulse"
                                                   style={{
-                                                    background: warning.severity === 'critical' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(251, 191, 36, 0.2)',
-                                                    color: warning.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
+                                                    background: warning.severity === 'critical' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(251, 191, 36, 0.3)',
+                                                    color: warning.severity === 'critical' ? '#ef4444' : '#f59e0b',
+                                                    border: warning.severity === 'critical' ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid rgba(251, 191, 36, 0.5)',
+                                                    boxShadow: warning.severity === 'critical' ? '0 0 8px rgba(239, 68, 68, 0.4)' : '0 0 8px rgba(251, 191, 36, 0.4)'
                                                   }}
                                                 >
                                                   {warning.type === 'warranty' ? '📅' : warning.type === 'maintenance' ? '🔧' : '⚠️'}
