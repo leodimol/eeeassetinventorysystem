@@ -361,6 +361,9 @@ function App() {
     return [];
   });
 
+  // Highlighted asset ID state
+  const [highlightedAssetId, setHighlightedAssetId] = useState(null);
+
   // General Settings state
   const [generalSettings, setGeneralSettings] = useState(() => {
     const saved = localStorage.getItem('generalSettings');
@@ -840,6 +843,25 @@ function App() {
   useEffect(() => {
     localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
   }, [readNotifications]);
+
+  // Clear highlight when leaving inventory page
+  useEffect(() => {
+    if (activePage !== 'inventory') {
+      setHighlightedAssetId(null);
+    }
+  }, [activePage]);
+
+  // Scroll to highlighted asset
+  useEffect(() => {
+    if (highlightedAssetId && activePage === 'inventory') {
+      setTimeout(() => {
+        const highlightedRow = document.querySelector('.highlighted-row');
+        if (highlightedRow) {
+          highlightedRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+  }, [highlightedAssetId, activePage]);
 
   // Manage page-specific loading state
   useEffect(() => {
@@ -1526,11 +1548,15 @@ function App() {
                         {alerts.warrantyExpiry.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-4 rounded-lg flex items-center gap-4"
+                            className="p-4 rounded-lg flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.6 : 1
+                            }}
+                            onClick={() => {
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1591,11 +1617,15 @@ function App() {
                         {alerts.maintenanceDue.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-4 rounded-lg flex items-center gap-4"
+                            className="p-4 rounded-lg flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.6 : 1
+                            }}
+                            onClick={() => {
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1656,11 +1686,15 @@ function App() {
                         {alerts.recentlyAdded.map((alert, idx) => (
                           <div
                             key={idx}
-                            className="p-4 rounded-lg flex items-center gap-4"
+                            className="p-4 rounded-lg flex items-center gap-4 cursor-pointer hover:scale-[1.02] transition-transform"
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
                               opacity: alert.read ? 0.6 : 1
+                            }}
+                            onClick={() => {
+                              setHighlightedAssetId(alert.item.id);
+                              setActivePage('inventory');
                             }}
                           >
                             <div className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -2432,11 +2466,16 @@ function App() {
                             const hasAssignment = item.assigned_to && item.assigned_to.trim();
                             
                             return (
-                              <tr 
-                                key={item.id} 
-                                className={`excel-row table-row-hover ${index % 2 === 0 ? 'excel-row-even' : 'excel-row-odd'} hover:bg-[var(--accent-primary)]/5 cursor-pointer`}
-                                style={(isAvailable && hasAssignment) ? { borderLeft: '3px solid var(--accent-red)' } : {}}
-                                onClick={() => setSelectedCell({ row: index, col: null })}
+                              <tr
+                                key={item.id}
+                                className={`excel-row table-row-hover ${index % 2 === 0 ? 'excel-row-even' : 'excel-row-odd'} hover:bg-[var(--accent-primary)]/5 cursor-pointer ${highlightedAssetId === item.id ? 'highlighted-row' : ''}`}
+                                style={(isAvailable && hasAssignment) ? { borderLeft: '3px solid var(--accent-red)' } : (highlightedAssetId === item.id ? { borderLeft: '4px solid var(--accent-green)', background: 'rgba(34, 197, 94, 0.1)' } : {})}
+                                onClick={() => {
+                                  setSelectedCell({ row: index, col: null });
+                                  if (highlightedAssetId === item.id) {
+                                    setHighlightedAssetId(null);
+                                  }
+                                }}
                               >
                                 <td
                                   className={`sticky left-0 px-0 py-0 text-sm text-[var(--text-primary)] text-center border-r border-[var(--border-color)] ${selectedCell?.row === index && selectedCell?.col === 0 ? 'cell-selected' : ''}`}
