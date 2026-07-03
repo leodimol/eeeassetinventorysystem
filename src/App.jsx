@@ -364,6 +364,9 @@ function App() {
   // Highlighted asset ID state
   const [highlightedAssetId, setHighlightedAssetId] = useState(null);
 
+  // Confirmation dialog state
+  const [confirmDialog, setConfirmDialog] = useState({ show: false, notificationId: null, assetId: null });
+
   // General Settings state
   const [generalSettings, setGeneralSettings] = useState(() => {
     const saved = localStorage.getItem('generalSettings');
@@ -1553,15 +1556,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
+                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1629,15 +1624,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
+                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1705,15 +1692,7 @@ function App() {
                               opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
-                              setReadNotifications(prev => {
-                                if (!prev.includes(alert.id)) {
-                                  const newRead = [...prev, alert.id];
-                                  return newRead;
-                                }
-                                return prev;
-                              });
-                              setHighlightedAssetId(alert.item.id);
-                              setActivePage('inventory');
+                              setConfirmDialog({ show: true, notificationId: alert.id, assetId: alert.item.id });
                             }}
                           >
                             <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
@@ -1750,6 +1729,55 @@ function App() {
                   )}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Confirmation Dialog */}
+          {confirmDialog.show && (
+            <div
+              className="fixed inset-0 flex items-center justify-center z-50"
+              style={{ background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(4px)' }}
+              onClick={() => setConfirmDialog({ show: false, notificationId: null, assetId: null })}
+            >
+              <div
+                className="rounded-2xl p-6 max-w-md w-full mx-4"
+                style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 8px 32px rgba(0,0,0,0.3)' }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                  View Asset Details
+                </h3>
+                <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>
+                  This will mark the notification as read and navigate to the asset in the inventory table. Do you want to continue?
+                </p>
+                <div className="flex gap-3 justify-end">
+                  <button
+                    onClick={() => setConfirmDialog({ show: false, notificationId: null, assetId: null })}
+                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
+                    style={{ background: 'var(--bg-tertiary)', color: 'var(--text-primary)' }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      setReadNotifications(prev => {
+                        if (!prev.includes(confirmDialog.notificationId)) {
+                          const newRead = [...prev, confirmDialog.notificationId];
+                          return newRead;
+                        }
+                        return prev;
+                      });
+                      setHighlightedAssetId(confirmDialog.assetId);
+                      setActivePage('inventory');
+                      setConfirmDialog({ show: false, notificationId: null, assetId: null });
+                    }}
+                    className="px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:scale-105"
+                    style={{ background: 'var(--accent-primary)', color: 'white' }}
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
