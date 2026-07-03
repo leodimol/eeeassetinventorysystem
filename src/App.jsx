@@ -75,9 +75,10 @@ import { useTheme, themes } from './context/ThemeContext';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import Toast from './components/ui/Toast';
 
-const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, isCollapsed, onToggle, onLogout, isMobile, onCloseMobile }) => {
+const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, isCollapsed, onToggle, onLogout, isMobile, onCloseMobile, alerts }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -252,26 +253,89 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
 
       <div className="p-4 mt-auto">
         {!isCollapsed ? (
-          <div 
+          <div
             className="rounded-[16px] p-4"
-            style={{ 
+            style={{
               background: 'var(--bg-glass-light)',
               border: '1px solid var(--border-glass)'
             }}
           >
-            <div className="flex items-center gap-3 mb-3">
-              <Database size={16} strokeWidth={2} style={{ color: 'var(--accent-primary)' }} />
-              <span className="text-xs font-bold" style={{ color: 'var(--text-secondary)' }}>Database</span>
-              <div 
-                className="w-2 h-2 rounded-full animate-pulse"
-                style={{ background: 'var(--accent-green)', boxShadow: '0 0 8px var(--accent-green)' }}
-              ></div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <Database size={16} strokeWidth={2} style={{ color: 'var(--accent-primary)' }} />
+                <span className="text-xs font-bold" style={{ color: 'var(--text-secondary)' }}>Database</span>
+                <div
+                  className="w-2 h-2 rounded-full animate-pulse"
+                  style={{ background: 'var(--accent-green)', boxShadow: '0 0 8px var(--accent-green)' }}
+                ></div>
+              </div>
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 rounded-lg transition-all duration-300 hover:scale-110 relative"
+                  style={{
+                    color: alerts?.total > 0 ? 'var(--accent-orange)' : 'var(--text-secondary)',
+                    background: alerts?.total > 0 ? 'rgba(251, 191, 36, 0.1)' : 'transparent'
+                  }}
+                >
+                  <Bell size={16} />
+                  {alerts?.total > 0 && (
+                    <span
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white animate-pulse"
+                      style={{ background: 'var(--accent-orange)', boxShadow: '0 0 8px rgba(251, 191, 36, 0.5)' }}
+                    >
+                      {alerts.total}
+                    </span>
+                  )}
+                </button>
+                {showNotifications && alerts?.total > 0 && (
+                  <div
+                    className="absolute bottom-full right-0 mb-2 w-72 rounded-xl p-3 shadow-xl z-50"
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-glass)',
+                      maxHeight: '300px',
+                      overflowY: 'auto'
+                    }}
+                  >
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>
+                      Alerts ({alerts.total})
+                    </p>
+                    {alerts.warrantyExpiry.length > 0 && (
+                      <div className="mb-2">
+                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-orange)' }}>
+                          Warranty Expiring ({alerts.warrantyExpiry.length})
+                        </p>
+                        {alerts.warrantyExpiry.slice(0, 3).map((alert, idx) => (
+                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
+                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
+                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysLeft}d</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {alerts.maintenanceDue.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-yellow)' }}>
+                          Maintenance Due ({alerts.maintenanceDue.length})
+                        </p>
+                        {alerts.maintenanceDue.slice(0, 3).map((alert, idx) => (
+                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
+                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
+                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysInMaintenance}d</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             <p className="text-[10px] mb-3" style={{ color: 'var(--text-tertiary)' }}>Connected to Supabase</p>
             <div className="space-y-2">
-              <Button 
-                variant="glass" 
-                size="sm" 
+              <Button
+                variant="glass"
+                size="sm"
                 className="w-full gap-2 text-xs font-semibold"
                 onClick={() => window.location.reload()}
               >
@@ -1377,6 +1441,7 @@ function App() {
           onLogout={handleLogout}
           isMobile={isMobileSidebarOpen}
           onCloseMobile={() => setIsMobileSidebarOpen(false)}
+          alerts={alerts}
         />
       </div>
 
@@ -2172,70 +2237,7 @@ function App() {
                                       )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <div className="flex items-center gap-1.5">
-                                        <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || 'Unknown'}</p>
-                                        {(() => {
-                                          const warnings = [];
-
-                                          // Check for warranty expiry (notify 1 month ahead)
-                                          if (item.warranty_date) {
-                                            const warrantyDate = new Date(item.warranty_date);
-                                            const daysUntilExpiry = Math.ceil((warrantyDate - new Date()) / (1000 * 60 * 60 * 24));
-                                            if (daysUntilExpiry <= 30 && daysUntilExpiry > 0) {
-                                              warnings.push({
-                                                type: 'warranty',
-                                                severity: daysUntilExpiry <= 15 ? 'critical' : 'warning',
-                                                message: `Warranty expires in ${daysUntilExpiry} days`
-                                              });
-                                            }
-                                          }
-
-                                          // Check for long-term maintenance
-                                          if (item.status === 'maintenance' && item.updated_at) {
-                                            const lastUpdated = new Date(item.updated_at);
-                                            const daysInMaintenance = Math.floor((new Date() - lastUpdated) / (1000 * 60 * 60 * 24));
-                                            if (daysInMaintenance > 30) {
-                                              warnings.push({
-                                                type: 'maintenance',
-                                                severity: daysInMaintenance > 60 ? 'critical' : 'warning',
-                                                message: `${daysInMaintenance} days in maintenance`
-                                              });
-                                            }
-                                          }
-
-                                          // Check for assignment status mismatch
-                                          const isAvailable = item.status && item.status.toLowerCase() === 'available';
-                                          const hasAssignment = item.assigned_to && item.assigned_to.trim();
-                                          if (isAvailable && hasAssignment) {
-                                            warnings.push({
-                                              type: 'assignment',
-                                              severity: 'warning',
-                                              message: `Assigned to "${item.assigned_to.trim()}" but status is "Available"`
-                                            });
-                                          }
-
-                                          // Display warnings
-                                          return warnings.length > 0 ? (
-                                            <div className="flex items-center gap-1">
-                                              {warnings.map((warning, idx) => (
-                                                <span
-                                                  key={idx}
-                                                  title={warning.message}
-                                                  className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap cursor-help animate-pulse"
-                                                  style={{
-                                                    background: warning.severity === 'critical' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(251, 191, 36, 0.3)',
-                                                    color: warning.severity === 'critical' ? '#ef4444' : '#f59e0b',
-                                                    border: warning.severity === 'critical' ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid rgba(251, 191, 36, 0.5)',
-                                                    boxShadow: warning.severity === 'critical' ? '0 0 8px rgba(239, 68, 68, 0.4)' : '0 0 8px rgba(251, 191, 36, 0.4)'
-                                                  }}
-                                                >
-                                                  {warning.type === 'warranty' ? '📅' : warning.type === 'maintenance' ? '🔧' : '⚠️'}
-                                                </span>
-                                              ))}
-                                            </div>
-                                          ) : null;
-                                        })()}
-                                      </div>
+                                      <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || 'Unknown'}</p>
                                       <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
                                     </div>
                                   </div>
