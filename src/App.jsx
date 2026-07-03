@@ -709,6 +709,7 @@ function App() {
   const alerts = useMemo(() => {
     const warrantyExpiry = [];
     const maintenanceDue = [];
+    const recentlyAdded = [];
     const now = new Date();
 
     allEquipment.forEach(item => {
@@ -730,7 +731,7 @@ function App() {
       if (item.status === 'maintenance' && item.updated_at) {
         const lastUpdated = new Date(item.updated_at);
         const daysInMaintenance = Math.floor((now - lastUpdated) / (1000 * 60 * 60 * 24));
-        
+
         if (daysInMaintenance > 30) {
           maintenanceDue.push({
             item,
@@ -739,12 +740,27 @@ function App() {
           });
         }
       }
+
+      // Recently added notifications (items added in the last 7 days)
+      if (item.created_at) {
+        const createdAt = new Date(item.created_at);
+        const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
+
+        if (daysSinceAdded <= 7) {
+          recentlyAdded.push({
+            item,
+            daysSinceAdded,
+            severity: 'info'
+          });
+        }
+      }
     });
 
     return {
       warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
       maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
-      total: warrantyExpiry.length + maintenanceDue.length
+      recentlyAdded: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
+      total: warrantyExpiry.length + maintenanceDue.length + recentlyAdded.length
     };
   }, [allEquipment]);
 
@@ -1514,6 +1530,53 @@ function App() {
                                 }}
                               >
                                 {alert.daysInMaintenance} days in maintenance
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                              <span>📍 {alert.item.location || 'Unknown'}</span>
+                              {alert.item.assigned_to && <span>👤 {alert.item.assigned_to}</span>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {alerts.recentlyAdded.length > 0 && (
+                    <div
+                      className="rounded-[16px] p-6"
+                      style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', borderLeft: '4px solid var(--accent-green)' }}
+                    >
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-2xl">✨</span>
+                        <h3 className="text-lg font-bold" style={{ color: 'var(--accent-green)' }}>
+                          Recently Added ({alerts.recentlyAdded.length})
+                        </h3>
+                      </div>
+                      <div className="space-y-3">
+                        {alerts.recentlyAdded.map((alert, idx) => (
+                          <div
+                            key={idx}
+                            className="p-4 rounded-lg"
+                            style={{ background: 'var(--bg-glass-light)', border: '1px solid var(--border-glass)' }}
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                                  {alert.item.model || 'Unknown Model'}
+                                </p>
+                                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                  Tag: {alert.item.asset_tag || 'N/A'} | Serial: {alert.item.serial || 'N/A'}
+                                </p>
+                              </div>
+                              <span
+                                className="text-xs font-bold px-2 py-1 rounded ml-4 flex-shrink-0"
+                                style={{
+                                  background: 'rgba(34, 197, 94, 0.2)',
+                                  color: 'var(--accent-green)'
+                                }}
+                              >
+                                {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
                               </span>
                             </div>
                             <div className="flex items-center gap-4 text-xs" style={{ color: 'var(--text-tertiary)' }}>
