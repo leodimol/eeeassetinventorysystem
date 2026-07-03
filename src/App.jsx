@@ -83,6 +83,7 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'inventory', label: 'Asset', icon: <Package size={20} />, badge: inventoryCount > 0 ? inventoryCount : null },
+    { id: 'notifications', label: 'Alerts', icon: <Bell size={20} />, badge: alerts?.total > 0 ? alerts.total : null, isNotification: true },
   ];
 
   const adminItems = [
@@ -163,34 +164,38 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
             {navItems.map((item) => (
               <div key={item.id} className="relative" style={{ overflow: 'visible' }}>
                 <button
-                  onClick={() => setActivePage(item.id)}
+                  onClick={item.isNotification ? () => setShowNotifications(!showNotifications) : () => setActivePage(item.id)}
                   onMouseEnter={() => setHoveredItem(item.id)}
                   onMouseLeave={() => setHoveredItem(null)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-[12px] transition-all duration-200 group ${
-                    activePage === item.id 
-                      ? '' 
+                    activePage === item.id && !item.isNotification
+                      ? ''
                       : 'hover:bg-white/5'
                   } ${isCollapsed ? 'justify-center' : ''}`}
-                  style={activePage === item.id ? {
+                  style={activePage === item.id && !item.isNotification ? {
                     background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
                     boxShadow: '0 4px 20px rgba(59, 130, 246, 0.3)',
                     color: 'white'
+                  } : item.isNotification && showNotifications ? {
+                    background: 'rgba(251, 191, 36, 0.1)',
+                    color: 'var(--accent-orange)'
                   } : {
                     color: 'var(--text-primary)'
                   }}
                 >
-                  <div className="flex items-center justify-center w-6 h-6" style={{ color: activePage === item.id ? 'white' : 'var(--accent-tertiary)' }}>
+                  <div className="flex items-center justify-center w-6 h-6" style={{ color: activePage === item.id && !item.isNotification ? 'white' : item.isNotification && showNotifications ? 'var(--accent-orange)' : 'var(--accent-tertiary)' }}>
                     {item.icon}
                   </div>
                   {!isCollapsed && (
                     <>
                       <span className="font-medium text-sm">{item.label}</span>
                       {item.badge && (
-                        <span 
-                          className="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-full"
-                          style={{ 
-                            background: activePage === item.id ? 'rgba(255,255,255,0.2)' : 'var(--bg-secondary)',
-                            color: activePage === item.id ? 'white' : 'var(--text-secondary)'
+                        <span
+                          className="ml-auto text-xs font-bold px-2.5 py-0.5 rounded-full animate-pulse"
+                          style={{
+                            background: item.isNotification ? 'var(--accent-orange)' : (activePage === item.id ? 'rgba(255,255,255,0.2)' : 'var(--bg-secondary)'),
+                            color: item.isNotification ? 'white' : (activePage === item.id ? 'white' : 'var(--text-secondary)'),
+                            boxShadow: item.isNotification ? '0 0 8px rgba(251, 191, 36, 0.4)' : 'none'
                           }}
                         >
                           {item.badge}
@@ -199,6 +204,47 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
                     </>
                   )}
                 </button>
+                {item.isNotification && showNotifications && alerts?.total > 0 && (
+                  <div
+                    className="absolute left-full ml-2 top-0 w-72 rounded-xl p-3 shadow-xl z-50"
+                    style={{
+                      background: 'var(--bg-secondary)',
+                      border: '1px solid var(--border-glass)',
+                      maxHeight: '300px',
+                      overflowY: 'auto'
+                    }}
+                  >
+                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>
+                      Alerts ({alerts.total})
+                    </p>
+                    {alerts.warrantyExpiry.length > 0 && (
+                      <div className="mb-2">
+                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-orange)' }}>
+                          Warranty Expiring ({alerts.warrantyExpiry.length})
+                        </p>
+                        {alerts.warrantyExpiry.slice(0, 3).map((alert, idx) => (
+                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
+                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
+                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysLeft}d</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {alerts.maintenanceDue.length > 0 && (
+                      <div>
+                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-yellow)' }}>
+                          Maintenance Due ({alerts.maintenanceDue.length})
+                        </p>
+                        {alerts.maintenanceDue.slice(0, 3).map((alert, idx) => (
+                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
+                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
+                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysInMaintenance}d</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 {isCollapsed && hoveredItem === item.id && (
                   <div className="sidebar-tooltip">
                     {item.label}
@@ -260,76 +306,13 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
               border: '1px solid var(--border-glass)'
             }}
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <Database size={16} strokeWidth={2} style={{ color: 'var(--accent-primary)' }} />
-                <span className="text-xs font-bold" style={{ color: 'var(--text-secondary)' }}>Database</span>
-                <div
-                  className="w-2 h-2 rounded-full animate-pulse"
-                  style={{ background: 'var(--accent-green)', boxShadow: '0 0 8px var(--accent-green)' }}
-                ></div>
-              </div>
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg transition-all duration-300 hover:scale-110 relative"
-                  style={{
-                    color: alerts?.total > 0 ? 'var(--accent-orange)' : 'var(--text-secondary)',
-                    background: alerts?.total > 0 ? 'rgba(251, 191, 36, 0.1)' : 'transparent'
-                  }}
-                >
-                  <Bell size={16} />
-                  {alerts?.total > 0 && (
-                    <span
-                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold text-white animate-pulse"
-                      style={{ background: 'var(--accent-orange)', boxShadow: '0 0 8px rgba(251, 191, 36, 0.5)' }}
-                    >
-                      {alerts.total}
-                    </span>
-                  )}
-                </button>
-                {showNotifications && alerts?.total > 0 && (
-                  <div
-                    className="absolute bottom-full right-0 mb-2 w-72 rounded-xl p-3 shadow-xl z-50"
-                    style={{
-                      background: 'var(--bg-secondary)',
-                      border: '1px solid var(--border-glass)',
-                      maxHeight: '300px',
-                      overflowY: 'auto'
-                    }}
-                  >
-                    <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Alerts ({alerts.total})
-                    </p>
-                    {alerts.warrantyExpiry.length > 0 && (
-                      <div className="mb-2">
-                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-orange)' }}>
-                          Warranty Expiring ({alerts.warrantyExpiry.length})
-                        </p>
-                        {alerts.warrantyExpiry.slice(0, 3).map((alert, idx) => (
-                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
-                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
-                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysLeft}d</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    {alerts.maintenanceDue.length > 0 && (
-                      <div>
-                        <p className="text-[10px] font-bold mb-1" style={{ color: 'var(--accent-yellow)' }}>
-                          Maintenance Due ({alerts.maintenanceDue.length})
-                        </p>
-                        {alerts.maintenanceDue.slice(0, 3).map((alert, idx) => (
-                          <div key={idx} className="text-[10px] py-1 px-2 rounded mb-1" style={{ background: 'var(--bg-glass-light)' }}>
-                            <span style={{ color: 'var(--text-primary)' }}>{alert.item.model || alert.item.asset_tag}</span>
-                            <span className="ml-2" style={{ color: 'var(--text-secondary)' }}>{alert.daysInMaintenance}d</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+            <div className="flex items-center gap-3 mb-3">
+              <Database size={16} strokeWidth={2} style={{ color: 'var(--accent-primary)' }} />
+              <span className="text-xs font-bold" style={{ color: 'var(--text-secondary)' }}>Database</span>
+              <div
+                className="w-2 h-2 rounded-full animate-pulse"
+                style={{ background: 'var(--accent-green)', boxShadow: '0 0 8px var(--accent-green)' }}
+              ></div>
             </div>
             <p className="text-[10px] mb-3" style={{ color: 'var(--text-tertiary)' }}>Connected to Supabase</p>
             <div className="space-y-2">
