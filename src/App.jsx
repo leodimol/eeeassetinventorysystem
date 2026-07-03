@@ -1606,7 +1606,7 @@ function App() {
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  border: '1px solid var(--border-glass)',
                                   boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
@@ -1690,7 +1690,7 @@ function App() {
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  border: '1px solid var(--border-glass)',
                                   boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
@@ -1774,7 +1774,7 @@ function App() {
                                 className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
                                 style={{
                                   background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: alert.read ? '1px solid var(--border-glass)' : '3px solid var(--accent-primary)',
+                                  border: '1px solid var(--border-glass)',
                                   boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
                                   opacity: alert.read ? 0.8 : 1
                                 }}
