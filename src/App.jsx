@@ -1404,7 +1404,7 @@ function App() {
         >
           {activePage === 'dashboard' && (
             <div className="max-w-7xl mx-auto space-y-6 page-transition">
-              <AnalyticsDashboard equipment={allEquipmentForSidebar} />
+              <AnalyticsDashboard equipment={allEquipment} />
             </div>
           )}
 
