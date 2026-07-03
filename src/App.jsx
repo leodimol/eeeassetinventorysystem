@@ -834,9 +834,9 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded, ...recentlyUpdated, ...recentlyDeleted];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Sort within each section by their specific criteria
-    const warrantyData = warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft);
-    const maintenanceData = maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance);
+    // Sort within each section by their specific criteria (newest first)
+    const warrantyData = warrantyExpiry.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const maintenanceData = maintenanceDue.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
     const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
     const updatedData = recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
     const deletedData = recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
@@ -910,9 +910,9 @@ function App() {
 
     return {
       sections,
-      warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
-      maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
-      recentlyAdded: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
+      warrantyExpiry: warrantyExpiry.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
+      maintenanceDue: maintenanceDue.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
+      recentlyAdded: recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       recentlyUpdated: recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       recentlyDeleted: recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       total: allNotifications.length,
