@@ -1547,7 +1547,7 @@ function App() {
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.5 : 1
+                              opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
                               setHighlightedAssetId(alert.item.id);
@@ -1561,9 +1561,9 @@ function App() {
                               <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-tertiary)' }}>•</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
@@ -1616,7 +1616,7 @@ function App() {
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.5 : 1
+                              opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
                               setHighlightedAssetId(alert.item.id);
@@ -1630,9 +1630,9 @@ function App() {
                               <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-tertiary)' }}>•</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
@@ -1685,7 +1685,7 @@ function App() {
                             style={{
                               background: alert.read ? 'var(--bg-tertiary)' : 'var(--bg-glass-light)',
                               border: '1px solid var(--border-glass)',
-                              opacity: alert.read ? 0.5 : 1
+                              opacity: alert.read ? 0.8 : 1
                             }}
                             onClick={() => {
                               setHighlightedAssetId(alert.item.id);
@@ -1699,9 +1699,9 @@ function App() {
                               <p className="text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                 {alert.item.model || 'Unknown Model'}
                               </p>
-                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-secondary)' }}>
+                              <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-primary)' }}>
                                 <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                <span style={{ color: 'var(--text-tertiary)' }}>•</span>
+                                <span style={{ color: 'var(--text-secondary)' }}>•</span>
                                 <span>Serial: {alert.item.serial || 'N/A'}</span>
                               </div>
                             </div>
