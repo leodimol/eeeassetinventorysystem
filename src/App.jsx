@@ -83,7 +83,7 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { id: 'inventory', label: 'Asset', icon: <Package size={20} />, badge: inventoryCount > 0 ? inventoryCount : null },
-    { id: 'notifications', label: 'Alerts', icon: <Bell size={20} />, badge: alerts?.total > 0 ? alerts.total : null, isNotification: true },
+    { id: 'notifications', label: 'Notifications', icon: <Bell size={20} />, badge: alerts?.total > 0 ? alerts.total : null, isNotification: true },
   ];
 
   const adminItems = [
@@ -216,7 +216,7 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
                   >
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-primary)' }}>
-                        Alerts ({alerts.total})
+                        Notifications ({alerts.total})
                       </p>
                       <button
                         onClick={() => setShowNotifications(false)}
@@ -813,14 +813,14 @@ function App() {
     return Object.entries(statuses).map(([name, value]) => ({ name, value }));
   }, [allEquipment]);
 
-  // Alert calculations
+  // Notification calculations
   const alerts = useMemo(() => {
     const warrantyExpiry = [];
     const maintenanceDue = [];
     const now = new Date();
 
     allEquipment.forEach(item => {
-      // Warranty expiry alerts (notify 90 days ahead)
+      // Warranty expiry notifications (notify 90 days ahead)
       if (item.warranty_date) {
         const warrantyDate = new Date(item.warranty_date);
         const daysUntilExpiry = Math.ceil((warrantyDate - now) / (1000 * 60 * 60 * 24));
@@ -834,7 +834,7 @@ function App() {
         }
       }
 
-      // Maintenance due alerts (assets in maintenance status for more than 30 days)
+      // Maintenance due notifications (assets in maintenance status for more than 30 days)
       if (item.status === 'maintenance' && item.updated_at) {
         const lastUpdated = new Date(item.updated_at);
         const daysInMaintenance = Math.floor((now - lastUpdated) / (1000 * 60 * 60 * 24));
