@@ -150,3 +150,74 @@ CREATE POLICY "Audit Logs Delete Admin" ON audit_logs
     auth.role() = 'authenticated' AND
     (auth.email() LIKE '%@admin.com' OR auth.email() = 'admin@example.com')
   );
+
+-- Create deleted_assets table to track deletion history
+CREATE TABLE IF NOT EXISTS deleted_assets (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    original_equipment_id UUID NOT NULL,
+    model TEXT NOT NULL,
+    brand TEXT,
+    equipment_type TEXT NOT NULL,
+    asset_tag TEXT,
+    serial TEXT,
+    location TEXT,
+    status TEXT,
+    condition TEXT,
+    deleted_by TEXT,
+    deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    reason TEXT
+);
+
+-- Enable RLS for deleted_assets
+ALTER TABLE deleted_assets ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for deleted_assets
+CREATE POLICY "Deleted Assets Select Authenticated" ON deleted_assets
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Deleted Assets Insert Authenticated" ON deleted_assets
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- Create trigger function to log deleted assets
+CREATE OR REPLACE FUNCTION log_deleted_asset()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO deleted_assets (
+        original_equipment_id,
+        model,
+        brand,
+        equipment_type,
+        asset_tag,
+        serial,
+        location,
+        status,
+        condition,
+        deleted_by,
+        deleted_at,
+        reason
+    )
+    VALUES (
+        OLD.id,
+        OLD.model,
+        OLD.brand,
+        OLD.equipment_type,
+        OLD.asset_tag,
+        OLD.serial,
+        OLD.location,
+        OLD.status,
+        OLD.condition,
+        auth.email(),
+        NOW(),
+        NULL
+    );
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to automatically log deleted assets
+DROP TRIGGER IF EXISTS on_equipment_delete ON equipment;
+CREATE TRIGGER on_equipment_delete
+    BEFORE DELETE ON equipment
+    FOR EACH ROW
+    EXECUTE FUNCTION log_deleted_asset();
+

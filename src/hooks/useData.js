@@ -364,3 +364,31 @@ export function useHubs() {
 
   return { hubs, loading };
 }
+
+export function useDeletedAssets() {
+  const [deletedAssets, setDeletedAssets] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchDeletedAssets = useCallback(async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('deleted_assets')
+        .select('*')
+        .order('deleted_at', { ascending: false });
+      
+      if (error) throw error;
+      setDeletedAssets(data || []);
+    } catch (err) {
+      console.error('Error fetching deleted assets:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDeletedAssets();
+  }, [fetchDeletedAssets]);
+
+  return { deletedAssets, loading, refresh: fetchDeletedAssets };
+}

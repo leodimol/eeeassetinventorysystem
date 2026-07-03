@@ -70,7 +70,7 @@ import LoadingScreen from './components/LoadingScreen';
 import { Button, Card, Input, Modal } from './components/ui/Base';
 import EquipmentModal from './components/AddAssetModal';
 import EquipmentHistoryModal from './components/AssetHistoryModal';
-import { useEquipment, useEquipmentStats } from './hooks/useData';
+import { useEquipment, useEquipmentStats, useDeletedAssets } from './hooks/useData';
 import { useTheme, themes } from './context/ThemeContext';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
 import Toast from './components/ui/Toast';
@@ -581,6 +581,7 @@ function App() {
   };
 
   const { stats, loading: statsLoading, refresh: refreshStats } = useEquipmentStats();
+  const { deletedAssets, loading: deletedLoading, refresh: refreshDeletedAssets } = useDeletedAssets();
   const {
     equipment: allEquipment,
     loading: equipLoading,
@@ -726,6 +727,8 @@ function App() {
     const warrantyExpiry = [];
     const maintenanceDue = [];
     const recentlyAdded = [];
+    const recentlyUpdated = [];
+    const recentlyDeleted = [];
     const now = new Date();
 
     allEquipment.forEach(item => {
@@ -782,15 +785,61 @@ function App() {
           });
         }
       }
+
+      // Recently updated notifications (items updated in the last 7 days, excluding newly added)
+      if (item.updated_at && item.created_at) {
+        const updatedAt = new Date(item.updated_at);
+        const createdAtDate = new Date(item.created_at);
+        const daysSinceUpdate = Math.floor((now - updatedAt) / (1000 * 60 * 60 * 24));
+        const daysSinceAdded = Math.floor((now - createdAtDate) / (1000 * 60 * 60 * 24));
+
+        // Only show if updated within 7 days and it's not a newly added item (added more than 7 days ago)
+        if (daysSinceUpdate <= 7 && daysSinceAdded > 7) {
+          const notificationId = `updated-${item.id}-${daysSinceUpdate}`;
+          recentlyUpdated.push({
+            id: notificationId,
+            item,
+            daysSinceUpdate,
+            severity: 'info',
+            read: readNotifications.includes(notificationId),
+            timestamp: item.updated_at
+          });
+        }
+      }
     });
 
-    const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded];
+    // Recently deleted notifications (assets deleted in the last 7 days)
+    deletedAssets.forEach(deletedItem => {
+      if (deletedItem.deleted_at) {
+        const deletedAt = new Date(deletedItem.deleted_at);
+        const daysSinceDeleted = Math.floor((now - deletedAt) / (1000 * 60 * 60 * 24));
+
+        if (daysSinceDeleted <= 7) {
+          const notificationId = `deleted-${deletedItem.id}-${daysSinceDeleted}`;
+          recentlyDeleted.push({
+            id: notificationId,
+            item: {
+              ...deletedItem,
+              id: deletedItem.original_equipment_id
+            },
+            daysSinceDeleted,
+            severity: 'warning',
+            read: readNotifications.includes(notificationId),
+            timestamp: deletedItem.deleted_at
+          });
+        }
+      }
+    });
+
+    const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded, ...recentlyUpdated, ...recentlyDeleted];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
     // Sort within each section by their specific criteria
     const warrantyData = warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft);
     const maintenanceData = maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance);
     const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const updatedData = recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const deletedData = recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
 
     // Get the most recent timestamp for each category
     const getMostRecentTimestamp = (arr) => {
@@ -805,6 +854,8 @@ function App() {
     const warrantyLatest = getMostRecentTimestamp(warrantyData);
     const maintenanceLatest = getMostRecentTimestamp(maintenanceData);
     const recentLatest = getMostRecentTimestamp(recentData);
+    const updatedLatest = getMostRecentTimestamp(updatedData);
+    const deletedLatest = getMostRecentTimestamp(deletedData);
 
     // Create section objects with their data
     const sections = [];
@@ -829,6 +880,20 @@ function App() {
         latest: recentLatest
       });
     }
+    if (updatedData.length > 0) {
+      sections.push({
+        type: 'updated',
+        data: updatedData,
+        latest: updatedLatest
+      });
+    }
+    if (deletedData.length > 0) {
+      sections.push({
+        type: 'deleted',
+        data: deletedData,
+        latest: deletedLatest
+      });
+    }
 
     // Sort sections by most recent notification (unread first, then by timestamp)
     sections.sort((a, b) => {
@@ -848,10 +913,12 @@ function App() {
       warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
       maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
       recentlyAdded: recentlyAdded.sort((a, b) => b.daysSinceAdded - a.daysSinceAdded),
+      recentlyUpdated: recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
+      recentlyDeleted: recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       total: allNotifications.length,
       unreadCount
     };
-  }, [allEquipment, readNotifications]);
+  }, [allEquipment, readNotifications, deletedAssets]);
 
   // Debounce search query to reduce API calls
   useEffect(() => {
@@ -1556,7 +1623,9 @@ function App() {
                       const allNotificationIds = [
                         ...alerts.warrantyExpiry.map(n => n.id),
                         ...alerts.maintenanceDue.map(n => n.id),
-                        ...alerts.recentlyAdded.map(n => n.id)
+                        ...alerts.recentlyAdded.map(n => n.id),
+                        ...alerts.recentlyUpdated.map(n => n.id),
+                        ...alerts.recentlyDeleted.map(n => n.id)
                       ];
                       setReadNotifications(prev => {
                         const newRead = [...new Set([...prev, ...allNotificationIds])];
@@ -1830,6 +1899,162 @@ function App() {
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>📍 {alert.item.location || 'Unknown'}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    } else if (section.type === 'updated') {
+                      return (
+                        <div
+                          key="updated"
+                          className="rounded-2xl p-6"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-primary)' }}
+                        >
+                          <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.15)' }}>
+                                <span className="text-2xl">🔄</span>
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                                  Recently Updated
+                                </h3>
+                                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment updated in the last 7 days</p>
+                              </div>
+                            </div>
+                            <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(59, 130, 246, 0.15)', color: 'var(--accent-primary)' }}>
+                              {section.data.length}
+                            </span>
+                          </div>
+                          <div className="space-y-3">
+                            {section.data.map((alert, idx) => (
+                              <div
+                                key={idx}
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
+                                style={{
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
+                                  border: '1px solid var(--border-glass)',
+                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
+                                  opacity: alert.read ? 0.8 : 1
+                                }}
+                                title="Double-click to view asset details"
+                                onDoubleClick={() => {
+                                  setReadNotifications(prev => {
+                                    if (!prev.includes(alert.id)) {
+                                      const newRead = [...prev, alert.id];
+                                      return newRead;
+                                    }
+                                    return prev;
+                                  });
+                                  setHighlightedAssetId(alert.item.id);
+                                  setActivePage('inventory');
+                                }}
+                              >
+                                {!alert.read && (
+                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                    NEW
+                                  </div>
+                                )}
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                </div>
+                                <div className="flex-1 min-w-0 w-full">
+                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    {alert.item.model || 'Unknown Model'}
+                                  </p>
+                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
+                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
+                                  </div>
+                                </div>
+                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
+                                  <span
+                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                                    style={{
+                                      background: 'rgba(59, 130, 246, 0.15)',
+                                      color: 'var(--accent-primary)'
+                                    }}
+                                  >
+                                    {alert.daysSinceUpdate === 0 ? 'Today' : `${alert.daysSinceUpdate}d ago`}
+                                  </span>
+                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    } else if (section.type === 'deleted') {
+                      return (
+                        <div
+                          key="deleted"
+                          className="rounded-2xl p-6"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glass)', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', borderLeft: '4px solid var(--accent-red)' }}
+                        >
+                          <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(239, 68, 68, 0.15)' }}>
+                                <span className="text-2xl">🗑️</span>
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                                  Recently Deleted
+                                </h3>
+                                <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>Equipment deleted in the last 7 days</p>
+                              </div>
+                            </div>
+                            <span className="px-4 py-2 rounded-full text-sm font-bold" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)' }}>
+                              {section.data.length}
+                            </span>
+                          </div>
+                          <div className="space-y-3">
+                            {section.data.map((alert, idx) => (
+                              <div
+                                key={idx}
+                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 relative"
+                                style={{
+                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(239, 68, 68, 0.05) 100%)',
+                                  border: '1px solid var(--border-glass)',
+                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(239, 68, 68, 0.1)',
+                                  opacity: alert.read ? 0.8 : 1
+                                }}
+                              >
+                                {!alert.read && (
+                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+                                    NEW
+                                  </div>
+                                )}
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                </div>
+                                <div className="flex-1 min-w-0 w-full">
+                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    {alert.item.model || 'Unknown Model'}
+                                  </p>
+                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
+                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
+                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
+                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
+                                  </div>
+                                </div>
+                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
+                                  <span
+                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
+                                    style={{
+                                      background: 'rgba(239, 68, 68, 0.15)',
+                                      color: 'var(--accent-red)'
+                                    }}
+                                  >
+                                    {alert.daysSinceDeleted === 0 ? 'Today' : `${alert.daysSinceDeleted}d ago`}
+                                  </span>
+                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
+                                    <span>Deleted by: {alert.item.deleted_by || 'Unknown'}</span>
                                   </div>
                                 </div>
                               </div>
