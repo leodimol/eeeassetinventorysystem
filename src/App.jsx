@@ -1731,26 +1731,26 @@ function App() {
                           <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--accent-orange)' }}>
                             Warranty Expiring Soon ({alerts.warrantyExpiry.length})
                           </p>
-                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                          <div className="space-y-1.5 max-h-48 overflow-y-auto">
                             {alerts.warrantyExpiry.slice(0, 5).map((alert, idx) => (
-                              <div key={idx} className="flex items-center justify-between text-sm py-2 border-b border-[var(--border-color)] last:border-0">
-                                <div className="flex items-center gap-2">
-                                  <span style={{ color: 'var(--text-primary)' }}>
+                              <div key={idx} className="flex items-center justify-between text-xs py-1.5 px-2 rounded-lg hover:bg-[var(--bg-glass-light)] transition-colors">
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <span className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || alert.item.asset_tag || 'Unknown'}
                                   </span>
                                   {alert.severity === 'critical' && (
-                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-red)' }}>
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)' }}>
                                       CRITICAL
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-                                  {alert.daysLeft <= 0 ? 'Expired' : `${alert.daysLeft} days left`}
+                                <span className="text-[10px] font-medium flex-shrink-0 ml-2" style={{ color: 'var(--text-secondary)' }}>
+                                  {alert.daysLeft <= 0 ? 'Expired' : `${alert.daysLeft}d`}
                                 </span>
                               </div>
                             ))}
                             {alerts.warrantyExpiry.length > 5 && (
-                              <p className="text-xs text-center py-2" style={{ color: 'var(--text-tertiary)' }}>
+                              <p className="text-[10px] text-center py-1.5" style={{ color: 'var(--text-tertiary)' }}>
                                 +{alerts.warrantyExpiry.length - 5} more
                               </p>
                             )}
@@ -1764,26 +1764,26 @@ function App() {
                           <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--accent-yellow)' }}>
                             Long-term Maintenance ({alerts.maintenanceDue.length})
                           </p>
-                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                          <div className="space-y-1.5 max-h-48 overflow-y-auto">
                             {alerts.maintenanceDue.slice(0, 5).map((alert, idx) => (
-                              <div key={idx} className="flex items-center justify-between text-sm py-2 border-b border-[var(--border-color)] last:border-0">
-                                <div className="flex items-center gap-2">
-                                  <span style={{ color: 'var(--text-primary)' }}>
+                              <div key={idx} className="flex items-center justify-between text-xs py-1.5 px-2 rounded-lg hover:bg-[var(--bg-glass-light)] transition-colors">
+                                <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <span className="font-medium truncate" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || alert.item.asset_tag || 'Unknown'}
                                   </span>
                                   {alert.severity === 'critical' && (
-                                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(239, 68, 68, 0.2)', color: 'var(--accent-red)' }}>
+                                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0" style={{ background: 'rgba(239, 68, 68, 0.15)', color: 'var(--accent-red)' }}>
                                       OVERDUE
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-                                  {alert.daysInMaintenance} days in maintenance
+                                <span className="text-[10px] font-medium flex-shrink-0 ml-2" style={{ color: 'var(--text-secondary)' }}>
+                                  {alert.daysInMaintenance}d
                                 </span>
                               </div>
                             ))}
                             {alerts.maintenanceDue.length > 5 && (
-                              <p className="text-xs text-center py-2" style={{ color: 'var(--text-tertiary)' }}>
+                              <p className="text-[10px] text-center py-1.5" style={{ color: 'var(--text-tertiary)' }}>
                                 +{alerts.maintenanceDue.length - 5} more
                               </p>
                             )}
