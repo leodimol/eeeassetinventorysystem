@@ -174,10 +174,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- IMPORTANT: Run the following SQL commands in your Supabase SQL Editor to remove duplicate audit log triggers:
+-- DROP TRIGGER IF EXISTS on_equipment_update ON equipment;
+-- DROP TRIGGER IF EXISTS on_equipment_insert ON equipment;
+
 -- Create trigger to automatically log deleted assets
-DROP TRIGGER IF EXISTS on_equipment_delete ON equipment;
-DROP TRIGGER IF EXISTS on_equipment_update ON equipment;
-DROP TRIGGER IF EXISTS on_equipment_insert ON equipment;
+DROP TRIGGER IF EXISTS on_equipment_delete FROM equipment;
+DROP TRIGGER IF EXISTS on_equipment_update FROM equipment;
+DROP TRIGGER IF EXISTS on_equipment_insert FROM equipment;
 CREATE TRIGGER on_equipment_delete
     BEFORE DELETE ON equipment
     FOR EACH ROW
