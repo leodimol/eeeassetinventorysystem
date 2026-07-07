@@ -1732,7 +1732,7 @@ function App() {
                                 </div>
                                 <div className="flex-1 min-w-0 w-full">
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || 'Unknown Model'}
+                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
@@ -1816,7 +1816,7 @@ function App() {
                                 </div>
                                 <div className="flex-1 min-w-0 w-full">
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || 'Unknown Model'}
+                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
@@ -1900,7 +1900,7 @@ function App() {
                                 </div>
                                 <div className="flex-1 min-w-0 w-full">
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || 'Unknown Model'}
+                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
@@ -1984,7 +1984,7 @@ function App() {
                                 </div>
                                 <div className="flex-1 min-w-0 w-full">
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || 'Unknown Model'}
+                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
@@ -2056,7 +2056,7 @@ function App() {
                                 </div>
                                 <div className="flex-1 min-w-0 w-full">
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || 'Unknown Model'}
+                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
