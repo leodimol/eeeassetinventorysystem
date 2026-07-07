@@ -11,10 +11,11 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
   const [error, setError] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  const fetchEquipment = useCallback(async () => {
+  const fetchEquipment = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
 
       // Build the base query with count
       let countQuery = supabase.from('equipment').select('*', { count: 'exact', head: true });
@@ -93,14 +94,17 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
       }
       console.error('Fetch error:', err);
     } finally {
-      setLoading(false);
+      if (!isBackground) {
+        setLoading(false);
+        setIsInitialLoad(false);
+      }
     }
   }, [page, useServerFiltering ? JSON.stringify(filters) : '', useServerFiltering ? searchQuery : '']);
 
   useEffect(() => {
-    fetchEquipment();
+    fetchEquipment(false);
     const interval = setInterval(() => {
-      fetchEquipment();
+      fetchEquipment(true);
     }, 2000);
     return () => clearInterval(interval);
   }, [fetchEquipment]);
@@ -137,7 +141,7 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
       changedBy: user
     });
     
-    fetchEquipment();
+    fetchEquipment(true);
     return data[0];
   };
 
@@ -167,7 +171,7 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
       changedBy: user
     });
     
-    fetchEquipment();
+    fetchEquipment(true);
     return data[0];
   };
 
@@ -191,7 +195,7 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
       changedBy: user
     });
     
-    fetchEquipment();
+    fetchEquipment(true);
   };
 
   return { 
@@ -238,9 +242,9 @@ export function useEquipmentStats() {
   });
   const [loading, setLoading] = useState(true);
 
-  const fetchStats = useCallback(async () => {
+  const fetchStats = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
 
       // Build base query with count
       let countQuery = supabase.from('equipment').select('*', { count: 'exact', head: true });
@@ -336,14 +340,14 @@ export function useEquipmentStats() {
         console.error('Stats fetch error:', err);
       }
     } finally {
-      setLoading(false);
+      if (!isBackground) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchStats();
+    fetchStats(false);
     const interval = setInterval(() => {
-      fetchStats();
+      fetchStats(true);
     }, 2000);
     return () => clearInterval(interval);
   }, [fetchStats]);
@@ -356,20 +360,21 @@ export function useHubs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHubs = async () => {
+    const fetchHubs = async (isBackground = false) => {
       try {
+        if (!isBackground) setLoading(true);
         const { data, error } = await supabase.from('hubs').select('*');
         if (error) throw error;
         setHubs(data || []);
       } catch (err) {
         console.error('Error fetching hubs:', err.message);
       } finally {
-        setLoading(false);
+        if (!isBackground) setLoading(false);
       }
     };
-    fetchHubs();
+    fetchHubs(false);
     const interval = setInterval(() => {
-      fetchHubs();
+      fetchHubs(true);
     }, 2000);
     return () => clearInterval(interval);
   }, []);
@@ -381,9 +386,9 @@ export function useDeletedAssets() {
   const [deletedAssets, setDeletedAssets] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchDeletedAssets = useCallback(async () => {
+  const fetchDeletedAssets = useCallback(async (isBackground = false) => {
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
       const { data, error } = await supabase
         .from('deleted_assets')
         .select('*')
@@ -394,14 +399,14 @@ export function useDeletedAssets() {
     } catch (err) {
       console.error('Error fetching deleted assets:', err.message);
     } finally {
-      setLoading(false);
+      if (!isBackground) setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchDeletedAssets();
+    fetchDeletedAssets(false);
     const interval = setInterval(() => {
-      fetchDeletedAssets();
+      fetchDeletedAssets(true);
     }, 2000);
     return () => clearInterval(interval);
   }, [fetchDeletedAssets]);
