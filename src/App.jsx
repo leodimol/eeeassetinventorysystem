@@ -842,12 +842,12 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded, ...recentlyUpdated, ...recentlyDeleted];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Sort within each section by their specific criteria
-    const warrantyData = warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft); // Most urgent first
-    const maintenanceData = maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance); // Longest in maintenance first
-    const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
-    const updatedData = recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
-    const deletedData = recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
+    // Sort within each section by their specific criteria (newest first)
+    const warrantyData = [...warrantyExpiry].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const maintenanceData = [...maintenanceDue].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const recentData = [...recentlyAdded].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const updatedData = [...recentlyUpdated].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    const deletedData = [...recentlyDeleted].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
 
     // Get the most recent timestamp for each category
     const getMostRecentTimestamp = (arr) => {
@@ -918,11 +918,11 @@ function App() {
 
     return {
       sections,
-      warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
-      maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
-      recentlyAdded: recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
-      recentlyUpdated: recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
-      recentlyDeleted: recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
+      warrantyExpiry: warrantyData,
+      maintenanceDue: maintenanceData,
+      recentlyAdded: recentData,
+      recentlyUpdated: updatedData,
+      recentlyDeleted: deletedData,
       total: allNotifications.length,
       unreadCount
     };
