@@ -133,13 +133,17 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
     }
     console.log('Added equipment response:', data);
     
-    // Log audit
-    await logAudit({
-      equipmentId: data[0].id,
-      action: 'CREATE',
-      newValues: data[0],
-      changedBy: user
-    });
+    // Log audit (don't fail if this errors)
+    try {
+      await logAudit({
+        equipmentId: data[0].id,
+        action: 'CREATE',
+        newValues: data[0],
+        changedBy: user
+      });
+    } catch (auditErr) {
+      console.error('Audit log failed for CREATE:', auditErr);
+    }
     
     fetchEquipment(true);
     return data[0];
