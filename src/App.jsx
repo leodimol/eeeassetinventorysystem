@@ -2853,8 +2853,12 @@ function App() {
                                       )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || item.equipment_type || item.category || item.type || '—'}</p>
-                                      <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
+                                      <p className="font-semibold text-sm truncate text-[var(--text-primary)]">
+                                        {item.model || `${item.equipment_type || item.category || item.type || '—'}${item.brand ? ` - ${item.brand}` : ''}`}
+                                      </p>
+                                      {item.model && (
+                                        <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
+                                      )}
                                     </div>
                                   </div>
                                 </td>
