@@ -2932,7 +2932,7 @@ function App() {
                                 {!filters.category && (
                                   <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                     {(item.category === 'other' || item.equipment_type === 'other') 
-                                      ? (item.type || 'other') 
+                                      ? 'other' 
                                       : (item.type || item.equipment_type || item.category || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>)
                                     }
                                   </td>
