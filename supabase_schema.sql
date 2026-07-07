@@ -1,16 +1,6 @@
--- Create hubs table
-CREATE TABLE IF NOT EXISTS hubs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    location TEXT,
-    hub_code TEXT UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 -- Create equipment table
 CREATE TABLE IF NOT EXISTS equipment (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    hub_id UUID REFERENCES hubs(id) ON DELETE CASCADE,
     model TEXT NOT NULL,
     brand TEXT,
     equipment_type TEXT NOT NULL,
@@ -73,32 +63,9 @@ CREATE TABLE IF NOT EXISTS equipment (
 );
 
 -- Enable Row Level Security (RLS)
-ALTER TABLE hubs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE equipment ENABLE ROW LEVEL SECURITY;
 
 -- Create policies requiring authentication
--- Hubs table policies
-CREATE POLICY "Hubs Select Authenticated" ON hubs
-  FOR SELECT USING (auth.role() = 'authenticated');
-
-CREATE POLICY "Hubs Insert Admin" ON hubs
-  FOR INSERT WITH CHECK (
-    auth.role() = 'authenticated' AND
-    (auth.email() LIKE '%@admin.com' OR auth.email() = 'admin@example.com')
-  );
-
-CREATE POLICY "Hubs Update Admin" ON hubs
-  FOR UPDATE USING (
-    auth.role() = 'authenticated' AND
-    (auth.email() LIKE '%@admin.com' OR auth.email() = 'admin@example.com')
-  );
-
-CREATE POLICY "Hubs Delete Admin" ON hubs
-  FOR DELETE USING (
-    auth.role() = 'authenticated' AND
-    (auth.email() LIKE '%@admin.com' OR auth.email() = 'admin@example.com')
-  );
-
 -- Equipment table policies
 CREATE POLICY "Equipment Select Authenticated" ON equipment
   FOR SELECT USING (auth.role() = 'authenticated');
@@ -114,14 +81,6 @@ CREATE POLICY "Equipment Delete Admin" ON equipment
     auth.role() = 'authenticated' AND
     (auth.email() LIKE '%@admin.com' OR auth.email() = 'admin@example.com')
   );
-
--- Insert sample hubs if they don't exist
-INSERT INTO hubs (name, location, hub_code)
-VALUES
-    ('Main Hub', 'Central Distribution Center', 'MAIN-01'),
-    ('North Hub', 'Northern Logistics Wing', 'NRT-02'),
-    ('South Hub', 'Southern Warehouse', 'STH-03')
-ON CONFLICT (hub_code) DO NOTHING;
 
 -- Create audit_logs table
 CREATE TABLE IF NOT EXISTS audit_logs (
