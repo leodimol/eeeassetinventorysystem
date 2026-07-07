@@ -21,23 +21,6 @@ export const logAudit = async ({
   reason = null
 }) => {
   try {
-    // Check for duplicate audit logs within the last 5 seconds to prevent duplicates
-    if (checkForDuplicates && (action === 'UPDATE' || action === 'CREATE')) {
-      const fiveSecondsAgo = new Date(Date.now() - 5000).toISOString();
-      const { data: existingLogs } = await supabase
-        .from('audit_logs')
-        .select('*')
-        .eq('equipment_id', equipmentId)
-        .eq('action', action)
-        .gte('changed_at', fiveSecondsAgo)
-        .limit(1);
-
-      if (existingLogs && existingLogs.length > 0) {
-        console.log('Duplicate audit log detected, skipping:', existingLogs[0].id);
-        return existingLogs[0];
-      }
-    }
-
     // Calculate field changes for updates
     let fieldChanges = null;
     if (action === 'UPDATE' && oldValues && newValues) {
@@ -56,6 +39,28 @@ export const logAudit = async ({
             old: oldVal,
             new: newVal
           };
+        }
+      }
+    }
+
+    // Check for duplicate audit logs within the last 2 seconds to prevent duplicates
+    // Only check for UPDATE actions, CREATE actions should always be logged
+    if (checkForDuplicates && action === 'UPDATE' && fieldChanges && Object.keys(fieldChanges).length > 0) {
+      const twoSecondsAgo = new Date(Date.now() - 2000).toISOString();
+      const { data: existingLogs } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .eq('equipment_id', equipmentId)
+        .eq('action', action)
+        .gte('changed_at', twoSecondsAgo)
+        .limit(1);
+
+      if (existingLogs && existingLogs.length > 0) {
+        // Compare field changes to see if they're truly duplicates
+        const existingFieldChanges = existingLogs[0].field_changes;
+        if (existingFieldChanges && JSON.stringify(existingFieldChanges) === JSON.stringify(fieldChanges)) {
+          console.log('Duplicate audit log detected (same field changes), skipping:', existingLogs[0].id);
+          return existingLogs[0];
         }
       }
     }
