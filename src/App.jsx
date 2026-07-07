@@ -1763,7 +1763,7 @@ function App() {
                                       color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
                                     }}
                                   >
-                                    {alert.daysLeft} days left
+                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>📍 {alert.item.location || 'Unknown'}</span>
@@ -1847,7 +1847,7 @@ function App() {
                                       color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
                                     }}
                                   >
-                                    {alert.daysInMaintenance} days
+                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>📍 {alert.item.location || 'Unknown'}</span>
@@ -1931,7 +1931,7 @@ function App() {
                                       color: 'var(--accent-green)'
                                     }}
                                   >
-                                    {alert.daysSinceAdded === 0 ? 'Today' : `${alert.daysSinceAdded}d ago`}
+                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>📍 {alert.item.location || 'Unknown'}</span>
@@ -2015,7 +2015,7 @@ function App() {
                                       color: 'var(--accent-primary)'
                                     }}
                                   >
-                                    {alert.daysSinceUpdate === 0 ? 'Today' : `${alert.daysSinceUpdate}d ago`}
+                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>📍 {alert.item.location || 'Unknown'}</span>
@@ -2087,7 +2087,7 @@ function App() {
                                       color: 'var(--accent-red)'
                                     }}
                                   >
-                                    {alert.daysSinceDeleted === 0 ? 'Today' : `${alert.daysSinceDeleted}d ago`}
+                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>Deleted by: {alert.item.deleted_by || 'Unknown'}</span>
