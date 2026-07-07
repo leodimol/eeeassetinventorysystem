@@ -324,6 +324,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       if (!formData.brand) validationErrors.brand = 'Brand is required';
       if (!formData.model) validationErrors.model = 'Model is required';
     }
+    // Type is required for other category
+    if (selectedCategory === 'other' && !formData.type) {
+      validationErrors.type = 'Equipment type is required';
+    }
     if (!formData.asset_tag) validationErrors.asset_tag = 'Asset tag is required';
     if (!formData.added_by) validationErrors.added_by = 'Added By is required';
 
@@ -2203,6 +2207,39 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           />
           <p className="form-hint">Specific model or version (required)</p>
           {errors.model && <p className="error-text">{errors.model}</p>}
+        </div>
+      )}
+
+      {/* Equipment Type - Only for other category */}
+      {selectedCategory === 'other' && (
+        <div className="form-group">
+          <label className="form-label">Equipment Type *</label>
+          <input
+            type="text"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            className={`form-input ${errors.type ? 'border-red-500' : ''}`}
+            placeholder="e.g. Furniture, Tools, Supplies"
+          />
+          <p className="form-hint">Type or category of equipment (required)</p>
+          {errors.type && <p className="error-text">{errors.type}</p>}
+        </div>
+      )}
+
+      {/* Brand - Optional for other category */}
+      {selectedCategory === 'other' && (
+        <div className="form-group">
+          <label className="form-label">Brand (Optional)</label>
+          <input
+            type="text"
+            name="brand"
+            value={formData.brand}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="e.g. IKEA, Stanley, Dewalt"
+          />
+          <p className="form-hint">Manufacturer or brand name (optional)</p>
         </div>
       )}
 
