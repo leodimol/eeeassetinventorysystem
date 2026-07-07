@@ -334,7 +334,6 @@ function App() {
     location: '',
     dateRange: ''
   });
-  const [isFullView, setIsFullView] = useState(false);
 
   // Analytics filters state (separate from inventory filters)
   const [analyticsFilters, setAnalyticsFilters] = useState({
@@ -1023,13 +1022,6 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [activePage, equipLoading, statsLoading]);
-
-  useEffect(() => {
-    document.body.style.overflow = isFullView ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isFullView]);
 
   const handleAddEquipment = () => {
     setEditingEquipment(null);
@@ -2449,9 +2441,8 @@ function App() {
               </div>
 
               {/* Inventory Table Card */}
-              {isFullView && <div className="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm" />}
-              <div className={isFullView ? 'fixed inset-4 z-50 overflow-hidden' : ''}>
-                <Card glass={false} className={`flex flex-col ${isFullView ? 'min-h-[calc(100vh-7rem)]' : ''}`}>
+              <div>
+                <Card glass={false} className="flex flex-col">
                   {/* Sticky Search/Filter Header */}
                   <div
                     className="sticky top-0 z-20 p-6"
@@ -2760,15 +2751,6 @@ function App() {
                               </Button>
                             </>
                           )}
-                          <Button
-                            variant="outline"
-                            className="h-10 px-4 gap-2 border-[1.5px] border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-primary)] hover:text-white"
-                            title="Toggle full inventory table view"
-                            onClick={() => setIsFullView(!isFullView)}
-                          >
-                            {isFullView ? <Minimize2 size={16} strokeWidth={2} /> : <Maximize2 size={16} strokeWidth={2} />}
-                            {isFullView ? 'Exit Full View' : 'Full View'}
-                          </Button>
                         </div>
                       </div>
                     </div>
@@ -3115,8 +3097,8 @@ function App() {
                       )}
                     </tbody>
                   </table>
-                  </div>
                 </div>
+              </div>
               </Card>
             </div>
           </div>
