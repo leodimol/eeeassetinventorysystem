@@ -688,7 +688,7 @@ function App() {
   const categoryData = useMemo(() => {
     const categories = {};
     allEquipment.forEach(item => {
-      const category = item.equipment_type || item.category || 'Other';
+      const category = item.equipment_type || item.category || item.type || 'Other';
       categories[category] = (categories[category] || 0) + 1;
     });
     return Object.entries(categories).map(([name, value]) => ({ name, value }));
@@ -2924,7 +2924,7 @@ function App() {
                                 )}
                                 {!filters.category && (
                                   <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                    {item.equipment_type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    {item.equipment_type || item.category || item.type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                   </td>
                                 )}
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
