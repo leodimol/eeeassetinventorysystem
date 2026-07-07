@@ -688,7 +688,7 @@ function App() {
   const categoryData = useMemo(() => {
     const categories = {};
     allEquipment.forEach(item => {
-      const category = item.equipment_type || item.category || item.type || 'Other';
+      const category = item.type || item.equipment_type || item.category || 'Other';
       categories[category] = (categories[category] || 0) + 1;
     });
     return Object.entries(categories).map(([name, value]) => ({ name, value }));
@@ -2854,10 +2854,13 @@ function App() {
                                     </div>
                                     <div className="min-w-0 flex-1">
                                       <p className="font-semibold text-sm truncate text-[var(--text-primary)]">
-                                        {item.model || `${item.equipment_type || item.category || item.type || '—'}${item.brand ? ` - ${item.brand}` : ''}`}
+                                        {item.model || (item.type && (item.category === 'other' || item.equipment_type === 'other') ? item.type : `${item.equipment_type || item.category || item.type || '—'}${item.brand ? ` - ${item.brand}` : ''}`)}
                                       </p>
                                       {item.model && (
                                         <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
+                                      )}
+                                      {!item.model && item.brand && (item.category === 'other' || item.equipment_type === 'other') && (
+                                        <p className="text-[10px] text-[var(--text-secondary)]">{item.brand}</p>
                                       )}
                                     </div>
                                   </div>
@@ -2928,7 +2931,10 @@ function App() {
                                 )}
                                 {!filters.category && (
                                   <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                    {item.equipment_type || item.category || item.type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    {(item.category === 'other' || item.equipment_type === 'other') 
+                                      ? (item.type || 'other') 
+                                      : (item.type || item.equipment_type || item.category || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>)
+                                    }
                                   </td>
                                 )}
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
