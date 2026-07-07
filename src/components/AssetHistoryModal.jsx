@@ -277,7 +277,7 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
                         {/* Field Changes */}
                         {log.field_changes && Object.keys(log.field_changes).length > 0 && (
                           <div className="mt-2 space-y-1">
-                            {Object.entries(log.field_changes).slice(0, 3).map(([field, change]) => (
+                            {Object.entries(log.field_changes).map(([field, change]) => (
                               <div
                                 key={field}
                                 className="text-xs flex items-start gap-2 px-2 py-1.5 rounded-lg flex-wrap"
@@ -295,11 +295,6 @@ const AssetHistoryModal = ({ isOpen, onClose, equipmentId, equipmentData }) => {
                                 </span>
                               </div>
                             ))}
-                            {Object.keys(log.field_changes).length > 3 && (
-                              <p className="text-xs px-2" style={{ color: 'var(--text-tertiary)' }}>
-                                +{Object.keys(log.field_changes).length - 3} more changes
-                              </p>
-                            )}
                           </div>
                         )}
                       </div>
