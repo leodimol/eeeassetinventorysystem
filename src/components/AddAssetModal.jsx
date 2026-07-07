@@ -139,8 +139,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && asset) {
+        const category = asset.category || asset.equipment_type || '';
+        
+        // Validate that the category exists in the categories array
+        const validCategory = categories.find(c => c.id === category) ? category : '';
+        
         setFormData({
-          category: asset.category || asset.equipment_type || '',
+          category: validCategory,
           brand: asset.brand || '',
           model: asset.model || '',
           asset_tag: asset.asset_tag || '',
@@ -199,20 +204,21 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           office_cut_type: asset.office_cut_type || '',
           office_notes: asset.office_notes || ''
         });
-        const category = asset.category || asset.equipment_type || '';
-        setSelectedCategory(category);
+        
+        setSelectedCategory(validCategory);
         setSelectedLogisticsType(asset.logistics_type || '');
         setSelectedOfficeType(asset.office_type || '');
+        
         // For transport and other categories, go directly to step 3
         // For logistics and office, go to step 3 only if sub-type is already selected
-        if (category === 'transport' || category === 'other') {
+        if (validCategory === 'transport' || validCategory === 'other') {
           setCurrentStep(3);
-        } else if (category === 'logistics' && asset.logistics_type) {
+        } else if (validCategory === 'logistics' && asset.logistics_type) {
           setCurrentStep(3);
-        } else if (category === 'office' && asset.office_type) {
+        } else if (validCategory === 'office' && asset.office_type) {
           setCurrentStep(3);
         } else {
-          setCurrentStep(2);
+          setCurrentStep(1); // Start at step 1 if category is invalid
         }
       } else {
         setFormData(emptyForm);
