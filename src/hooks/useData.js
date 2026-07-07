@@ -355,33 +355,6 @@ export function useEquipmentStats() {
   return { stats, loading, refresh: fetchStats };
 }
 
-export function useHubs() {
-  const [hubs, setHubs] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchHubs = async (isBackground = false) => {
-      try {
-        if (!isBackground) setLoading(true);
-        const { data, error } = await supabase.from('hubs').select('*');
-        if (error) throw error;
-        setHubs(data || []);
-      } catch (err) {
-        console.error('Error fetching hubs:', err.message);
-      } finally {
-        if (!isBackground) setLoading(false);
-      }
-    };
-    fetchHubs(false);
-    const interval = setInterval(() => {
-      fetchHubs(true);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return { hubs, loading };
-}
-
 export function useDeletedAssets() {
   const [deletedAssets, setDeletedAssets] = useState([]);
   const [loading, setLoading] = useState(true);

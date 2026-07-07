@@ -1196,7 +1196,7 @@ function App() {
       ['1. Do NOT change column headers'],
       ['2. Fill in the data in the "Template" sheet'],
       ['3. Required fields: Model, Brand, Asset Tag, Serial'],
-      ['4. Optional fields: Type, Hub, Location, Assigned To, Condition, Status, Purchase Date, Warranty Expiry, Last Service'],
+      ['4. Optional fields: Type, Location, Assigned To, Condition, Status, Purchase Date, Warranty Expiry, Last Service'],
       [''],
       ['VALID VALUES:'],
       [''],
@@ -1219,11 +1219,6 @@ function App() {
       ['  - Printer'],
       ['  - Other'],
       [''],
-      ['Hub:'],
-      ['  - Must match existing hub name in the system'],
-      ['  - Example: Main Hub, North Hub, South Hub'],
-      ['  - Leave blank if no hub assigned'],
-      [''],
       ['Date Format:'],
       ['  - Purchase Date: YYYY-MM-DD (e.g., 2024-01-15)'],
       ['  - Warranty Expiry: YYYY-MM-DD (e.g., 2025-12-31)'],
@@ -1233,7 +1228,6 @@ function App() {
       ['IMPORTANT:'],
       ['  - Purchase Date is required for accurate age calculation in analytics'],
       ['  - Warranty Expiry helps track warranty expiration'],
-      ['  - Hub must match existing hub names in the system'],
       [''],
       ['5. Delete the example data before importing your own data'],
       ['6. Save the file and use the Import button']
@@ -1246,7 +1240,7 @@ function App() {
 
     // Create template sheet
     const templateSheet = workbook.addWorksheet('Template');
-    const headers = ['Model', 'Brand', 'Asset Tag', 'Serial', 'Type', 'Hub', 'Location', 'Assigned To', 'Condition', 'Status', 'Purchase Date', 'Warranty Expiry', 'Last Service'];
+    const headers = ['Model', 'Brand', 'Asset Tag', 'Serial', 'Type', 'Location', 'Assigned To', 'Condition', 'Status', 'Purchase Date', 'Warranty Expiry', 'Last Service'];
     templateSheet.addRow(headers);
 
     // Style header row
@@ -1260,9 +1254,9 @@ function App() {
 
     // Add example data
     const exampleData = [
-      ['ThinkPad E470', 'Lenovo', 'LPT-001', 'SN123456789', 'Laptop', 'Main Hub', 'IT Department', 'Juan Dela Cruz', 'good', 'available', '2024-01-15', '2025-12-31', '2024-01-15'],
-      ['Dell Latitude 5420', 'Dell', 'DLL-002', 'SN987654321', 'Laptop', 'Main Hub', 'HR Department', 'Maria Santos', 'good', 'active', '2024-02-20', '2026-06-30', '2024-02-20'],
-      ['HP ProBook 450', 'HP', 'HPB-003', 'SN456789123', 'Laptop', 'Branch Hub', 'Finance', '', 'fair', 'available', '2023-11-10', '2024-11-30', '2023-11-10']
+      ['ThinkPad E470', 'Lenovo', 'LPT-001', 'SN123456789', 'Laptop', 'IT Department', 'Juan Dela Cruz', 'good', 'available', '2024-01-15', '2025-12-31', '2024-01-15'],
+      ['Dell Latitude 5420', 'Dell', 'DLL-002', 'SN987654321', 'Laptop', 'HR Department', 'Maria Santos', 'good', 'active', '2024-02-20', '2026-06-30', '2024-02-20'],
+      ['HP ProBook 450', 'HP', 'HPB-003', 'SN456789123', 'Laptop', 'Finance', '', 'fair', 'available', '2023-11-10', '2024-11-30', '2023-11-10']
     ];
     exampleData.forEach(row => templateSheet.addRow(row));
 
@@ -1273,7 +1267,6 @@ function App() {
       { width: 15 }, // Asset Tag
       { width: 20 }, // Serial
       { width: 12 }, // Type
-      { width: 15 }, // Hub
       { width: 20 }, // Location
       { width: 20 }, // Assigned To
       { width: 12 }, // Condition
@@ -1297,10 +1290,10 @@ function App() {
       };
     }
 
-    // Condition dropdown (column I)
+    // Condition dropdown (column H)
     const conditionList = ['new', 'good', 'fair', 'poor'];
     for (let row = 2; row <= 1000; row++) {
-      templateSheet.getCell(`I${row}`).dataValidation = {
+      templateSheet.getCell(`H${row}`).dataValidation = {
         type: 'list',
         allowBlank: true,
         formulae: [`"${conditionList.join(',')}"`],
@@ -1310,10 +1303,10 @@ function App() {
       };
     }
 
-    // Status dropdown (column J)
+    // Status dropdown (column I)
     const statusList = ['available', 'active', 'maintenance', 'retired'];
     for (let row = 2; row <= 1000; row++) {
-      templateSheet.getCell(`J${row}`).dataValidation = {
+      templateSheet.getCell(`I${row}`).dataValidation = {
         type: 'list',
         allowBlank: true,
         formulae: [`"${statusList.join(',')}"`],
@@ -1445,7 +1438,7 @@ function App() {
           <div className="mb-6 text-center">
             <img src="/sidebar.logo.png" alt="Logo" className="mx-auto mb-4 h-16 w-16 object-contain" />
             <h1 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>Sign in</h1>
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">Access the equipment inventory and hub dashboard.</p>
+            <p className="mt-2 text-sm text-[var(--text-secondary)]">Access the equipment inventory dashboard.</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
@@ -2224,9 +2217,9 @@ function App() {
                   </select>
 
                   {/* Clear Filters */}
-                  {(analyticsFilters.status || analyticsFilters.condition || analyticsFilters.hub !== 'all' || analyticsFilters.dateRange !== 'all') && (
+                  {(analyticsFilters.status || analyticsFilters.condition || analyticsFilters.equipmentType !== '' || analyticsFilters.dateRange !== 'all') && (
                     <button
-                      onClick={() => setAnalyticsFilters({ status: '', condition: '', equipmentType: '', hub: 'all', dateRange: 'all' })}
+                      onClick={() => setAnalyticsFilters({ status: '', condition: '', equipmentType: '', dateRange: 'all' })}
                       className="h-9 px-3 rounded-full text-xs font-medium flex items-center gap-1"
                       style={{ 
                         background: 'var(--bg-glass-light)',
@@ -2800,7 +2793,6 @@ function App() {
                           {!filters.category && (
                             <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Type</th>
                           )}
-                          <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Hub</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Location</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Assigned</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Cond</th>
@@ -2947,9 +2939,6 @@ function App() {
                                     }
                                   </td>
                                 )}
-                                <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                  {item.hub || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
-                                </td>
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                   {item.location || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                 </td>
