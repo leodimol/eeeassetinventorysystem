@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     action TEXT NOT NULL,
     old_values JSONB,
     new_values JSONB,
+    field_changes JSONB,
     changed_by TEXT,
     changed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     reason TEXT
@@ -175,6 +176,8 @@ $$ LANGUAGE plpgsql;
 
 -- Create trigger to automatically log deleted assets
 DROP TRIGGER IF EXISTS on_equipment_delete ON equipment;
+DROP TRIGGER IF EXISTS on_equipment_update ON equipment;
+DROP TRIGGER IF EXISTS on_equipment_insert ON equipment;
 CREATE TRIGGER on_equipment_delete
     BEFORE DELETE ON equipment
     FOR EACH ROW
