@@ -745,7 +745,7 @@ function App() {
             daysLeft: daysUntilExpiry,
             severity: daysUntilExpiry <= 30 ? 'critical' : 'warning',
             read: readNotifications.includes(notificationId),
-            timestamp: item.updated_at || item.created_at || now.toISOString()
+            timestamp: item.warranty_date
           });
         }
       }
@@ -769,8 +769,8 @@ function App() {
       }
 
       // Recently added notifications (items added in the last 30 days)
-      const createdAt = item.created_at ? new Date(item.created_at) : (item.updated_at ? new Date(item.updated_at) : null);
-      if (createdAt) {
+      if (item.created_at) {
+        const createdAt = new Date(item.created_at);
         const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 
         if (daysSinceAdded <= 30) {
@@ -781,20 +781,28 @@ function App() {
             daysSinceAdded,
             severity: 'info',
             read: readNotifications.includes(notificationId),
-            timestamp: item.created_at || item.updated_at
+            timestamp: item.created_at
           });
         }
       }
 
       // Recently updated notifications (items updated in the last 7 days, excluding newly added)
-      if (item.updated_at && item.created_at) {
+      if (item.updated_at) {
         const updatedAt = new Date(item.updated_at);
-        const createdAtDate = new Date(item.created_at);
         const daysSinceUpdate = Math.floor((now - updatedAt) / (1000 * 60 * 60 * 24));
-        const daysSinceAdded = Math.floor((now - createdAtDate) / (1000 * 60 * 60 * 24));
 
-        // Only show if updated within 7 days and it's not a newly added item (added more than 7 days ago)
-        if (daysSinceUpdate <= 7 && daysSinceAdded > 7) {
+        // Only show if updated within 7 days
+        if (daysSinceUpdate <= 7) {
+          // If created_at exists, exclude items that were added in the last 7 days
+          if (item.created_at) {
+            const createdAtDate = new Date(item.created_at);
+            const daysSinceAdded = Math.floor((now - createdAtDate) / (1000 * 60 * 60 * 24));
+            if (daysSinceAdded <= 7) {
+              // Skip - this is a newly added item
+              return;
+            }
+          }
+
           const notificationId = `updated-${item.id}-${daysSinceUpdate}`;
           recentlyUpdated.push({
             id: notificationId,
@@ -834,12 +842,12 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded, ...recentlyUpdated, ...recentlyDeleted];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Sort within each section by their specific criteria (newest first)
-    const warrantyData = warrantyExpiry.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const maintenanceData = maintenanceDue.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const updatedData = recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const deletedData = recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    // Sort within each section by their specific criteria
+    const warrantyData = warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft); // Most urgent first
+    const maintenanceData = maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance); // Longest in maintenance first
+    const recentData = recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
+    const updatedData = recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
+    const deletedData = recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)); // Newest first
 
     // Get the most recent timestamp for each category
     const getMostRecentTimestamp = (arr) => {
@@ -910,8 +918,8 @@ function App() {
 
     return {
       sections,
-      warrantyExpiry: warrantyExpiry.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
-      maintenanceDue: maintenanceDue.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
+      warrantyExpiry: warrantyExpiry.sort((a, b) => a.daysLeft - b.daysLeft),
+      maintenanceDue: maintenanceDue.sort((a, b) => b.daysInMaintenance - a.daysInMaintenance),
       recentlyAdded: recentlyAdded.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       recentlyUpdated: recentlyUpdated.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
       recentlyDeleted: recentlyDeleted.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0)),
