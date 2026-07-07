@@ -767,12 +767,12 @@ function App() {
         }
       }
 
-      // Recently added notifications (items added in the last 30 days)
+      // Recently added notifications (items added in the last 7 days)
       if (item.created_at) {
         const createdAt = new Date(item.created_at);
         const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 
-        if (daysSinceAdded <= 30) {
+        if (daysSinceAdded <= 7) {
           const notificationId = `recent-${item.id}-${daysSinceAdded}`;
           recentlyAdded.push({
             id: notificationId,
