@@ -178,6 +178,17 @@ $$ LANGUAGE plpgsql;
 -- DROP TRIGGER IF EXISTS on_equipment_update ON equipment;
 -- DROP TRIGGER IF EXISTS on_equipment_insert ON equipment;
 
+-- To remove existing duplicate audit logs, run this query:
+-- DELETE FROM audit_logs a1
+-- WHERE id NOT IN (
+--   SELECT DISTINCT ON (equipment_id, action, changed_at) id
+--   FROM audit_logs a2
+--   WHERE a1.equipment_id = a2.equipment_id
+--     AND a1.action = a2.action
+--     AND a1.changed_at >= a2.changed_at - INTERVAL '5 seconds'
+--   ORDER BY equipment_id, action, changed_at, id
+-- );
+
 -- Create trigger to automatically log deleted assets
 DROP TRIGGER IF EXISTS on_equipment_delete FROM equipment;
 DROP TRIGGER IF EXISTS on_equipment_update FROM equipment;
