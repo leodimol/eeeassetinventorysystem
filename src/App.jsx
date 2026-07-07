@@ -842,12 +842,40 @@ function App() {
     const allNotifications = [...warrantyExpiry, ...maintenanceDue, ...recentlyAdded, ...recentlyUpdated, ...recentlyDeleted];
     const unreadCount = allNotifications.filter(n => !n.read).length;
 
-    // Sort within each section by their specific criteria (newest first)
-    const warrantyData = [...warrantyExpiry].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const maintenanceData = [...maintenanceDue].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const recentData = [...recentlyAdded].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const updatedData = [...recentlyUpdated].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    const deletedData = [...recentlyDeleted].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+    // Sort within each section by their specific criteria (newest first, unread first, then by ID for consistency)
+    const warrantyData = [...warrantyExpiry].sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1; // Unread first
+      const timestampDiff = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      if (timestampDiff !== 0) return timestampDiff; // Then newest first
+      return (b.item.id || 0) - (a.item.id || 0); // Then by ID for consistency
+    });
+    const maintenanceData = [...maintenanceDue].sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1; // Unread first
+      const timestampDiff = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      if (timestampDiff !== 0) return timestampDiff; // Then newest first
+      return (b.item.id || 0) - (a.item.id || 0); // Then by ID for consistency
+    });
+    const recentData = [...recentlyAdded].sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1; // Unread first
+      const timestampDiff = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      if (timestampDiff !== 0) return timestampDiff; // Then newest first
+      return (b.item.id || 0) - (a.item.id || 0); // Then by ID for consistency
+    });
+    const updatedData = [...recentlyUpdated].sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1; // Unread first
+      const timestampDiff = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      if (timestampDiff !== 0) return timestampDiff; // Then newest first
+      return (b.item.id || 0) - (a.item.id || 0); // Then by ID for consistency
+    });
+    const deletedData = [...recentlyDeleted].sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1; // Unread first
+      const timestampDiff = new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
+      if (timestampDiff !== 0) return timestampDiff; // Then newest first
+      return (b.item.id || 0) - (a.item.id || 0); // Then by ID for consistency
+    });
+
+    // Debug logging
+    console.log('Recent data sorted:', recentData.map(r => ({ id: r.item.id, tag: r.item.asset_tag, timestamp: r.timestamp, daysSinceAdded: r.daysSinceAdded, read: r.read })));
 
     // Get the most recent timestamp for each category
     const getMostRecentTimestamp = (arr) => {
