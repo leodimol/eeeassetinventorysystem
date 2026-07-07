@@ -2853,7 +2853,7 @@ function App() {
                                       )}
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || 'Unknown'}</p>
+                                      <p className="font-semibold text-sm truncate text-[var(--text-primary)]">{item.model || item.equipment_type || item.category || item.type || '—'}</p>
                                       <p className="text-[10px] text-[var(--text-secondary)]">{item.brand || 'No Brand'}</p>
                                     </div>
                                   </div>
