@@ -99,6 +99,10 @@ export function useEquipment(page = 1, filters = {}, searchQuery = '', useServer
 
   useEffect(() => {
     fetchEquipment();
+    const interval = setInterval(() => {
+      fetchEquipment();
+    }, 2000);
+    return () => clearInterval(interval);
   }, [fetchEquipment]);
 
   const addEquipment = async (item, user = 'system') => {
@@ -338,6 +342,10 @@ export function useEquipmentStats() {
 
   useEffect(() => {
     fetchStats();
+    const interval = setInterval(() => {
+      fetchStats();
+    }, 2000);
+    return () => clearInterval(interval);
   }, [fetchStats]);
 
   return { stats, loading, refresh: fetchStats };
@@ -360,6 +368,10 @@ export function useHubs() {
       }
     };
     fetchHubs();
+    const interval = setInterval(() => {
+      fetchHubs();
+    }, 2000);
+    return () => clearInterval(interval);
   }, []);
 
   return { hubs, loading };
@@ -388,6 +400,10 @@ export function useDeletedAssets() {
 
   useEffect(() => {
     fetchDeletedAssets();
+    const interval = setInterval(() => {
+      fetchDeletedAssets();
+    }, 2000);
+    return () => clearInterval(interval);
   }, [fetchDeletedAssets]);
 
   return { deletedAssets, loading, refresh: fetchDeletedAssets };
