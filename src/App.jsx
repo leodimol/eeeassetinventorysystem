@@ -302,7 +302,10 @@ const Sidebar = ({ activePage, setActivePage, inventoryCount, effectiveTheme, is
 };
 
 function App() {
-  const [activePage, setActivePage] = useState('dashboard');
+  const [activePage, setActivePage] = useState(() => {
+    const savedPage = localStorage.getItem('activePage');
+    return savedPage || 'dashboard';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [toast, setToast] = useState(null);
@@ -989,6 +992,11 @@ function App() {
   useEffect(() => {
     localStorage.setItem('readNotifications', JSON.stringify(readNotifications));
   }, [readNotifications]);
+
+  // Save active page to localStorage
+  useEffect(() => {
+    localStorage.setItem('activePage', activePage);
+  }, [activePage]);
 
   // Clear highlight when leaving inventory page
   useEffect(() => {
