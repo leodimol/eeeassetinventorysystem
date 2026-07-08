@@ -1720,7 +1720,7 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
+                                  <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
@@ -1791,7 +1791,7 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
+                                  <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
@@ -1862,7 +1862,7 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
+                                  <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
@@ -1933,7 +1933,7 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
+                                  <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
@@ -2002,7 +2002,7 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
+                                  <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
                                 <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
                                   {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
