@@ -1734,6 +1734,9 @@ function App() {
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
+                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                    Warranty expires in {alert.daysLeft} day{alert.daysLeft !== 1 ? 's' : ''}
+                                  </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -1748,10 +1751,10 @@ function App() {
                                       color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
                                     }}
                                   >
-                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
+                                    {alert.daysLeft} day{alert.daysLeft !== 1 ? 's' : ''} left
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                    📍 {alert.item.location || 'Unknown'}
                                   </div>
                                 </div>
                               </div>
@@ -1818,6 +1821,9 @@ function App() {
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
+                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                    In maintenance for {alert.daysInMaintenance} day{alert.daysInMaintenance !== 1 ? 's' : ''}
+                                  </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -1832,10 +1838,10 @@ function App() {
                                       color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
                                     }}
                                   >
-                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
+                                    {alert.daysInMaintenance} day{alert.daysInMaintenance !== 1 ? 's' : ''}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                    📍 {alert.item.location || 'Unknown'}
                                   </div>
                                 </div>
                               </div>
@@ -1902,6 +1908,9 @@ function App() {
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
+                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                    Added {alert.daysSinceAdded === 0 ? 'today' : alert.daysSinceAdded === 1 ? 'yesterday' : `${alert.daysSinceAdded} days ago`}
+                                  </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -1916,10 +1925,10 @@ function App() {
                                       color: 'var(--accent-green)'
                                     }}
                                   >
-                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
+                                    {alert.daysSinceAdded === 0 ? 'Today' : alert.daysSinceAdded === 1 ? 'Yesterday' : `${alert.daysSinceAdded}d ago`}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                    📍 {alert.item.location || 'Unknown'}
                                   </div>
                                 </div>
                               </div>
@@ -1986,6 +1995,9 @@ function App() {
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
+                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                    Updated {alert.daysSinceUpdate === 0 ? 'today' : alert.daysSinceUpdate === 1 ? 'yesterday' : `${alert.daysSinceUpdate} days ago`}
+                                  </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -2000,10 +2012,10 @@ function App() {
                                       color: 'var(--accent-primary)'
                                     }}
                                   >
-                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
+                                    {alert.daysSinceUpdate === 0 ? 'Today' : alert.daysSinceUpdate === 1 ? 'Yesterday' : `${alert.daysSinceUpdate}d ago`}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    <span>📍 {alert.item.location || 'Unknown'}</span>
+                                    📍 {alert.item.location || 'Unknown'}
                                   </div>
                                 </div>
                               </div>
@@ -2058,6 +2070,9 @@ function App() {
                                   <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                                     {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
                                   </p>
+                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                                    Deleted {alert.daysSinceDeleted === 0 ? 'today' : alert.daysSinceDeleted === 1 ? 'yesterday' : `${alert.daysSinceDeleted} days ago`}
+                                  </p>
                                   <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
                                     <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>•</span>
@@ -2072,7 +2087,7 @@ function App() {
                                       color: 'var(--accent-red)'
                                     }}
                                   >
-                                    {alert.timestamp ? new Date(alert.timestamp).toLocaleString() : 'N/A'}
+                                    {alert.daysSinceDeleted === 0 ? 'Today' : alert.daysSinceDeleted === 1 ? 'Yesterday' : `${alert.daysSinceDeleted}d ago`}
                                   </span>
                                   <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
                                     <span>Deleted by: {alert.item.deleted_by || 'Unknown'}</span>
