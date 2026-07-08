@@ -1698,19 +1698,16 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-1">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
+                                className="p-3 md:p-4 flex items-start gap-3 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-150 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: '1px solid var(--border-glass)',
-                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
-                                  opacity: alert.read ? 0.8 : 1
+                                  background: alert.read ? 'transparent' : 'var(--bg-secondary)',
+                                  borderRadius: '8px'
                                 }}
-                                title="Double-click to view asset details"
-                                onDoubleClick={() => {
+                                onClick={() => {
                                   setReadNotifications(prev => {
                                     if (!prev.includes(alert.id)) {
                                       const newRead = [...prev, alert.id];
@@ -1723,39 +1720,26 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                                    NEW
-                                  </div>
+                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
-                                <div className="flex-1 min-w-0 w-full">
-                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    <span style={{ fontWeight: 600 }}>
+                                      {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                    </span>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                                      {' '}warranty expires in {alert.daysLeft} day{alert.daysLeft !== 1 ? 's' : ''}
+                                    </span>
                                   </p>
-                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Warranty expires in {alert.daysLeft} day{alert.daysLeft !== 1 ? 's' : ''}
+                                  <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                                    Tag: {alert.item.asset_tag || 'N/A'} • {alert.item.location || 'Unknown'}
                                   </p>
-                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
-                                  </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                                  <span
-                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
-                                    style={{
-                                      background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(251, 191, 36, 0.15)',
-                                      color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-orange)'
-                                    }}
-                                  >
-                                    {alert.daysLeft} day{alert.daysLeft !== 1 ? 's' : ''} left
-                                  </span>
-                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    📍 {alert.item.location || 'Unknown'}
-                                  </div>
+                                <div className="text-xs font-medium flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                                  {alert.daysLeft}d left
                                 </div>
                               </div>
                             ))}
@@ -1785,19 +1769,16 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-1">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
+                                className="p-3 md:p-4 flex items-start gap-3 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-150 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: '1px solid var(--border-glass)',
-                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
-                                  opacity: alert.read ? 0.8 : 1
+                                  background: alert.read ? 'transparent' : 'var(--bg-secondary)',
+                                  borderRadius: '8px'
                                 }}
-                                title="Double-click to view asset details"
-                                onDoubleClick={() => {
+                                onClick={() => {
                                   setReadNotifications(prev => {
                                     if (!prev.includes(alert.id)) {
                                       const newRead = [...prev, alert.id];
@@ -1810,39 +1791,26 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                                    NEW
-                                  </div>
+                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
-                                <div className="flex-1 min-w-0 w-full">
-                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    <span style={{ fontWeight: 600 }}>
+                                      {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                    </span>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                                      {' '}in maintenance for {alert.daysInMaintenance} day{alert.daysInMaintenance !== 1 ? 's' : ''}
+                                    </span>
                                   </p>
-                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    In maintenance for {alert.daysInMaintenance} day{alert.daysInMaintenance !== 1 ? 's' : ''}
+                                  <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                                    Tag: {alert.item.asset_tag || 'N/A'} • {alert.item.location || 'Unknown'}
                                   </p>
-                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
-                                  </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                                  <span
-                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
-                                    style={{
-                                      background: alert.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
-                                      color: alert.severity === 'critical' ? 'var(--accent-red)' : 'var(--accent-yellow)'
-                                    }}
-                                  >
-                                    {alert.daysInMaintenance} day{alert.daysInMaintenance !== 1 ? 's' : ''}
-                                  </span>
-                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    📍 {alert.item.location || 'Unknown'}
-                                  </div>
+                                <div className="text-xs font-medium flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                                  {alert.daysInMaintenance}d
                                 </div>
                               </div>
                             ))}
@@ -1872,19 +1840,16 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-1">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
+                                className="p-3 md:p-4 flex items-start gap-3 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-150 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: '1px solid var(--border-glass)',
-                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
-                                  opacity: alert.read ? 0.8 : 1
+                                  background: alert.read ? 'transparent' : 'var(--bg-secondary)',
+                                  borderRadius: '8px'
                                 }}
-                                title="Double-click to view asset details"
-                                onDoubleClick={() => {
+                                onClick={() => {
                                   setReadNotifications(prev => {
                                     if (!prev.includes(alert.id)) {
                                       const newRead = [...prev, alert.id];
@@ -1897,39 +1862,26 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                                    NEW
-                                  </div>
+                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
-                                <div className="flex-1 min-w-0 w-full">
-                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    <span style={{ fontWeight: 600 }}>
+                                      {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                    </span>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                                      {' '}was added {alert.daysSinceAdded === 0 ? 'today' : alert.daysSinceAdded === 1 ? 'yesterday' : `${alert.daysSinceAdded} days ago`}
+                                    </span>
                                   </p>
-                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Added {alert.daysSinceAdded === 0 ? 'today' : alert.daysSinceAdded === 1 ? 'yesterday' : `${alert.daysSinceAdded} days ago`}
+                                  <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                                    Tag: {alert.item.asset_tag || 'N/A'} • {alert.item.location || 'Unknown'}
                                   </p>
-                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
-                                  </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                                  <span
-                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
-                                    style={{
-                                      background: 'rgba(34, 197, 94, 0.15)',
-                                      color: 'var(--accent-green)'
-                                    }}
-                                  >
-                                    {alert.daysSinceAdded === 0 ? 'Today' : alert.daysSinceAdded === 1 ? 'Yesterday' : `${alert.daysSinceAdded}d ago`}
-                                  </span>
-                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    📍 {alert.item.location || 'Unknown'}
-                                  </div>
+                                <div className="text-xs font-medium flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                                  {alert.daysSinceAdded === 0 ? 'Now' : alert.daysSinceAdded === 1 ? '1d' : `${alert.daysSinceAdded}d`}
                                 </div>
                               </div>
                             ))}
@@ -1959,19 +1911,16 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-1">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 cursor-pointer hover:scale-[1.01] transition-all duration-200 relative"
+                                className="p-3 md:p-4 flex items-start gap-3 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-150 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(59, 130, 246, 0.05) 100%)',
-                                  border: '1px solid var(--border-glass)',
-                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(59, 130, 246, 0.1)',
-                                  opacity: alert.read ? 0.8 : 1
+                                  background: alert.read ? 'transparent' : 'var(--bg-secondary)',
+                                  borderRadius: '8px'
                                 }}
-                                title="Double-click to view asset details"
-                                onDoubleClick={() => {
+                                onClick={() => {
                                   setReadNotifications(prev => {
                                     if (!prev.includes(alert.id)) {
                                       const newRead = [...prev, alert.id];
@@ -1984,39 +1933,26 @@ function App() {
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                                    NEW
-                                  </div>
+                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
-                                <div className="flex-1 min-w-0 w-full">
-                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    <span style={{ fontWeight: 600 }}>
+                                      {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                    </span>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                                      {' '}was updated {alert.daysSinceUpdate === 0 ? 'today' : alert.daysSinceUpdate === 1 ? 'yesterday' : `${alert.daysSinceUpdate} days ago`}
+                                    </span>
                                   </p>
-                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Updated {alert.daysSinceUpdate === 0 ? 'today' : alert.daysSinceUpdate === 1 ? 'yesterday' : `${alert.daysSinceUpdate} days ago`}
+                                  <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                                    Tag: {alert.item.asset_tag || 'N/A'} • {alert.item.location || 'Unknown'}
                                   </p>
-                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
-                                  </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                                  <span
-                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
-                                    style={{
-                                      background: 'rgba(59, 130, 246, 0.15)',
-                                      color: 'var(--accent-primary)'
-                                    }}
-                                  >
-                                    {alert.daysSinceUpdate === 0 ? 'Today' : alert.daysSinceUpdate === 1 ? 'Yesterday' : `${alert.daysSinceUpdate}d ago`}
-                                  </span>
-                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    📍 {alert.item.location || 'Unknown'}
-                                  </div>
+                                <div className="text-xs font-medium flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                                  {alert.daysSinceUpdate === 0 ? 'Now' : alert.daysSinceUpdate === 1 ? '1d' : `${alert.daysSinceUpdate}d`}
                                 </div>
                               </div>
                             ))}
@@ -2046,52 +1982,46 @@ function App() {
                               {section.data.length}
                             </span>
                           </div>
-                          <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                          <div className="space-y-1">
                             {section.data.map((alert, idx) => (
                               <div
                                 key={idx}
-                                className="p-4 md:p-5 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-4 relative"
+                                className="p-3 md:p-4 flex items-start gap-3 cursor-pointer hover:bg-[var(--bg-tertiary)] transition-colors duration-150 relative"
                                 style={{
-                                  background: alert.read ? 'var(--bg-tertiary)' : 'linear-gradient(135deg, var(--bg-glass-light) 0%, rgba(239, 68, 68, 0.05) 100%)',
-                                  border: '1px solid var(--border-glass)',
-                                  boxShadow: alert.read ? 'none' : '0 0 0 4px rgba(239, 68, 68, 0.1)',
-                                  opacity: alert.read ? 0.8 : 1
+                                  background: alert.read ? 'transparent' : 'var(--bg-secondary)',
+                                  borderRadius: '8px'
+                                }}
+                                onClick={() => {
+                                  setReadNotifications(prev => {
+                                    if (!prev.includes(alert.id)) {
+                                      const newRead = [...prev, alert.id];
+                                      return newRead;
+                                    }
+                                    return prev;
+                                  });
                                 }}
                               >
                                 {!alert.read && (
-                                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                                    NEW
-                                  </div>
+                                  <div className="absolute top-4 right-4 w-2 h-2 rounded-full bg-blue-500"></div>
                                 )}
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-secondary)' }}>
-                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} /> : <Database size={20} md:size={24} style={{ color: 'var(--accent-primary)' }} />}
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'var(--bg-glass-light)' }}>
+                                  {alert.item.equipment_type?.toLowerCase().includes('laptop') ? <Laptop size={18} style={{ color: 'var(--accent-primary)' }} /> : <Database size={18} style={{ color: 'var(--accent-primary)' }} />}
                                 </div>
-                                <div className="flex-1 min-w-0 w-full">
-                                  <p className="text-sm md:text-base font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
-                                    {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+                                    <span style={{ fontWeight: 600 }}>
+                                      {alert.item.model || (alert.item.type && (alert.item.category === 'other' || alert.item.equipment_type === 'other') ? alert.item.type : `${alert.item.equipment_type || alert.item.category || alert.item.type || '—'}${alert.item.brand ? ` - ${alert.item.brand}` : ''}`)}
+                                    </span>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>
+                                      {' '}was deleted {alert.daysSinceDeleted === 0 ? 'today' : alert.daysSinceDeleted === 1 ? 'yesterday' : `${alert.daysSinceDeleted} days ago`}
+                                    </span>
                                   </p>
-                                  <p className="text-xs md:text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                                    Deleted {alert.daysSinceDeleted === 0 ? 'today' : alert.daysSinceDeleted === 1 ? 'yesterday' : `${alert.daysSinceDeleted} days ago`}
+                                  <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>
+                                    Tag: {alert.item.asset_tag || 'N/A'} • Deleted by: {alert.item.deleted_by || 'Unknown'}
                                   </p>
-                                  <div className="flex items-center gap-2 md:gap-3 text-xs md:text-sm" style={{ color: 'var(--text-primary)' }}>
-                                    <span>Tag: {alert.item.asset_tag || 'N/A'}</span>
-                                    <span style={{ color: 'var(--text-secondary)' }}>•</span>
-                                    <span>Serial: {alert.item.serial || 'N/A'}</span>
-                                  </div>
                                 </div>
-                                <div className="text-right flex-shrink-0 w-full md:w-auto flex md:block justify-between items-center gap-2">
-                                  <span
-                                    className="text-xs md:text-sm font-bold px-3 py-1.5 md:px-4 md:py-2 rounded-full"
-                                    style={{
-                                      background: 'rgba(239, 68, 68, 0.15)',
-                                      color: 'var(--accent-red)'
-                                    }}
-                                  >
-                                    {alert.daysSinceDeleted === 0 ? 'Today' : alert.daysSinceDeleted === 1 ? 'Yesterday' : `${alert.daysSinceDeleted}d ago`}
-                                  </span>
-                                  <div className="flex items-center gap-2 text-xs md:text-sm" style={{ color: 'var(--text-tertiary)' }}>
-                                    <span>Deleted by: {alert.item.deleted_by || 'Unknown'}</span>
-                                  </div>
+                                <div className="text-xs font-medium flex-shrink-0" style={{ color: 'var(--text-tertiary)' }}>
+                                  {alert.daysSinceDeleted === 0 ? 'Now' : alert.daysSinceDeleted === 1 ? '1d' : `${alert.daysSinceDeleted}d`}
                                 </div>
                               </div>
                             ))}
