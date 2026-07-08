@@ -737,7 +737,7 @@ function App() {
         const daysUntilExpiry = Math.ceil((warrantyDate - now) / (1000 * 60 * 60 * 24));
 
         if (daysUntilExpiry <= 90 && daysUntilExpiry > 0) {
-          const notificationId = `warranty-${item.id}-${daysUntilExpiry}`;
+          const notificationId = `warranty-${item.id}`; // Static ID without day count
           warrantyExpiry.push({
             id: notificationId,
             item,
@@ -755,7 +755,7 @@ function App() {
         const daysInMaintenance = Math.floor((now - lastUpdated) / (1000 * 60 * 60 * 24));
 
         if (daysInMaintenance > 30) {
-          const notificationId = `maintenance-${item.id}-${daysInMaintenance}`;
+          const notificationId = `maintenance-${item.id}`; // Static ID without day count
           maintenanceDue.push({
             id: notificationId,
             item,
@@ -773,7 +773,7 @@ function App() {
         const daysSinceAdded = Math.floor((now - createdAt) / (1000 * 60 * 60 * 24));
 
         if (daysSinceAdded <= 7) {
-          const notificationId = `recent-${item.id}-${daysSinceAdded}`;
+          const notificationId = `recent-${item.id}`; // Static ID without day count
           recentlyAdded.push({
             id: notificationId,
             item,
@@ -802,7 +802,7 @@ function App() {
             }
           }
 
-          const notificationId = `updated-${item.id}-${daysSinceUpdate}`;
+          const notificationId = `updated-${item.id}`; // Static ID without day count
           recentlyUpdated.push({
             id: notificationId,
             item,
@@ -822,7 +822,7 @@ function App() {
         const daysSinceDeleted = Math.floor((now - deletedAt) / (1000 * 60 * 60 * 24));
 
         if (daysSinceDeleted <= 7) {
-          const notificationId = `deleted-${deletedItem.id}-${daysSinceDeleted}`;
+          const notificationId = `deleted-${deletedItem.id}`; // Static ID without day count
           recentlyDeleted.push({
             id: notificationId,
             item: {
