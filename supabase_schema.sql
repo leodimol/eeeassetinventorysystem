@@ -28,7 +28,9 @@ CREATE TABLE IF NOT EXISTS equipment (
     capacity TEXT,
     year_manufactured TEXT,
     logistics_type TEXT,
-    quantity TEXT,
+    quantity INTEGER DEFAULT 1,
+    remaining_quantity INTEGER DEFAULT 1,
+    batch_number TEXT,
     brand_make TEXT,
     material TEXT,
     dimensions TEXT,
@@ -58,6 +60,7 @@ CREATE TABLE IF NOT EXISTS equipment (
     office_material TEXT,
     office_cut_type TEXT,
     office_notes TEXT,
+    date_added TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -197,4 +200,54 @@ CREATE TRIGGER on_equipment_delete
     BEFORE DELETE ON equipment
     FOR EACH ROW
     EXECUTE FUNCTION log_deleted_asset();
+
+-- Migration script to update existing data for new batch tracking system
+-- Run this in Supabase SQL Editor after updating the schema
+
+-- Add new columns if they don't exist
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'equipment' AND column_name = 'batch_number'
+    ) THEN
+        ALTER TABLE equipment ADD COLUMN batch_number TEXT;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'equipment' AND column_name = 'remaining_quantity'
+    ) THEN
+        ALTER TABLE equipment ADD COLUMN remaining_quantity INTEGER DEFAULT 1;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'equipment' AND column_name = 'date_added'
+    ) THEN
+        ALTER TABLE equipment ADD COLUMN date_added TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+    END IF;
+END $$;
+
+-- Convert quantity from TEXT to INTEGER and update remaining_quantity
+UPDATE equipment
+SET
+    quantity = CASE WHEN quantity ~ '^[0-9]+$' THEN CAST(quantity AS INTEGER) ELSE 1 END,
+    remaining_quantity = CASE WHEN quantity ~ '^[0-9]+$' THEN CAST(quantity AS INTEGER) ELSE 1 END
+WHERE quantity IS NOT NULL;
+
+-- Set remaining_quantity to 0 for items that are already released/in_use
+UPDATE equipment
+SET remaining_quantity = 0
+WHERE status IN ('in_use', 'released') AND idle_release = 'release';
+
+-- Generate batch numbers for existing records that don't have one
+UPDATE equipment
+SET batch_number = 'BATCH-' || LPAD(ROW_NUMBER() OVER (ORDER BY created_at)::TEXT, 6, '0')
+WHERE batch_number IS NULL;
+
+-- Set date_added for existing records
+UPDATE equipment
+SET date_added = created_at
+WHERE date_added IS NULL;
 
