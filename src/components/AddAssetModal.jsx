@@ -530,6 +530,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         brand: formData.brand,
         model: formData.model,
         asset_tag: formData.asset_tag,
+        batch_number: formData.batch_number || null,
+        quantity: formData.quantity || 1,
+        remaining_quantity: formData.remaining_quantity || 1,
         serial: formData.serial || null,
         location: formData.location || null,
         assigned_to: formData.assigned_to || null,
@@ -537,11 +540,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         idle_release: formData.idle_release || null,
         released_by: formData.released_by || null,
         release_datetime: formData.release_datetime || null,
+        release_location: formData.release_location || null,
         status: formData.status,
         condition: formData.condition,
         last_service: formData.last_service || null,
         purchase_date: formData.purchase_date || null,
         warranty_date: formData.warranty_date || null,
+        date_added: formData.date_added || new Date().toISOString(),
         equipment_type: formData.category,
         // Laptop specific fields
         processor: formData.processor || null,
@@ -614,6 +619,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       let savedAsset;
 
       if (isEditMode) {
+        // If releasing an item, deduct 1 from remaining_quantity
+        if (formData.idle_release === 'release' && formData.remaining_quantity > 0) {
+          payload.remaining_quantity = Math.max(0, formData.remaining_quantity - 1);
+        }
+
         const { data, error } = await supabase
           .from('equipment')
           .update(payload)
@@ -624,6 +634,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         if (error) throw error;
         savedAsset = data;
       } else {
+        // For new records, set remaining_quantity equal to quantity for idle mode
+        // For release mode, set remaining_quantity to quantity - 1
+        if (formData.idle_release === 'release') {
+          payload.remaining_quantity = Math.max(0, (formData.quantity || 1) - 1);
+        } else {
+          payload.remaining_quantity = formData.quantity || 1;
+        }
+
         const { data, error } = await supabase
           .from('equipment')
           .insert(payload)
