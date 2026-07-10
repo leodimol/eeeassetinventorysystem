@@ -1762,7 +1762,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
           placeholder="e.g. Toyota, Ford, Honda"
         />
-        <p className="form-hint">Enter the manufacturer or brand name (e.g., Dell, HP, Toyota). This helps identify the equipment source and warranty support.</p>
+        <p className="form-hint">Manufacturer or brand name (e.g., Dell, HP, Toyota)</p>
         {errors.brand && <p className="error-text">{errors.brand}</p>}
       </div>
 
@@ -1777,7 +1777,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.batch_number ? 'border-red-500' : ''}`}
           placeholder="e.g. BATCH-2024-001"
         />
-        <p className="form-hint">Unique identifier for this shipment/purchase (e.g., BATCH-2024-001). Use a consistent format for easy tracking.</p>
+        <p className="form-hint">Unique shipment/purchase reference (e.g., BATCH-2024-001)</p>
         {errors.batch_number && <p className="error-text">{errors.batch_number}</p>}
       </div>
 
@@ -1793,7 +1793,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           placeholder="e.g. 10"
           min="1"
         />
-        <p className="form-hint">Total number of identical items in this batch. When releasing items, this number will decrease automatically.</p>
+        <p className="form-hint">Total number of identical items in this batch</p>
         {errors.quantity && <p className="error-text">{errors.quantity}</p>}
       </div>
 
@@ -1808,7 +1808,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.location ? 'border-red-500' : ''}`}
           placeholder="e.g. Warehouse A, Shelf 3"
         />
-        <p className="form-hint">Physical location where this batch is stored (e.g., Warehouse A, Shelf 3, Room 201). Helps with inventory tracking.</p>
+        <p className="form-hint">Physical storage location (e.g., Warehouse A, Shelf 3)</p>
         {errors.location && <p className="error-text">{errors.location}</p>}
       </div>
 
@@ -1822,7 +1822,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           onChange={handleChange}
           className={`form-input ${errors.warranty_date ? 'border-red-500' : ''}`}
         />
-        <p className="form-hint">Warranty expiry date for this batch. Enter the date when manufacturer warranty ends.</p>
+        <p className="form-hint">Warranty expiry date</p>
         {errors.warranty_date && <p className="error-text">{errors.warranty_date}</p>}
       </div>
 
@@ -1841,7 +1841,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           <option value="needs_repair">Needs Repair</option>
           <option value="damaged">Damaged</option>
         </select>
-        <p className="form-hint">Current physical condition: New=unused, Functional=working but used, Needs Repair=requires fixing, Damaged=not usable.</p>
+        <p className="form-hint">Current physical condition of items</p>
         {errors.condition && <p className="error-text">{errors.condition}</p>}
       </div>
 
@@ -1856,7 +1856,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           rows="3"
           placeholder="Additional notes (e.g., '15-inch screens, 8GB RAM')"
         />
-        <p className="form-hint">Add any additional details (e.g., specific features, color variants, special configurations, purchase notes).</p>
+        <p className="form-hint">Additional details about the equipment</p>
       </div>
 
       {/* Category-specific fields */}
