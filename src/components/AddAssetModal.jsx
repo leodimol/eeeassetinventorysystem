@@ -905,7 +905,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.plate_number}
                 onChange={handleChange}
                 className={`form-input ${errors.plate_number ? 'border-red-500' : ''}`}
-                placeholder="Vehicle license plate number (e.g. ABC-1234)"
+                placeholder="Plate number (e.g., ABC-1234)"
               />
               {errors.plate_number && <p className="error-text">{errors.plate_number}</p>}
             </div>
@@ -1759,7 +1759,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.brand}
           onChange={handleChange}
           className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-          placeholder="Manufacturer or brand name (e.g., Dell, HP, Toyota)"
+          placeholder="Brand (e.g., Dell, HP)"
         />
         {errors.brand && <p className="error-text">{errors.brand}</p>}
       </div>
@@ -1773,7 +1773,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.batch_number}
           onChange={handleChange}
           className={`form-input ${errors.batch_number ? 'border-red-500' : ''}`}
-          placeholder="Unique shipment/purchase reference (e.g., BATCH-2024-001)"
+          placeholder="Batch number (e.g., BATCH-2024-001)"
         />
         {errors.batch_number && <p className="error-text">{errors.batch_number}</p>}
       </div>
@@ -1787,7 +1787,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.quantity}
           onChange={handleChange}
           className={`form-input ${errors.quantity ? 'border-red-500' : ''}`}
-          placeholder="Total number of identical items in this batch"
+          placeholder="Quantity (e.g., 10)"
           min="1"
         />
         {errors.quantity && <p className="error-text">{errors.quantity}</p>}
@@ -1802,7 +1802,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.location}
           onChange={handleChange}
           className={`form-input ${errors.location ? 'border-red-500' : ''}`}
-          placeholder="Physical storage location (e.g., Warehouse A, Shelf 3)"
+          placeholder="Location (e.g., Warehouse A, Shelf 3)"
         />
         {errors.location && <p className="error-text">{errors.location}</p>}
       </div>
@@ -1848,7 +1848,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           onChange={handleChange}
           className="form-textarea"
           rows="3"
-          placeholder="Additional details about the equipment"
+          placeholder="Additional details"
         />
       </div>
 
@@ -1923,7 +1923,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.added_by}
           onChange={handleChange}
           className={`form-input ${errors.added_by ? 'border-red-500' : ''}`}
-          placeholder="User or staff member adding this batch (e.g. John Smith)"
+          placeholder="Added by (e.g., John Smith)"
         />
         {errors.added_by && <p className="error-text">{errors.added_by}</p>}
       </div>
@@ -1994,7 +1994,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.model}
                   onChange={handleChange}
                   className={`form-input ${errors.model ? 'border-red-500' : ''}`}
-                  placeholder="Specific model of the item being released (e.g. ThinkPad X1, MacBook Pro)"
+                  placeholder="Model (e.g., ThinkPad X1)"
                 />
                 {errors.model && <p className="error-text">{errors.model}</p>}
               </div>
@@ -2008,7 +2008,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.serial}
                   onChange={handleChange}
                   className={`form-input ${errors.serial ? 'border-red-500' : ''}`}
-                  placeholder="Unique identifier for this specific unit (e.g. SN-12345678)"
+                  placeholder="Serial number (e.g., SN-12345678)"
                 />
                 {errors.serial && <p className="error-text">{errors.serial}</p>}
               </div>
@@ -2022,7 +2022,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.assigned_to}
                   onChange={handleChange}
                   className={`form-input ${errors.assigned_to ? 'border-red-500' : ''}`}
-                  placeholder="Name or ID of the person receiving this released item (e.g. John Smith)"
+                  placeholder="Assign to person (e.g., John Smith)"
                 />
                 {errors.assigned_to && <p className="error-text">{errors.assigned_to}</p>}
               </div>
@@ -2036,7 +2036,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.release_location || ''}
                   onChange={handleChange}
                   className={`form-input ${errors.release_location ? 'border-red-500' : ''}`}
-                  placeholder="Destination department, site, or location for this released item (e.g. Marketing Department, HQ Floor 3)"
+                  placeholder="Assign to location (e.g., Marketing Dept)"
                 />
                 {errors.release_location && <p className="error-text">{errors.release_location}</p>}
               </div>
@@ -2050,7 +2050,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.released_by}
                   onChange={handleChange}
                   className={`form-input ${errors.released_by ? 'border-red-500' : ''}`}
-                  placeholder="Name or user ID of the person releasing this item (e.g. John Smith)"
+                  placeholder="Released by (e.g., John Smith)"
                 />
                 {errors.released_by && <p className="error-text">{errors.released_by}</p>}
               </div>
