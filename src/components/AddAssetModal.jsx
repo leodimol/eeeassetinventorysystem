@@ -59,11 +59,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     brand: '',
     model: '',
     asset_tag: '',
+    batch_number: '',
+    quantity: 1,
+    remaining_quantity: 1,
     serial: '',
     location: '',
     assigned_to: '',
     added_by: '',
-    idle_release: '',
+    idle_release: 'idle',
     released_by: '',
     release_datetime: '',
     status: 'available',
@@ -71,6 +74,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     last_service: new Date().toISOString().split('T')[0],
     purchase_date: '',
     warranty_date: '',
+    date_added: new Date().toISOString(),
     // Laptop specific fields
     processor: '',
     ram: '',
@@ -85,7 +89,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     year_manufactured: '',
     // Logistics specific fields
     logistics_type: '',
-    quantity: '',
     brand_make: '',
     material: '',
     dimensions: '',
@@ -149,11 +152,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           brand: asset.brand || '',
           model: asset.model || '',
           asset_tag: asset.asset_tag || '',
+          batch_number: asset.batch_number || '',
+          quantity: asset.quantity || 1,
+          remaining_quantity: asset.remaining_quantity || 1,
           serial: asset.serial || '',
           location: asset.location || '',
           assigned_to: asset.assigned_to || '',
           added_by: asset.added_by || '',
-          idle_release: asset.idle_release || '',
+          idle_release: asset.idle_release || 'idle',
           released_by: asset.released_by || '',
           release_datetime: asset.release_datetime || '',
           status: asset.status || 'available',
@@ -161,6 +167,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           last_service: asset.last_service ? asset.last_service.split('T')[0] : new Date().toISOString().split('T')[0],
           purchase_date: asset.purchase_date ? asset.purchase_date.split('T')[0] : '',
           warranty_date: asset.warranty_date ? asset.warranty_date.split('T')[0] : '',
+          date_added: asset.date_added || new Date().toISOString(),
           processor: asset.processor || '',
           ram: asset.ram || '',
           storage: asset.storage || '',
@@ -172,7 +179,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           capacity: asset.capacity || '',
           year_manufactured: asset.year_manufactured || '',
           logistics_type: asset.logistics_type || '',
-          quantity: asset.quantity || '',
           brand_make: asset.brand_make || '',
           material: asset.material || '',
           dimensions: asset.dimensions || '',
@@ -325,17 +331,19 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     console.log('Validating form with category:', selectedCategory);
 
     if (!formData.category) validationErrors.category = 'Category is required';
-    // Brand and Model are not required for logistics, office, and other categories
-    if (selectedCategory !== 'logistics' && selectedCategory !== 'office' && selectedCategory !== 'other') {
-      if (!formData.brand) validationErrors.brand = 'Brand is required';
-      if (!formData.model) validationErrors.model = 'Model is required';
-    }
+
+    // New mandatory fields for batch-based entry
+    if (!formData.brand) validationErrors.brand = 'Brand is required';
+    if (!formData.batch_number) validationErrors.batch_number = 'Batch number is required';
+    if (!formData.quantity || formData.quantity < 1) validationErrors.quantity = 'Quantity must be at least 1';
+    if (!formData.location) validationErrors.location = 'Storage/Location is required';
+    if (!formData.warranty_date) validationErrors.warranty_date = 'Warranty date is required';
+    if (!formData.condition) validationErrors.condition = 'Condition is required';
+
     // Type is required for other category
     if (selectedCategory === 'other' && !formData.type) {
       validationErrors.type = 'Equipment type is required';
     }
-    if (!formData.asset_tag) validationErrors.asset_tag = 'Asset tag is required';
-    if (!formData.added_by) validationErrors.added_by = 'Added By is required';
 
     // Require reason for update when editing
     if (isEditMode && !updateReason.trim()) {
@@ -426,7 +434,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 
     if (selectedCategory === 'logistics') {
       if (!formData.logistics_type) validationErrors.logistics_type = 'Logistics type is required';
-      if (!formData.quantity) validationErrors.quantity = 'Quantity is required for logistics equipment';
     }
 
     // Clear any lingering serial errors for categories where serial is not required
@@ -2319,100 +2326,112 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         </span>
       </div>
 
-      {/* Brand - Only for transport */}
-      {selectedCategory === 'transport' && (
-        <div className="form-group">
-          <label className="form-label">Brand *</label>
-          <input
-            type="text"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-            placeholder="e.g. Toyota, Ford, Honda"
-          />
-          <p className="form-hint">Manufacturer or brand name (required)</p>
-          {errors.brand && <p className="error-text">{errors.brand}</p>}
-        </div>
-      )}
-
-      {/* Model - Only for transport */}
-      {selectedCategory === 'transport' && (
-        <div className="form-group">
-          <label className="form-label">Model *</label>
-          <input
-            type="text"
-            name="model"
-            value={formData.model}
-            onChange={handleChange}
-            className={`form-input ${errors.model ? 'border-red-500' : ''}`}
-            placeholder="e.g. Camry, F-150, Civic"
-          />
-          <p className="form-hint">Specific model or version (required)</p>
-          {errors.model && <p className="error-text">{errors.model}</p>}
-        </div>
-      )}
-
-      {/* Equipment Type - Only for other category */}
-      {selectedCategory === 'other' && (
-        <div className="form-group">
-          <label className="form-label">Equipment Type *</label>
-          <input
-            type="text"
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-            className={`form-input ${errors.type ? 'border-red-500' : ''}`}
-            placeholder="e.g. Furniture, Tools, Supplies"
-          />
-          <p className="form-hint">Type or category of equipment (required)</p>
-          {errors.type && <p className="error-text">{errors.type}</p>}
-        </div>
-      )}
-
-      {/* Brand - Optional for other category */}
-      {selectedCategory === 'other' && (
-        <div className="form-group">
-          <label className="form-label">Brand (Optional during entry, Required during release)</label>
-          <input
-            type="text"
-            name="brand"
-            value={formData.brand}
-            onChange={handleChange}
-            className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-            placeholder="e.g. IKEA, Stanley, Dewalt"
-          />
-          <p className="form-hint">Manufacturer or brand name (optional during entry, required during release)</p>
-          {errors.brand && <p className="error-text">{errors.brand}</p>}
-        </div>
-      )}
-
-      {/* Asset Tag */}
+      {/* Brand - Required for all categories in new batch system */}
       <div className="form-group">
-        <label className="form-label">Asset Tag *</label>
+        <label className="form-label">Brand *</label>
         <input
           type="text"
-          name="asset_tag"
-          value={formData.asset_tag}
+          name="brand"
+          value={formData.brand}
           onChange={handleChange}
-          className={`form-input ${errors.asset_tag ? 'border-red-500' : ''}`}
-          placeholder="e.g. IT-2024-001"
+          className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
+          placeholder="e.g. Toyota, Ford, Honda"
         />
-        <p className="form-hint">Unique identifier for the asset (required)</p>
-        {errors.asset_tag && <p className="error-text">{errors.asset_tag}</p>}
-        {duplicateWarning && (
-          <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-            <p className="text-sm font-medium text-yellow-800">
-              {duplicateWarning.messages.join('\n')}
-            </p>
-            <p className="text-xs text-yellow-700 mt-1">
-              Existing equipment:
-              {duplicateWarning.duplicates.map(d =>
-                `- ${d.model} (${d.asset_tag || 'No Tag'}) - ${d.status}`
-              ).join('\n')}
-            </p>
-          </div>
-        )}
+        <p className="form-hint">Manufacturer or brand name (required)</p>
+        {errors.brand && <p className="error-text">{errors.brand}</p>}
+      </div>
+
+      {/* Batch Number - Required for all categories */}
+      <div className="form-group">
+        <label className="form-label">Batch Number *</label>
+        <input
+          type="text"
+          name="batch_number"
+          value={formData.batch_number}
+          onChange={handleChange}
+          className={`form-input ${errors.batch_number ? 'border-red-500' : ''}`}
+          placeholder="e.g. BATCH-2024-001"
+        />
+        <p className="form-hint">Unique batch/shipment reference (required)</p>
+        {errors.batch_number && <p className="error-text">{errors.batch_number}</p>}
+      </div>
+
+      {/* Quantity - Required for all categories */}
+      <div className="form-group">
+        <label className="form-label">Quantity *</label>
+        <input
+          type="number"
+          name="quantity"
+          value={formData.quantity}
+          onChange={handleChange}
+          className={`form-input ${errors.quantity ? 'border-red-500' : ''}`}
+          placeholder="e.g. 10"
+          min="1"
+        />
+        <p className="form-hint">Total number of identical items in this batch (required)</p>
+        {errors.quantity && <p className="error-text">{errors.quantity}</p>}
+      </div>
+
+      {/* Storage / Location - Required for all categories */}
+      <div className="form-group">
+        <label className="form-label">Storage / Location *</label>
+        <input
+          type="text"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          className={`form-input ${errors.location ? 'border-red-500' : ''}`}
+          placeholder="e.g. Warehouse A, Shelf 3"
+        />
+        <p className="form-hint">Where this batch is kept (required)</p>
+        {errors.location && <p className="error-text">{errors.location}</p>}
+      </div>
+
+      {/* Warranty Date - Required for all categories */}
+      <div className="form-group">
+        <label className="form-label">Warranty Date *</label>
+        <input
+          type="date"
+          name="warranty_date"
+          value={formData.warranty_date}
+          onChange={handleChange}
+          className={`form-input ${errors.warranty_date ? 'border-red-500' : ''}`}
+        />
+        <p className="form-hint">Warranty period or expiry date (required)</p>
+        {errors.warranty_date && <p className="error-text">{errors.warranty_date}</p>}
+      </div>
+
+      {/* Condition - Required for all categories */}
+      <div className="form-group">
+        <label className="form-label">Condition *</label>
+        <select
+          name="condition"
+          value={formData.condition}
+          onChange={handleChange}
+          className={`form-input ${errors.condition ? 'border-red-500' : ''}`}
+        >
+          <option value="">Select condition</option>
+          <option value="new">New</option>
+          <option value="functional">Functional</option>
+          <option value="needs_repair">Needs Repair</option>
+          <option value="damaged">Damaged</option>
+        </select>
+        <p className="form-hint">Current status (required)</p>
+        {errors.condition && <p className="error-text">{errors.condition}</p>}
+      </div>
+
+      {/* Description - Optional */}
+      <div className="form-group">
+        <label className="form-label">Description (Optional)</label>
+        <textarea
+          name="notes"
+          value={formData.notes}
+          onChange={handleChange}
+          className="form-textarea"
+          rows="3"
+          placeholder="Additional notes (e.g., '15-inch screens, 8GB RAM')"
+        />
+        <p className="form-hint">Additional details about the equipment (optional)</p>
       </div>
 
       {/* Category-specific fields */}
