@@ -69,6 +69,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     idle_release: 'idle',
     released_by: '',
     release_datetime: '',
+    release_location: '',
     status: 'available',
     condition: 'new',
     last_service: new Date().toISOString().split('T')[0],
@@ -162,6 +163,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           idle_release: asset.idle_release || 'idle',
           released_by: asset.released_by || '',
           release_datetime: asset.release_datetime || '',
+          release_location: asset.release_location || '',
           status: asset.status || 'available',
           condition: asset.condition || 'new',
           last_service: asset.last_service ? asset.last_service.split('T')[0] : new Date().toISOString().split('T')[0],
@@ -378,10 +380,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 
     // Release mode validation
     if (formData.idle_release === 'release') {
-      if (!formData.location) validationErrors.location = 'Location is required when releasing';
+      // New mandatory release fields
+      if (!formData.model) validationErrors.model = 'Model is required when releasing equipment';
+      if (!formData.serial) validationErrors.serial = 'Serial number is required when releasing equipment';
       if (!formData.assigned_to) validationErrors.assigned_to = 'Assigned To is required when releasing';
+      if (!formData.release_location) validationErrors.release_location = 'Assign To Location is required when releasing';
       if (!formData.released_by) validationErrors.released_by = 'Released By is required when releasing';
       if (!formData.release_datetime) validationErrors.release_datetime = 'Release Date & Time is required when releasing';
+
+      // Stock validation - prevent releasing more than available
+      if (formData.remaining_quantity !== undefined && formData.remaining_quantity <= 0) {
+        validationErrors.stock = 'No items remaining in this batch. Cannot release more items.';
+      }
 
       // Require serial number/identifier during release for equipment that has it
       if (selectedCategory === 'office' && selectedOfficeType) {
@@ -2554,137 +2564,200 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         {errors.added_by && <p className="error-text">{errors.added_by}</p>}
       </div>
 
-      {/* Idle/Release */}
+      {/* Action Buttons - Set to Idle / Release Item */}
       <div className="form-group">
-        <label className="form-label">Idle/Release</label>
+        <label className="form-label">Action</label>
         <div className="flex gap-2">
           <button
             type="button"
             onClick={() => {
               setFormData(prev => ({ ...prev, idle_release: 'idle', status: 'available' }));
             }}
-            className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all duration-200 ${
+            className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200 font-semibold ${
               formData.idle_release === 'idle'
-                ? 'bg-indigo-500 text-white border-indigo-500 shadow-[0_4px_12px_rgba(99,102,241,0.3)]'
-                : 'bg-white/80 text-gray-700 border-gray-300 hover:border-indigo-400 hover:bg-indigo-50'
+                ? 'bg-green-500 text-white border-green-500 shadow-[0_4px_12px_rgba(34,197,94,0.3)]'
+                : 'bg-white/80 text-gray-700 border-gray-300 hover:border-green-400 hover:bg-green-50'
             }`}
           >
-            Idle
+            ✅ Set to Idle
           </button>
           <button
             type="button"
             onClick={() => {
               setFormData(prev => ({ ...prev, idle_release: 'release', status: 'in_use' }));
             }}
-            className={`flex-1 px-4 py-2 rounded-lg border-2 transition-all duration-200 ${
+            className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200 font-semibold ${
               formData.idle_release === 'release'
-                ? 'bg-indigo-500 text-white border-indigo-500 shadow-[0_4px_12px_rgba(99,102,241,0.3)]'
-                : 'bg-white/80 text-gray-700 border-gray-300 hover:border-indigo-400 hover:bg-indigo-50'
+                ? 'bg-blue-500 text-white border-blue-500 shadow-[0_4px_12px_rgba(59,130,246,0.3)]'
+                : 'bg-white/80 text-gray-700 border-gray-300 hover:border-blue-400 hover:bg-blue-50'
             }`}
           >
-            Release
+            📦 Release Item
           </button>
         </div>
         <div
           className={`mt-3 p-3 rounded-lg border-l-4 ${
             formData.idle_release === 'idle'
-              ? 'bg-yellow-50 border-yellow-500'
+              ? 'bg-green-50 border-green-500'
               : 'bg-blue-50 border-blue-500'
           }`}
         >
           <p className="text-sm font-semibold mb-1">
-            {formData.idle_release === 'idle' ? '⚠️ Idle Mode' : '📋 Release Mode'}
+            {formData.idle_release === 'idle' ? '✅ Idle Mode' : '📋 Release Mode'}
           </p>
           <p className="text-xs text-gray-700">
             {formData.idle_release === 'idle'
-              ? 'Asset is idle in storage. Location and assignment fields are HIDDEN.'
-              : 'Asset is released/assigned. Location and assignment fields are REQUIRED.'}
+              ? 'Save batch to storage as available stock. Items remain in inventory.'
+              : 'Release individual items from this batch. Serial number and assignment details required.'}
           </p>
         </div>
       </div>
 
-      {/* Location - Only show when release mode */}
+      {/* Release Fields - Only show when release mode */}
       {formData.idle_release === 'release' && (
-        <div className="form-group">
-          <label className="form-label">Location *</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            className="form-input"
-            placeholder="e.g. Headquarters, Warehouse"
-          />
-        </div>
-      )}
+        <>
+          <div className="form-section">
+            <div className="form-section-header">
+              <h4 className="form-section-title">Release Details</h4>
+            </div>
+            <div className="form-section-content">
+              {/* Model - Required during release */}
+              <div className="form-group">
+                <label className="form-label">Model *</label>
+                <input
+                  type="text"
+                  name="model"
+                  value={formData.model}
+                  onChange={handleChange}
+                  className={`form-input ${errors.model ? 'border-red-500' : ''}`}
+                  placeholder="e.g. ThinkPad X1, MacBook Pro"
+                />
+                <p className="form-hint">Specific model of the item being released (required)</p>
+                {errors.model && <p className="error-text">{errors.model}</p>}
+              </div>
 
-      {/* Assigned To - Only show when release mode */}
-      {formData.idle_release === 'release' && (
-        <div className="form-group">
-          <label className="form-label">Assigned To *</label>
-          <input
-            type="text"
-            name="assigned_to"
-            value={formData.assigned_to}
-            onChange={handleChange}
-            className="form-input"
-            placeholder="e.g. John Smith"
-          />
-        </div>
-      )}
+              {/* Serial Number / Asset Tag - Required during release */}
+              <div className="form-group">
+                <label className="form-label">Serial Number / Asset Tag *</label>
+                <input
+                  type="text"
+                  name="serial"
+                  value={formData.serial}
+                  onChange={handleChange}
+                  className={`form-input ${errors.serial ? 'border-red-500' : ''}`}
+                  placeholder="e.g. SN-12345678"
+                />
+                <p className="form-hint">Unique identifier for this specific unit (required)</p>
+                {errors.serial && <p className="error-text">{errors.serial}</p>}
+              </div>
 
-      {/* Release By - Only show when release mode */}
-      {formData.idle_release === 'release' && (
-        <div className="form-group">
-          <label className="form-label">Released By *</label>
-          <input
-            type="text"
-            name="released_by"
-            value={formData.released_by}
-            onChange={handleChange}
-            className={`form-input ${errors.released_by ? 'border-red-500' : ''}`}
-            placeholder="e.g. John Smith"
-          />
-          {errors.released_by && <p className="error-text">{errors.released_by}</p>}
-        </div>
-      )}
+              {/* Assign To - Person */}
+              <div className="form-group">
+                <label className="form-label">Assign To - Person *</label>
+                <input
+                  type="text"
+                  name="assigned_to"
+                  value={formData.assigned_to}
+                  onChange={handleChange}
+                  className={`form-input ${errors.assigned_to ? 'border-red-500' : ''}`}
+                  placeholder="e.g. John Smith"
+                />
+                <p className="form-hint">Name/ID of the recipient (required)</p>
+                {errors.assigned_to && <p className="error-text">{errors.assigned_to}</p>}
+              </div>
 
-      {/* Release Date & Time - Only show when release mode */}
-      {formData.idle_release === 'release' && (
-        <div className="form-group">
-          <label className="form-label">Release Date & Time *</label>
-          <input
-            type="datetime-local"
-            name="release_datetime"
-            value={formData.release_datetime}
-            onChange={handleChange}
-            className={`form-input text-lg p-3 ${errors.release_datetime ? 'border-red-500 border-2' : 'border-2'}`}
-            style={{
-              fontSize: '16px',
-              padding: '12px',
-              colorScheme: 'light',
-              outline: 'none'
-            }}
-            onClick={(e) => e.target.showPicker?.()}
-          />
-          <style>{`
-            input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-              filter: invert(1);
-              cursor: pointer;
-            }
-            input[type="datetime-local"]:focus {
-              outline: none;
-              box-shadow: none;
-            }
-            .form-hint {
-              font-size: 11px;
-              color: #6b7280;
-              margin-top: 4px;
-              font-style: italic;
-            }
-          `}</style>
-          {errors.release_datetime && <p className="error-text">{errors.release_datetime}</p>}
-        </div>
+              {/* Assign To - Location */}
+              <div className="form-group">
+                <label className="form-label">Assign To - Location *</label>
+                <input
+                  type="text"
+                  name="release_location"
+                  value={formData.release_location || ''}
+                  onChange={handleChange}
+                  className={`form-input ${errors.release_location ? 'border-red-500' : ''}`}
+                  placeholder="e.g. Marketing Department, HQ Floor 3"
+                />
+                <p className="form-hint">Department/site where item is sent (required)</p>
+                {errors.release_location && <p className="error-text">{errors.release_location}</p>}
+              </div>
+
+              {/* Released By - Auto-filled or manual */}
+              <div className="form-group">
+                <label className="form-label">Released By *</label>
+                <input
+                  type="text"
+                  name="released_by"
+                  value={formData.released_by}
+                  onChange={handleChange}
+                  className={`form-input ${errors.released_by ? 'border-red-500' : ''}`}
+                  placeholder="e.g. John Smith"
+                />
+                <p className="form-hint">Person releasing the item (required)</p>
+                {errors.released_by && <p className="error-text">{errors.released_by}</p>}
+              </div>
+
+              {/* Release Date & Time - Auto-filled */}
+              <div className="form-group">
+                <label className="form-label">Release Date & Time *</label>
+                <input
+                  type="datetime-local"
+                  name="release_datetime"
+                  value={formData.release_datetime}
+                  onChange={handleChange}
+                  className={`form-input text-lg p-3 ${errors.release_datetime ? 'border-red-500 border-2' : 'border-2'}`}
+                  style={{
+                    fontSize: '16px',
+                    padding: '12px',
+                    colorScheme: 'light',
+                    outline: 'none'
+                  }}
+                  onClick={(e) => e.target.showPicker?.()}
+                />
+                <style>{`
+                  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+                    filter: invert(1);
+                    cursor: pointer;
+                  }
+                  input[type="datetime-local"]:focus {
+                    outline: none;
+                    box-shadow: none;
+                  }
+                  .form-hint {
+                    font-size: 11px;
+                    color: #6b7280;
+                    margin-top: 4px;
+                    font-style: italic;
+                  }
+                `}</style>
+                <p className="form-hint">When the item was released (required)</p>
+                {errors.release_datetime && <p className="error-text">{errors.release_datetime}</p>}
+              </div>
+
+              {/* Stock Warning */}
+              {formData.remaining_quantity !== undefined && formData.remaining_quantity <= 0 && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+                  <p className="text-sm font-medium text-red-800">
+                    ⚠️ No items remaining in this batch
+                  </p>
+                  <p className="text-xs text-red-700 mt-1">
+                    This batch has 0 remaining items. Cannot release more items.
+                  </p>
+                </div>
+              )}
+
+              {formData.remaining_quantity !== undefined && formData.remaining_quantity > 0 && formData.remaining_quantity <= 3 && (
+                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                  <p className="text-sm font-medium text-yellow-800">
+                    ⚠️ Low Stock Warning
+                  </p>
+                  <p className="text-xs text-yellow-700 mt-1">
+                    Only {formData.remaining_quantity} item(s) remaining in this batch.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
