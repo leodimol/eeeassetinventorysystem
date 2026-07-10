@@ -242,9 +242,15 @@ SET remaining_quantity = 0
 WHERE status IN ('in_use', 'released') AND idle_release = 'release';
 
 -- Generate batch numbers for existing records that don't have one
-UPDATE equipment
-SET batch_number = 'BATCH-' || LPAD(ROW_NUMBER() OVER (ORDER BY created_at)::TEXT, 6, '0')
-WHERE batch_number IS NULL;
+WITH numbered_rows AS (
+    SELECT id, 'BATCH-' || LPAD(ROW_NUMBER() OVER (ORDER BY created_at)::TEXT, 6, '0') as new_batch_number
+    FROM equipment
+    WHERE batch_number IS NULL
+)
+UPDATE equipment e
+SET batch_number = nr.new_batch_number
+FROM numbered_rows nr
+WHERE e.id = nr.id;
 
 -- Set date_added for existing records
 UPDATE equipment
