@@ -1068,10 +1068,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="specs"
                     value={formData.specs}
                     onChange={handleChange}
-                    className="form-textarea"
+                    className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
                     rows="3"
                     placeholder="Screen size, RAM, Storage"
                   />
+                  {errors.specs && <p className="error-text">{errors.specs}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1094,9 +1095,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Labeled or engraved"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
