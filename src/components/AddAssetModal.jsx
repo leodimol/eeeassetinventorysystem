@@ -1124,6 +1124,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
+                  />
+                </div>
+
+                <div className="form-group">
                   <label className="form-label">Condition</label>
                   <select
                     name="office_condition"
@@ -1279,6 +1291,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
+                  />
+                </div>
+
+                <div className="form-group">
                   <label className="form-label">Condition</label>
                   <select
                     name="office_condition"
@@ -1332,6 +1356,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     onChange={handleChange}
                     className="form-input"
                     placeholder="e.g. Kyocera, Xerox, Ricoh"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
                   />
                 </div>
 
@@ -1415,6 +1451,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     onChange={handleChange}
                     className="form-input"
                     placeholder="e.g. Canon, Epson, Fujitsu"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
                   />
                 </div>
 
@@ -1561,6 +1609,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
+                  />
+                </div>
+
+                <div className="form-group">
                   <label className="form-label">Condition</label>
                   <select
                     name="office_condition"
@@ -1613,6 +1673,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     onChange={handleChange}
                     className="form-input"
                     placeholder="e.g. TP-Link, Cisco, D-Link"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Serial Number</label>
+                  <input
+                    type="text"
+                    name="office_serial_id"
+                    value={formData.office_serial_id}
+                    onChange={handleChange}
+                    className="form-input"
+                    placeholder="Serial number from manufacturer"
                   />
                 </div>
 
