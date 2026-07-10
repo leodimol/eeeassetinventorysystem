@@ -374,6 +374,34 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       if (!formData.assigned_to) validationErrors.assigned_to = 'Assigned To is required when releasing';
       if (!formData.released_by) validationErrors.released_by = 'Released By is required when releasing';
       if (!formData.release_datetime) validationErrors.release_datetime = 'Release Date & Time is required when releasing';
+
+      // Require serial number/identifier during release for equipment that has it
+      if (selectedCategory === 'office' && selectedOfficeType) {
+        // Electronic equipment with serial numbers
+        const electronicTypes = ['desktop_computer', 'laptop', 'monitor', 'printer', 'photocopier', 'scanner', 'router', 'telephone'];
+        if (electronicTypes.includes(selectedOfficeType) && !formData.office_serial_id) {
+          validationErrors.office_serial_id = 'Serial number is required when releasing equipment';
+        }
+
+        // Furniture requires dimensions as identifier during release
+        const furnitureTypes = ['office_desk', 'office_chair', 'filing_cabinet', 'bookshelf'];
+        if (furnitureTypes.includes(selectedOfficeType) && !formData.dimensions) {
+          validationErrors.dimensions = 'Dimensions are required when releasing furniture for identification';
+        }
+
+        // Supplies require brand/model as identifier during release
+        const supplyTypes = ['keyboard_mouse', 'shredder', 'paper_cutter', 'stapler', 'hole_puncher', 'document_tray', 'calculator', 'whiteboard'];
+        if (supplyTypes.includes(selectedOfficeType) && !formData.brand) {
+          validationErrors.brand = 'Brand/Model is required when releasing supplies for identification';
+        }
+      }
+
+      // Logistics equipment requires serial_id during release
+      if (selectedCategory === 'logistics' && !formData.serial_id) {
+        validationErrors.serial_id = 'Serial/ID is required when releasing logistics equipment';
+      }
+
+      // Transport equipment already requires plate_number (validated below)
     }
 
     // Category-specific validation
@@ -963,9 +991,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Unique number/tag"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1130,9 +1159,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1297,9 +1327,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1366,9 +1397,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1461,9 +1493,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1615,9 +1648,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1683,9 +1717,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_serial_id"
                     value={formData.office_serial_id}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
+                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1770,9 +1805,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="dimensions"
                     value={formData.dimensions}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.dimensions ? 'border-red-500' : ''}`}
                     placeholder="e.g. 120×60×75 cm"
                   />
+                  {errors.dimensions && <p className="error-text">{errors.dimensions}</p>}
                 </div>
 
                 <div className="form-group">
@@ -2081,9 +2117,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Generic, Brand name"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -2192,9 +2229,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 name="serial_id"
                 value={formData.serial_id}
                 onChange={handleChange}
-                className="form-input"
+                className={`form-input ${errors.serial_id ? 'border-red-500' : ''}`}
                 placeholder="Individual tag or batch number"
               />
+              {errors.serial_id && <p className="error-text">{errors.serial_id}</p>}
             </div>
           </>
         );
