@@ -383,6 +383,12 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           validationErrors.office_serial_id = 'Serial number is required when releasing equipment';
         }
 
+        // Equipment with specs requires specs during release
+        const specTypes = ['desktop_computer', 'laptop'];
+        if (specTypes.includes(selectedOfficeType) && !formData.specs) {
+          validationErrors.specs = 'Specs are required when releasing equipment for identification';
+        }
+
         // Furniture requires dimensions as identifier during release
         const furnitureTypes = ['office_desk', 'office_chair', 'filing_cabinet', 'bookshelf'];
         if (furnitureTypes.includes(selectedOfficeType) && !formData.dimensions) {
@@ -966,10 +972,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="specs"
                     value={formData.specs}
                     onChange={handleChange}
-                    className="form-textarea"
+                    className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
                     rows="3"
                     placeholder="Processor, RAM, Storage, OS"
                   />
+                  {errors.specs && <p className="error-text">{errors.specs}</p>}
                 </div>
 
                 <div className="form-group">
