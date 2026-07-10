@@ -983,7 +983,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         return (
           <>
             {/* Type-specific fields based on office_type */}
-            {selectedOfficeType === 'desktop_computer' && (
+                        {selectedOfficeType === 'desktop_computer' && (
               <>
                 <div className="form-group">
                   <label className="form-label">Use</label>
@@ -1039,18 +1039,20 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Specs</label>
-                  <textarea
-                    name="specs"
-                    value={formData.specs}
-                    onChange={handleChange}
-                    className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
-                    rows="3"
-                    placeholder="Screen size, RAM, Storage"
-                  />
-                  {errors.specs && <p className="error-text">{errors.specs}</p>}
-                </div>
+                {formData.idle_release === 'release' && (
+                  <div className="form-group">
+                    <label className="form-label">Specs</label>
+                    <textarea
+                      name="specs"
+                      value={formData.specs}
+                      onChange={handleChange}
+                      className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
+                      rows="3"
+                      placeholder="Screen size, RAM, Storage"
+                    />
+                    {errors.specs && <p className="error-text">{errors.specs}</p>}
+                  </div>
+                )}
 
                 <div className="form-group">
                   <label className="form-label">Serial / Asset ID</label>
@@ -1760,7 +1762,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
           placeholder="e.g. Toyota, Ford, Honda"
         />
-        <p className="form-hint">Manufacturer or brand name (required)</p>
+        <p className="form-hint">Enter the manufacturer or brand name (e.g., Dell, HP, Toyota). This helps identify the equipment source and warranty support.</p>
         {errors.brand && <p className="error-text">{errors.brand}</p>}
       </div>
 
@@ -1775,7 +1777,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.batch_number ? 'border-red-500' : ''}`}
           placeholder="e.g. BATCH-2024-001"
         />
-        <p className="form-hint">Unique batch/shipment reference (required)</p>
+        <p className="form-hint">Unique identifier for this shipment/purchase (e.g., BATCH-2024-001). Use a consistent format for easy tracking.</p>
         {errors.batch_number && <p className="error-text">{errors.batch_number}</p>}
       </div>
 
@@ -1791,7 +1793,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           placeholder="e.g. 10"
           min="1"
         />
-        <p className="form-hint">Total number of identical items in this batch (required)</p>
+        <p className="form-hint">Total number of identical items in this batch. When releasing items, this number will decrease automatically.</p>
         {errors.quantity && <p className="error-text">{errors.quantity}</p>}
       </div>
 
@@ -1806,7 +1808,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.location ? 'border-red-500' : ''}`}
           placeholder="e.g. Warehouse A, Shelf 3"
         />
-        <p className="form-hint">Where this batch is kept (required)</p>
+        <p className="form-hint">Physical location where this batch is stored (e.g., Warehouse A, Shelf 3, Room 201). Helps with inventory tracking.</p>
         {errors.location && <p className="error-text">{errors.location}</p>}
       </div>
 
@@ -1820,7 +1822,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           onChange={handleChange}
           className={`form-input ${errors.warranty_date ? 'border-red-500' : ''}`}
         />
-        <p className="form-hint">Warranty period or expiry date (required)</p>
+        <p className="form-hint">Warranty expiry date for this batch. Enter the date when manufacturer warranty ends.</p>
         {errors.warranty_date && <p className="error-text">{errors.warranty_date}</p>}
       </div>
 
@@ -1839,7 +1841,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           <option value="needs_repair">Needs Repair</option>
           <option value="damaged">Damaged</option>
         </select>
-        <p className="form-hint">Current status (required)</p>
+        <p className="form-hint">Current physical condition: New=unused, Functional=working but used, Needs Repair=requires fixing, Damaged=not usable.</p>
         {errors.condition && <p className="error-text">{errors.condition}</p>}
       </div>
 
@@ -1854,7 +1856,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           rows="3"
           placeholder="Additional notes (e.g., '15-inch screens, 8GB RAM')"
         />
-        <p className="form-hint">Additional details about the equipment (optional)</p>
+        <p className="form-hint">Add any additional details (e.g., specific features, color variants, special configurations, purchase notes).</p>
       </div>
 
       {/* Category-specific fields */}
@@ -1892,24 +1894,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         </div>
       )}
 
-      {/* Condition - Only for transport and logistics */}
-      {selectedCategory !== 'office' && (
-        <div className="form-group">
-          <label className="form-label">Condition</label>
-          <select
-            name="condition"
-            value={formData.condition}
-            onChange={handleChange}
-            className="form-input asset-category-select"
-          >
-            {conditionOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
 
       {/* Last Service Date - Only for transport */}
       {selectedCategory === 'transport' && (
@@ -1937,31 +1921,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         />
       </div>
 
-      {/* Warranty Date - Optional for all categories */}
-      <div className="form-group">
-        <label className="form-label">Warranty Date (Optional)</label>
-        <input
-          type="date"
-          name="warranty_date"
-          value={formData.warranty_date}
-          onChange={handleChange}
-          className="form-input"
-        />
-      </div>
-
-      {/* Description - Optional for all categories */}
-      <div className="form-group">
-        <label className="form-label">Description (Optional)</label>
-        <textarea
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-          className="form-textarea"
-          rows="3"
-          placeholder="Additional details about the equipment"
-        />
-      </div>
-
       {/* Added By */}
       <div className="form-group">
         <label className="form-label">Added By *</label>
@@ -1973,7 +1932,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           className={`form-input ${errors.added_by ? 'border-red-500' : ''}`}
           placeholder="e.g. John Smith"
         />
-        <p className="form-hint">Name of the person adding this asset (required)</p>
+        <p className="form-hint">Enter the user or staff member adding this batch (required)</p>
         {errors.added_by && <p className="error-text">{errors.added_by}</p>}
       </div>
 
@@ -2075,7 +2034,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   className={`form-input ${errors.assigned_to ? 'border-red-500' : ''}`}
                   placeholder="e.g. John Smith"
                 />
-                <p className="form-hint">Name/ID of the recipient (required)</p>
+                <p className="form-hint">Name or ID of the person receiving this released item (required)</p>
                 {errors.assigned_to && <p className="error-text">{errors.assigned_to}</p>}
               </div>
 
@@ -2090,7 +2049,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   className={`form-input ${errors.release_location ? 'border-red-500' : ''}`}
                   placeholder="e.g. Marketing Department, HQ Floor 3"
                 />
-                <p className="form-hint">Department/site where item is sent (required)</p>
+                <p className="form-hint">Destination department, site, or location for this released item (required)</p>
                 {errors.release_location && <p className="error-text">{errors.release_location}</p>}
               </div>
 
@@ -2105,7 +2064,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   className={`form-input ${errors.released_by ? 'border-red-500' : ''}`}
                   placeholder="e.g. John Smith"
                 />
-                <p className="form-hint">Person releasing the item (required)</p>
+                <p className="form-hint">Name or user ID of the person releasing this item (required)</p>
                 {errors.released_by && <p className="error-text">{errors.released_by}</p>}
               </div>
 
@@ -2142,7 +2101,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     font-style: italic;
                   }
                 `}</style>
-                <p className="form-hint">When the item was released (required)</p>
+                <p className="form-hint">Exact release timestamp for this unit (required)</p>
                 {errors.release_datetime && <p className="error-text">{errors.release_datetime}</p>}
               </div>
 
@@ -2321,3 +2280,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 };
 
 export default AddAssetModal;
+
+
+
+
+
