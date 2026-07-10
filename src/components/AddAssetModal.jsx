@@ -905,9 +905,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.plate_number}
                 onChange={handleChange}
                 className={`form-input ${errors.plate_number ? 'border-red-500' : ''}`}
-                placeholder="e.g. ABC-1234"
+                placeholder="Vehicle license plate number (e.g. ABC-1234)"
               />
-              <p className="form-hint">Vehicle license plate number (required)</p>
               {errors.plate_number && <p className="error-text">{errors.plate_number}</p>}
             </div>
 
@@ -1924,9 +1923,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.added_by}
           onChange={handleChange}
           className={`form-input ${errors.added_by ? 'border-red-500' : ''}`}
-          placeholder="e.g. John Smith"
+          placeholder="User or staff member adding this batch (e.g. John Smith)"
         />
-        <p className="form-hint">Enter the user or staff member adding this batch (required)</p>
         {errors.added_by && <p className="error-text">{errors.added_by}</p>}
       </div>
 
@@ -1996,9 +1994,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.model}
                   onChange={handleChange}
                   className={`form-input ${errors.model ? 'border-red-500' : ''}`}
-                  placeholder="e.g. ThinkPad X1, MacBook Pro"
+                  placeholder="Specific model of the item being released (e.g. ThinkPad X1, MacBook Pro)"
                 />
-                <p className="form-hint">Specific model of the item being released (required)</p>
                 {errors.model && <p className="error-text">{errors.model}</p>}
               </div>
 
@@ -2011,9 +2008,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.serial}
                   onChange={handleChange}
                   className={`form-input ${errors.serial ? 'border-red-500' : ''}`}
-                  placeholder="e.g. SN-12345678"
+                  placeholder="Unique identifier for this specific unit (e.g. SN-12345678)"
                 />
-                <p className="form-hint">Unique identifier for this specific unit (required)</p>
                 {errors.serial && <p className="error-text">{errors.serial}</p>}
               </div>
 
@@ -2026,9 +2022,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.assigned_to}
                   onChange={handleChange}
                   className={`form-input ${errors.assigned_to ? 'border-red-500' : ''}`}
-                  placeholder="e.g. John Smith"
+                  placeholder="Name or ID of the person receiving this released item (e.g. John Smith)"
                 />
-                <p className="form-hint">Name or ID of the person receiving this released item (required)</p>
                 {errors.assigned_to && <p className="error-text">{errors.assigned_to}</p>}
               </div>
 
@@ -2041,9 +2036,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.release_location || ''}
                   onChange={handleChange}
                   className={`form-input ${errors.release_location ? 'border-red-500' : ''}`}
-                  placeholder="e.g. Marketing Department, HQ Floor 3"
+                  placeholder="Destination department, site, or location for this released item (e.g. Marketing Department, HQ Floor 3)"
                 />
-                <p className="form-hint">Destination department, site, or location for this released item (required)</p>
                 {errors.release_location && <p className="error-text">{errors.release_location}</p>}
               </div>
 
@@ -2056,9 +2050,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   value={formData.released_by}
                   onChange={handleChange}
                   className={`form-input ${errors.released_by ? 'border-red-500' : ''}`}
-                  placeholder="e.g. John Smith"
+                  placeholder="Name or user ID of the person releasing this item (e.g. John Smith)"
                 />
-                <p className="form-hint">Name or user ID of the person releasing this item (required)</p>
                 {errors.released_by && <p className="error-text">{errors.released_by}</p>}
               </div>
 
@@ -2088,14 +2081,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     outline: none;
                     box-shadow: none;
                   }
-                  .form-hint {
-                    font-size: 11px;
-                    color: #6b7280;
-                    margin-top: 4px;
-                    font-style: italic;
-                  }
                 `}</style>
-                <p className="form-hint">Exact release timestamp for this unit (required)</p>
                 {errors.release_datetime && <p className="error-text">{errors.release_datetime}</p>}
               </div>
 
