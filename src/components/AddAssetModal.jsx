@@ -982,19 +982,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       case 'office':
         return (
           <>
-            <div className="form-group">
-              <label className="form-label">Quantity</label>
-              <input
-                type="number"
-                name="office_quantity"
-                value={formData.office_quantity}
-                onChange={handleChange}
-                className="form-input"
-                placeholder="e.g. 5"
-                min="1"
-              />
-            </div>
-
             {/* Type-specific fields based on office_type */}
             {selectedOfficeType === 'desktop_computer' && (
               <>
@@ -1024,19 +1011,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. HP, Dell, Lenovo, Acer"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
                   <label className="form-label">Serial / Asset ID</label>
                   <input
                     type="text"
@@ -1047,38 +1021,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="Unique number/tag"
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="new">New</option>
-                    <option value="good">Good</option>
-                    <option value="fair">Fair</option>
-                    <option value="defective">Defective</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="idle">Idle</option>
-                    <option value="for_repair">For Repair</option>
-                    <option value="disposed">Disposed</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1111,19 +1053,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Lenovo ThinkPad, ASUS, MacBook"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
                   <label className="form-label">Serial / Asset ID</label>
                   <input
                     type="text"
@@ -1134,35 +1063,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="Labeled or engraved"
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="needs_service">Needs Service</option>
-                    <option value="damaged">Damaged</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1220,35 +1120,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="dim">Dim</option>
-                    <option value="flickering">Flickering</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1277,48 +1148,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="">Select type</option>
                     <option value="wired">Wired</option>
                     <option value="wireless">Wireless</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Generic, Logitech, A4Tech"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="unresponsive">Unresponsive</option>
-                    <option value="broken">Broken</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="attached">Attached</option>
-                    <option value="spare">Spare</option>
                   </select>
                 </div>
               </>
@@ -1366,19 +1195,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Canon, HP, Epson, Brother"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
                   <label className="form-label">Serial Number</label>
                   <input
                     type="text"
@@ -1389,35 +1205,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="Serial number from manufacturer"
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="needs_ink_toner">Needs ink/toner</option>
-                    <option value="jammed">Jammed</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="service">Service</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1434,19 +1221,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className="form-input"
                     placeholder="e.g. Copy, scan, print, sometimes fax"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Kyocera, Xerox, Ricoh"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1472,35 +1246,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className="form-input"
                     placeholder="Monthly duty cycle"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="paper_feed_issue">Paper feed issue</option>
-                    <option value="low_toner">Low toner</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="operational">Operational</option>
-                    <option value="for_maintenance">For maintenance</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1534,19 +1279,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Brand</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Canon, Epson, Fujitsu"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
                   <label className="form-label">Serial Number</label>
                   <input
                     type="text"
@@ -1557,34 +1289,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="Serial number from manufacturer"
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="not_detected">Not detected</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1628,35 +1332,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="cross_cut">Cross-cut</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="overheat">Overheat</option>
-                    <option value="jammed">Jammed</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="idle">Idle</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1690,19 +1365,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Brand</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Panasonic, Avaya, Grandstream"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
                   <label className="form-label">Serial Number</label>
                   <input
                     type="text"
@@ -1713,34 +1375,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="Serial number from manufacturer"
                   />
                   {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="working">Working</option>
-                    <option value="no_dial_tone">No dial tone</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="spare">Spare</option>
-                  </select>
                 </div>
               </>
             )}
@@ -1757,19 +1391,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className="form-input"
                     placeholder="e.g. Internet & office network"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. TP-Link, Cisco, D-Link"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1797,35 +1418,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="4_port">4-port</option>
                     <option value="8_port">8-port</option>
                     <option value="24_port">24-port</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="stable">Stable</option>
-                    <option value="intermittent">Intermittent</option>
-                    <option value="faulty">Faulty</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="spare">Spare</option>
                   </select>
                 </div>
               </>
@@ -1887,35 +1479,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="cubicle">Cubicle</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="wobbly">Wobbly</option>
-                    <option value="scratched">Scratched</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="available">Available</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -1960,35 +1523,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="fabric">Fabric</option>
                     <option value="mesh">Mesh</option>
                     <option value="leatherette">Leatherette</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="broken_wheel">Broken wheel</option>
-                    <option value="tilt_issue">Tilt issue</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="assigned">Assigned</option>
-                    <option value="spare">Spare</option>
                   </select>
                 </div>
               </>
@@ -2050,35 +1584,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="no_lock">No lock</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="stuck_drawer">Stuck drawer</option>
-                    <option value="damaged">Damaged</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -2125,35 +1630,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     <option value="5_tier">5-tier</option>
                   </select>
                 </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="sturdy">Sturdy</option>
-                    <option value="loose">Loose</option>
-                    <option value="damaged">Damaged</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="available">Available</option>
-                  </select>
-                </div>
               </>
             )}
 
@@ -2170,48 +1646,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className="form-input"
                     placeholder="e.g. General office use"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Brand / Model</label>
-                  <input
-                    type="text"
-                    name="brand"
-                    value={formData.brand}
-                    onChange={handleChange}
-                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-                    placeholder="e.g. Generic, Brand name"
-                  />
-                  {errors.brand && <p className="error-text">{errors.brand}</p>}
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Condition</label>
-                  <select
-                    name="office_condition"
-                    value={formData.office_condition}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select condition</option>
-                    <option value="good">Good</option>
-                    <option value="fair">Fair</option>
-                    <option value="poor">Poor</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Status</label>
-                  <select
-                    name="office_status"
-                    value={formData.office_status}
-                    onChange={handleChange}
-                    className="form-input asset-category-select"
-                  >
-                    <option value="">Select status</option>
-                    <option value="in_use">In Use</option>
-                    <option value="in_storage">In Storage</option>
-                  </select>
                 </div>
 
                 <div className="form-group">
@@ -2233,33 +1667,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       case 'logistics':
         return (
           <>
-            <div className="form-group">
-              <label className="form-label">Quantity *</label>
-              <input
-                type="number"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                className={`form-input ${errors.quantity ? 'border-red-500' : ''}`}
-                placeholder="e.g. 50"
-                min="1"
-              />
-              <p className="form-hint">Number of items (required)</p>
-              {errors.quantity && <p className="error-text">{errors.quantity}</p>}
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Brand / Make</label>
-              <input
-                type="text"
-                name="brand_make"
-                value={formData.brand_make}
-                onChange={handleChange}
-                className="form-input"
-                placeholder="e.g. Generic, Union, Standard"
-              />
-            </div>
-
             <div className="form-group">
               <label className="form-label">Dimensions</label>
               <input
@@ -2311,18 +1718,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 onChange={handleChange}
                 className="form-input"
                 placeholder="e.g. Generator, Pump, etc."
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Quantity</label>
-              <input
-                type="text"
-                name="quantity"
-                value={formData.quantity}
-                onChange={handleChange}
-                className="form-input"
-                placeholder="Number of units"
               />
             </div>
           </>
