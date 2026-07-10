@@ -389,22 +389,31 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           validationErrors.specs = 'Specs are required when releasing equipment for identification';
         }
 
+        // Monitor requires size during release for identification
+        if (selectedOfficeType === 'monitor' && !formData.office_size) {
+          validationErrors.office_size = 'Size is required when releasing monitor for identification';
+        }
+
         // Furniture requires dimensions as identifier during release
         const furnitureTypes = ['office_desk', 'office_chair', 'filing_cabinet', 'bookshelf'];
         if (furnitureTypes.includes(selectedOfficeType) && !formData.dimensions) {
           validationErrors.dimensions = 'Dimensions are required when releasing furniture for identification';
         }
 
-        // Supplies require brand/model as identifier during release
-        const supplyTypes = ['keyboard_mouse', 'shredder', 'paper_cutter', 'stapler', 'hole_puncher', 'document_tray', 'calculator', 'whiteboard'];
-        if (supplyTypes.includes(selectedOfficeType) && !formData.brand) {
-          validationErrors.brand = 'Brand/Model is required when releasing supplies for identification';
+        // All office equipment requires brand/model during release for identification
+        if (!formData.brand) {
+          validationErrors.brand = 'Brand/Model is required when releasing equipment for identification';
         }
       }
 
       // Logistics equipment requires serial_id during release
       if (selectedCategory === 'logistics' && !formData.serial_id) {
         validationErrors.serial_id = 'Serial/ID is required when releasing logistics equipment';
+      }
+
+      // Other category requires brand during release for identification
+      if (selectedCategory === 'other' && !formData.brand) {
+        validationErrors.brand = 'Brand is required when releasing equipment for identification';
       }
 
       // Transport equipment already requires plate_number (validated below)
@@ -986,9 +995,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. HP, Dell, Lenovo, Acer"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1071,9 +1081,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Lenovo ThinkPad, ASUS, MacBook"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1140,9 +1151,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="office_size"
                     value={formData.office_size}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.office_size ? 'border-red-500' : ''}`}
                     placeholder='e.g. 19", 22", 24"'
                   />
+                  {errors.office_size && <p className="error-text">{errors.office_size}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1238,9 +1250,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Generic, Logitech, A4Tech"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1322,9 +1335,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Canon, HP, Epson, Brother"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1392,9 +1406,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Kyocera, Xerox, Ricoh"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1488,9 +1503,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Canon, Epson, Fujitsu"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1643,9 +1659,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. Panasonic, Avaya, Grandstream"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -1712,9 +1729,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     name="brand"
                     value={formData.brand}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
                     placeholder="e.g. TP-Link, Cisco, D-Link"
                   />
+                  {errors.brand && <p className="error-text">{errors.brand}</p>}
                 </div>
 
                 <div className="form-group">
@@ -2353,16 +2371,17 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       {/* Brand - Optional for other category */}
       {selectedCategory === 'other' && (
         <div className="form-group">
-          <label className="form-label">Brand (Optional)</label>
+          <label className="form-label">Brand (Optional during entry, Required during release)</label>
           <input
             type="text"
             name="brand"
             value={formData.brand}
             onChange={handleChange}
-            className="form-input"
+            className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
             placeholder="e.g. IKEA, Stanley, Dewalt"
           />
-          <p className="form-hint">Manufacturer or brand name (optional)</p>
+          <p className="form-hint">Manufacturer or brand name (optional during entry, required during release)</p>
+          {errors.brand && <p className="error-text">{errors.brand}</p>}
         </div>
       )}
 
