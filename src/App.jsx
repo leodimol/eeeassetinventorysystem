@@ -1572,6 +1572,31 @@ function App() {
     );
   }
 
+  // Determine whether the Serial column should be shown based on the form fields for the selected category
+  const officeTypesWithSerial = ['desktop_computer', 'monitor', 'printer', 'photocopier', 'scanner', 'telephone', 'router'];
+  const showSerialColumn = !filters.category
+    ? true
+    : filters.category === 'logistics'
+    ? true
+    : filters.category === 'office'
+    ? !filters.subCategory || officeTypesWithSerial.includes(filters.subCategory)
+    : false;
+
+  const getSerialValue = (item) => {
+    if (filters.category === 'logistics') return item.serial_id;
+    if (filters.category === 'office') return item.office_serial_id;
+    return item.serial || item.office_serial_id || item.serial_id;
+  };
+
+  const getCategorySpecificColumnCount = () => {
+    if (!filters.category) return 1; // Type column shown when no category is selected
+    if (filters.category === 'logistics') return 5;
+    if (filters.category === 'office') return 4;
+    if (filters.category === 'transport') return 5;
+    return 0;
+  };
+  const tableColumnCount = 3 + (showSerialColumn ? 1 : 0) + getCategorySpecificColumnCount() + 10;
+
   return (
     <div className={`min-h-screen flex ${effectiveTheme}`} style={{ background: 'var(--bg-primary)' }}>
       {/* Mobile Menu Toggle - Edge Indicator */}
@@ -2716,7 +2741,9 @@ function App() {
                           </th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Asset</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Asset Tag</th>
-                          <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Serial</th>
+                          {showSerialColumn && (
+                            <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Serial</th>
+                          )}
                           {filters.category === 'logistics' && (
                             <>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Logistics Type</th>
@@ -2823,13 +2850,15 @@ function App() {
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                   {item.asset_tag || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                 </td>
-                                <td
-                                  className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]"
-                                  style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}
-                                  onClick={(e) => { e.stopPropagation(); setSelectedCell({ row: index, col: 2 }); }}
-                                >
-                                  {item.serial || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
-                                </td>
+                                {showSerialColumn && (
+                                  <td
+                                    className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]"
+                                    style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}
+                                    onClick={(e) => { e.stopPropagation(); setSelectedCell({ row: index, col: 2 }); }}
+                                  >
+                                    {getSerialValue(item) || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                  </td>
+                                )}
                                 {filters.category === 'logistics' && (
                                   <>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
@@ -3020,7 +3049,7 @@ function App() {
                       })
                       ) : (
                         <tr>
-                          <td className="text-sm text-[var(--text-primary)] text-center" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }} colSpan="15">
+                          <td className="text-sm text-[var(--text-primary)] text-center" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }} colSpan={tableColumnCount}>
                             <div className="flex flex-col items-center justify-center py-12">
                               <div className="w-10 h-10 rounded-full bg-[var(--bg-gray)] border border-[var(--border-color)] flex items-center justify-center text-[var(--text-gray)] font-bold mb-4">
                                 !
