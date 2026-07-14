@@ -1726,6 +1726,35 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     }
   };
 
+  const getCategoryPlaceholders = () => {
+    switch (selectedCategory) {
+      case 'transport':
+        return {
+          brand: 'Brand (e.g., Toyota, Ford, Isuzu)',
+          location: 'Location (e.g., Parking Lot A, Garage)',
+          description: 'Additional details (e.g., 5-ton truck, diesel engine)'
+        };
+      case 'logistics':
+        return {
+          brand: 'Brand (e.g., CHEP, Loscam, Uline)',
+          location: 'Location (e.g., Warehouse A, Loading Dock)',
+          description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
+        };
+      case 'office':
+        return {
+          brand: 'Brand (e.g., Dell, HP, Lenovo)',
+          location: 'Location (e.g., IT Room, Office 201)',
+          description: 'Additional details (e.g., 15-inch screen, 8GB RAM)'
+        };
+      default:
+        return {
+          brand: 'Brand (e.g., Generic, Custom)',
+          location: 'Location (e.g., Storage Room, Shelf)',
+          description: 'Additional details'
+        };
+    }
+  };
+
   const renderEquipmentDetails = () => (
     <div className="modal-body">
       {/* Back Button */}
@@ -1759,7 +1788,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.brand}
           onChange={handleChange}
           className={`form-input ${errors.brand ? 'border-red-500' : ''}`}
-          placeholder="Brand (e.g., Dell, HP)"
+          placeholder={getCategoryPlaceholders().brand}
         />
         {errors.brand && <p className="error-text">{errors.brand}</p>}
       </div>
@@ -1802,7 +1831,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           value={formData.location}
           onChange={handleChange}
           className={`form-input ${errors.location ? 'border-red-500' : ''}`}
-          placeholder="Location (e.g., Warehouse A, Shelf 3)"
+          placeholder={getCategoryPlaceholders().location}
         />
         {errors.location && <p className="error-text">{errors.location}</p>}
       </div>
@@ -1848,7 +1877,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           onChange={handleChange}
           className="form-textarea"
           rows="3"
-          placeholder="Additional details"
+          placeholder={getCategoryPlaceholders().description}
         />
       </div>
 
