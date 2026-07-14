@@ -1703,24 +1703,10 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
         };
       case 'office':
-        if (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') {
-          return {
-            brand: 'Brand (e.g., Dell, HP, Lenovo)',
-            location: 'Location (e.g., IT Room, Office 201)',
-            description: 'Any additional details about this item'
-          };
-        }
-        if (selectedOfficeType === 'monitor') {
-          return {
-            brand: 'Brand (e.g., Dell, HP, Samsung)',
-            location: 'Location (e.g., IT Room, Office 201)',
-            description: 'Any additional details about this item'
-          };
-        }
         return {
           brand: 'Brand (e.g., Dell, HP, Lenovo)',
           location: 'Location (e.g., IT Room, Office 201)',
-          description: 'Additional details (e.g., 15-inch screen, 8GB RAM)'
+          description: 'Any additional details about this item'
         };
       default:
         return {
