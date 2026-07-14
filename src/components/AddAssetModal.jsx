@@ -1627,7 +1627,42 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           </>
         );
 
-      case 'logistics':
+      case 'logistics': {
+        const logisticsFieldPlaceholders = (() => {
+          switch (selectedLogisticsType) {
+            case 'wooden_crates':
+              return {
+                dimensions: 'e.g. 100cm × 80cm × 60cm',
+                loadCapacity: 'e.g. 200 kg',
+                serialId: 'e.g. Crate-Batch-001'
+              };
+            case 'pallets':
+              return {
+                dimensions: 'e.g. 1200mm × 1000mm × 150mm',
+                loadCapacity: 'e.g. 1000 kg dynamic load',
+                serialId: 'e.g. Pallet Tag #PAL-001'
+              };
+            case 'storage_bins':
+              return {
+                dimensions: 'e.g. 60cm × 40cm × 30cm',
+                loadCapacity: 'e.g. 30 kg max load',
+                serialId: 'e.g. Bin-Batch-001'
+              };
+            case 'wire_cages':
+              return {
+                dimensions: 'e.g. 800mm × 600mm × 700mm',
+                loadCapacity: 'e.g. 500 kg',
+                serialId: 'e.g. Cage-Tag-001'
+              };
+            default:
+              return {
+                dimensions: 'e.g. 100cm × 80cm × 60cm',
+                loadCapacity: 'e.g. 500 kg',
+                serialId: 'Individual tag or batch number'
+              };
+          }
+        })();
+
         return (
           <>
             <div className="form-group">
@@ -1638,7 +1673,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.dimensions}
                 onChange={handleChange}
                 className="form-input"
-                placeholder="e.g. 100cm × 80cm × 60cm"
+                placeholder={logisticsFieldPlaceholders.dimensions}
               />
             </div>
 
@@ -1650,7 +1685,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.load_capacity}
                 onChange={handleChange}
                 className="form-input"
-                placeholder="e.g. 500 kg"
+                placeholder={logisticsFieldPlaceholders.loadCapacity}
               />
             </div>
 
@@ -1662,12 +1697,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.serial_id}
                 onChange={handleChange}
                 className={`form-input ${errors.serial_id ? 'border-red-500' : ''}`}
-                placeholder="Individual tag or batch number"
+                placeholder={logisticsFieldPlaceholders.serialId}
               />
               {errors.serial_id && <p className="error-text">{errors.serial_id}</p>}
             </div>
           </>
         );
+      }
 
       default:
         return (
@@ -1680,7 +1716,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 value={formData.type}
                 onChange={handleChange}
                 className="form-input"
-                placeholder="e.g. Generator, Pump, etc."
+                placeholder="e.g. Generator, Pump, Compressor, Power tool"
               />
             </div>
           </>
@@ -1697,11 +1733,38 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           description: 'Additional details (e.g., 5-ton truck, diesel engine)'
         };
       case 'logistics':
-        return {
-          brand: 'Brand (e.g., CHEP, Loscam, Uline)',
-          location: 'Location (e.g., Warehouse A, Loading Dock)',
-          description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
-        };
+        switch (selectedLogisticsType) {
+          case 'wooden_crates':
+            return {
+              brand: 'Brand (e.g., Generic, Uline)',
+              location: 'Location (e.g., Warehouse A, Loading Dock)',
+              description: 'Additional details (e.g., Wooden export crate, 100x80x60cm, reinforced)'
+            };
+          case 'pallets':
+            return {
+              brand: 'Brand (e.g., CHEP, Loscam, PalletOne)',
+              location: 'Location (e.g., Warehouse A, Pallet Storage)',
+              description: 'Additional details (e.g., Wooden pallet, 1200x1000mm, heat-treated)'
+            };
+          case 'storage_bins':
+            return {
+              brand: 'Brand (e.g., Akro-Mils, Quantum, Uline)',
+              location: 'Location (e.g., Warehouse A, Bin Rack)',
+              description: 'Additional details (e.g., Blue plastic tote, 60L, stackable with lid)'
+            };
+          case 'wire_cages':
+            return {
+              brand: 'Brand (e.g., HML, Kleton, Generic)',
+              location: 'Location (e.g., Warehouse A, Cage Yard)',
+              description: 'Additional details (e.g., Galvanized steel cage, 800x600x700mm, foldable)'
+            };
+          default:
+            return {
+              brand: 'Brand (e.g., CHEP, Loscam, Uline)',
+              location: 'Location (e.g., Warehouse A, Loading Dock)',
+              description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
+            };
+        }
       case 'office':
         return {
           brand: 'Brand (e.g., Dell, HP, Lenovo)',
@@ -1710,9 +1773,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         };
       default:
         return {
-          brand: 'Brand (e.g., Generic, Custom)',
-          location: 'Location (e.g., Storage Room, Shelf)',
-          description: 'Additional details'
+          brand: 'Brand (e.g., Honda, Makita, Generic)',
+          location: 'Location (e.g., Storage Room, Work Area, Site B)',
+          description: 'Additional details (e.g., Generator 5kVA portable, Pump 1HP, Power tool set)'
         };
     }
   };
