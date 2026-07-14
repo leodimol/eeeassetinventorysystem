@@ -174,6 +174,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           processor: asset.processor || '',
           ram: asset.ram || '',
           storage: asset.storage || '',
+          screen_size: asset.screen_size || '',
           accessories: asset.accessories || '',
           plate_number: asset.plate_number || '',
           engine_number: asset.engine_number || '',
@@ -554,6 +555,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         processor: formData.processor || null,
         ram: formData.ram || null,
         storage: formData.storage || null,
+        screen_size: formData.screen_size || null,
         accessories: formData.accessories || null,
         // Transport specific fields
         plate_number: formData.plate_number || null,
@@ -564,7 +566,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         year_manufactured: formData.year_manufactured || null,
         // Logistics specific fields
         logistics_type: formData.logistics_type || null,
-        quantity: formData.quantity || null,
         brand_make: formData.brand_make || null,
         material: formData.material || null,
         dimensions: formData.dimensions || null,
