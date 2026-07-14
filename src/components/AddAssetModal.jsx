@@ -1053,18 +1053,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   </div>
                 )}
 
-                <div className="form-group">
-                  <label className="form-label">Serial / Asset ID</label>
-                  <input
-                    type="text"
-                    name="office_serial_id"
-                    value={formData.office_serial_id}
-                    onChange={handleChange}
-                    className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
-                    placeholder="Labeled or engraved"
-                  />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
-                </div>
               </>
             )}
 
