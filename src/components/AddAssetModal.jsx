@@ -1038,21 +1038,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                   />
                 </div>
 
-                {formData.idle_release === 'release' && (
-                  <div className="form-group">
-                    <label className="form-label">Specs</label>
-                    <textarea
-                      name="specs"
-                      value={formData.specs}
-                      onChange={handleChange}
-                      className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
-                      rows="3"
-                      placeholder="Screen size, RAM, Storage"
-                    />
-                    {errors.specs && <p className="error-text">{errors.specs}</p>}
-                  </div>
-                )}
-
               </>
             )}
 
@@ -2015,6 +2000,22 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 />
                 {errors.model && <p className="error-text">{errors.model}</p>}
               </div>
+
+              {/* Specs - Required during release for laptops */}
+              {selectedCategory === 'office' && selectedOfficeType === 'laptop' && (
+                <div className="form-group">
+                  <label className="form-label">Specs *</label>
+                  <textarea
+                    name="specs"
+                    value={formData.specs}
+                    onChange={handleChange}
+                    className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
+                    rows="3"
+                    placeholder="Screen size, RAM, Storage"
+                  />
+                  {errors.specs && <p className="error-text">{errors.specs}</p>}
+                </div>
+              )}
 
               {/* Serial Number / Asset Tag - Required during release */}
               <div className="form-group">
