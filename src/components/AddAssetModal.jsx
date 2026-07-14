@@ -1710,6 +1710,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             description: 'Any additional details about this item'
           };
         }
+        if (selectedOfficeType === 'monitor') {
+          return {
+            brand: 'Brand (e.g., Dell, HP, Samsung)',
+            location: 'Location (e.g., IT Room, Office 201)',
+            description: 'Any additional details about this item'
+          };
+        }
         return {
           brand: 'Brand (e.g., Dell, HP, Lenovo)',
           location: 'Location (e.g., IT Room, Office 201)',
