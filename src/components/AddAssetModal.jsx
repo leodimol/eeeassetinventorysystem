@@ -402,17 +402,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           validationErrors.office_serial_id = 'Serial number is required when releasing equipment';
         }
 
-        // Equipment with specs requires specs during release
-        const specTypes = ['desktop_computer'];
-        if (specTypes.includes(selectedOfficeType) && !formData.specs) {
-          validationErrors.specs = 'Specs are required when releasing equipment for identification';
-        }
-
-        // Laptop requires screen size, RAM, and storage during release
-        if (selectedOfficeType === 'laptop') {
-          if (!formData.screen_size) validationErrors.screen_size = 'Screen size is required when releasing laptop';
-          if (!formData.ram) validationErrors.ram = 'RAM is required when releasing laptop';
-          if (!formData.storage) validationErrors.storage = 'Storage is required when releasing laptop';
+        // Laptop and desktop require screen size, RAM, and storage during release
+        if (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') {
+          if (!formData.screen_size) validationErrors.screen_size = 'Screen size is required when releasing this equipment';
+          if (!formData.ram) validationErrors.ram = 'RAM is required when releasing this equipment';
+          if (!formData.storage) validationErrors.storage = 'Storage is required when releasing this equipment';
         }
 
         // Monitor requires size during release for identification
@@ -1002,19 +996,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className="form-input"
                     placeholder="e.g. Daily admin, data entry, documents"
                   />
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Specs</label>
-                  <textarea
-                    name="specs"
-                    value={formData.specs}
-                    onChange={handleChange}
-                    className={`form-textarea ${errors.specs ? 'border-red-500' : ''}`}
-                    rows="3"
-                    placeholder="Processor, RAM, Storage, OS"
-                  />
-                  {errors.specs && <p className="error-text">{errors.specs}</p>}
                 </div>
 
                 <div className="form-group">
@@ -2009,8 +1990,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 {errors.model && <p className="error-text">{errors.model}</p>}
               </div>
 
-              {/* Specs - Required during release for laptops */}
-              {selectedCategory === 'office' && selectedOfficeType === 'laptop' && (
+              {/* Specs - Required during release for laptops and desktops */}
+              {selectedCategory === 'office' && (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') && (
                 <>
                   <div className="form-group">
                     <label className="form-label">Screen Size *</label>
@@ -2026,6 +2007,11 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                       <option value="15-inch">15-inch</option>
                       <option value="16-inch">16-inch</option>
                       <option value="17-inch">17-inch</option>
+                      <option value="19-inch">19-inch</option>
+                      <option value="21-inch">21-inch</option>
+                      <option value="24-inch">24-inch</option>
+                      <option value="27-inch">27-inch</option>
+                      <option value="32-inch">32-inch</option>
                     </select>
                     {errors.screen_size && <p className="error-text">{errors.screen_size}</p>}
                   </div>
