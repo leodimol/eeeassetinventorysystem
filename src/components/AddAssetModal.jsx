@@ -1995,85 +1995,53 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 <>
                   <div className="form-group">
                     <label className="form-label">Screen Size *</label>
-                    <select
+                    <input
+                      type="text"
                       name="screen_size"
                       value={formData.screen_size || ''}
                       onChange={handleChange}
                       className={`form-input ${errors.screen_size ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select screen size</option>
-                      <option value="13-inch">13-inch</option>
-                      <option value="14-inch">14-inch</option>
-                      <option value="15-inch">15-inch</option>
-                      <option value="16-inch">16-inch</option>
-                      <option value="17-inch">17-inch</option>
-                      <option value="19-inch">19-inch</option>
-                      <option value="21-inch">21-inch</option>
-                      <option value="24-inch">24-inch</option>
-                      <option value="27-inch">27-inch</option>
-                      <option value="32-inch">32-inch</option>
-                    </select>
+                      placeholder="e.g., 15-inch, 24-inch monitor"
+                    />
                     {errors.screen_size && <p className="error-text">{errors.screen_size}</p>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">RAM *</label>
-                    <select
+                    <input
+                      type="text"
                       name="ram"
                       value={formData.ram || ''}
                       onChange={handleChange}
                       className={`form-input ${errors.ram ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select RAM</option>
-                      <option value="4GB">4GB</option>
-                      <option value="8GB">8GB</option>
-                      <option value="16GB">16GB</option>
-                      <option value="32GB">32GB</option>
-                      <option value="64GB">64GB</option>
-                    </select>
+                      placeholder="e.g., 16GB, 32GB DDR4"
+                    />
                     {errors.ram && <p className="error-text">{errors.ram}</p>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Storage *</label>
-                    <select
+                    <input
+                      type="text"
                       name="storage"
                       value={formData.storage || ''}
                       onChange={handleChange}
                       className={`form-input ${errors.storage ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select storage</option>
-                      <option value="256GB SSD">256GB SSD</option>
-                      <option value="512GB SSD">512GB SSD</option>
-                      <option value="1TB SSD">1TB SSD</option>
-                      <option value="2TB SSD">2TB SSD</option>
-                      <option value="500GB HDD">500GB HDD</option>
-                      <option value="1TB HDD">1TB HDD</option>
-                    </select>
+                      placeholder="e.g., 512GB SSD, 1TB HDD"
+                    />
                     {errors.storage && <p className="error-text">{errors.storage}</p>}
                   </div>
 
                   <div className="form-group">
                     <label className="form-label">Processor</label>
-                    <select
+                    <input
+                      type="text"
                       name="processor"
                       value={formData.processor || ''}
                       onChange={handleChange}
                       className="form-input"
-                    >
-                      <option value="">Select processor (optional)</option>
-                      <option value="Intel i3">Intel i3</option>
-                      <option value="Intel i5">Intel i5</option>
-                      <option value="Intel i7">Intel i7</option>
-                      <option value="Intel i9">Intel i9</option>
-                      <option value="AMD Ryzen 3">AMD Ryzen 3</option>
-                      <option value="AMD Ryzen 5">AMD Ryzen 5</option>
-                      <option value="AMD Ryzen 7">AMD Ryzen 7</option>
-                      <option value="AMD Ryzen 9">AMD Ryzen 9</option>
-                      <option value="Apple M1">Apple M1</option>
-                      <option value="Apple M2">Apple M2</option>
-                      <option value="Apple M3">Apple M3</option>
-                    </select>
+                      placeholder="e.g., Intel i7, AMD Ryzen 5, Apple M2"
+                    />
                   </div>
                 </>
               )}
