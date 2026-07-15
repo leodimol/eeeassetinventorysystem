@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowLeft, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
+import { X, ArrowLeft, AlertCircle, Loader2 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { checkDuplicates } from '../utils/duplicateCheck';
-import { logAudit } from '../utils/auditLog';
 import Toast from './ui/Toast';
 
-const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToast }) => {
+const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, onToast }) => {
   const isEditMode = Boolean(asset?.id);
   const isRetired = asset?.status === 'retired';
   const [loading, setLoading] = useState(false);
@@ -21,14 +20,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     { id: 'transport', name: 'Transport Equipment', icon: '🚛' },
     { id: 'logistics', name: 'Logistics Equipment', icon: '📦' },
     { id: 'office', name: 'Office Equipment', icon: '🖨️' },
-    { id: 'other', name: 'Other Equipment', icon: '🔧' }
+    { id: 'other', name: 'Other Equipment', icon: '🔧' },
   ];
 
   const logisticsTypes = [
     { id: 'wooden_crates', name: 'Crates', icon: '📦' },
     { id: 'pallets', name: 'Pallets (Wooden, Plastic, Metal)', icon: '🔲' },
     { id: 'storage_bins', name: 'Storage Bins / Tote Boxes', icon: '🗃️' },
-    { id: 'wire_cages', name: 'Wire Cages / Pallet Cages', icon: '🔒' }
+    { id: 'wire_cages', name: 'Wire Cages / Pallet Cages', icon: '🔒' },
   ];
 
   const officeTypes = [
@@ -51,7 +50,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     { id: 'hole_puncher', name: 'Hole Puncher', icon: '🔳' },
     { id: 'document_tray', name: 'Document Tray / Sorter', icon: '📥' },
     { id: 'calculator', name: 'Calculator', icon: '🧮' },
-    { id: 'whiteboard', name: 'Whiteboard & Markers', icon: '📝' }
+    { id: 'whiteboard', name: 'Whiteboard & Markers', icon: '📝' },
   ];
 
   const emptyForm = {
@@ -120,7 +119,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     office_tier: '',
     office_material: '',
     office_cut_type: '',
-    office_notes: ''
+    office_notes: '',
   };
 
   const [formData, setFormData] = useState(emptyForm);
@@ -130,25 +129,17 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     { value: 'available', label: '✅ Available - Working, ready for assignment' },
     { value: 'in_use', label: '👤 In Use - Currently assigned and being used' },
     { value: 'maintenance', label: '⚠️ Under Maintenance - Temporarily out of service' },
-    { value: 'retired', label: '❌ Retired/Disposed - Permanently removed' }
-  ];
-
-  const conditionOptions = [
-    { value: 'new', label: 'New' },
-    { value: 'excellent', label: 'Excellent' },
-    { value: 'good', label: 'Good' },
-    { value: 'fair', label: 'Fair' },
-    { value: 'poor', label: 'Poor' }
+    { value: 'retired', label: '❌ Retired/Disposed - Permanently removed' },
   ];
 
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && asset) {
         const category = asset.category || asset.equipment_type || '';
-        
+
         // Validate that the category exists in the categories array
-        const validCategory = categories.find(c => c.id === category) ? category : '';
-        
+        const validCategory = categories.find((c) => c.id === category) ? category : '';
+
         setFormData({
           category: validCategory,
           brand: asset.brand || '',
@@ -167,7 +158,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           release_location: asset.release_location || '',
           status: asset.status || 'available',
           condition: asset.condition || 'new',
-          last_service: asset.last_service ? asset.last_service.split('T')[0] : new Date().toISOString().split('T')[0],
+          last_service: asset.last_service
+            ? asset.last_service.split('T')[0]
+            : new Date().toISOString().split('T')[0],
           purchase_date: asset.purchase_date ? asset.purchase_date.split('T')[0] : '',
           warranty_date: asset.warranty_date ? asset.warranty_date.split('T')[0] : '',
           date_added: asset.date_added || new Date().toISOString(),
@@ -211,13 +204,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           office_tier: asset.office_tier || '',
           office_material: asset.office_material || '',
           office_cut_type: asset.office_cut_type || '',
-          office_notes: asset.office_notes || ''
+          office_notes: asset.office_notes || '',
         });
-        
+
         setSelectedCategory(validCategory);
         setSelectedLogisticsType(asset.logistics_type || '');
         setSelectedOfficeType(asset.office_type || '');
-        
+
         // For transport and other categories, go directly to step 3
         // For logistics and office, go to step 3 only if sub-type is already selected
         if (validCategory === 'transport' || validCategory === 'other') {
@@ -237,12 +230,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         setCurrentStep(1);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, asset, isEditMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: null }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: null }));
 
     // Auto-close date picker if today is selected
     if (e.target.type === 'date' && value) {
@@ -269,13 +263,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         const duplicateCheck = await checkDuplicates({
           serial: formData.serial,
           assetTag: formData.asset_tag,
-          excludeId: asset?.id
+          excludeId: asset?.id,
         });
 
         if (duplicateCheck.hasDuplicates) {
           setDuplicateWarning({
             messages: duplicateCheck.messages,
-            duplicates: duplicateCheck.duplicates
+            duplicates: duplicateCheck.duplicates,
           });
         } else {
           setDuplicateWarning(null);
@@ -291,7 +285,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    setFormData(prev => ({ ...prev, category }));
+    setFormData((prev) => ({ ...prev, category }));
     if (category === 'logistics') {
       setCurrentStep(2); // Go to logistics type selection
     } else if (category === 'office') {
@@ -303,13 +297,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 
   const handleLogisticsTypeSelect = (type) => {
     setSelectedLogisticsType(type);
-    setFormData(prev => ({ ...prev, logistics_type: type }));
+    setFormData((prev) => ({ ...prev, logistics_type: type }));
     setCurrentStep(3);
   };
 
   const handleOfficeTypeSelect = (type) => {
     setSelectedOfficeType(type);
-    setFormData(prev => ({ ...prev, office_type: type }));
+    setFormData((prev) => ({ ...prev, office_type: type }));
     setCurrentStep(3);
   };
 
@@ -331,14 +325,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const validateForm = () => {
     const validationErrors = {};
 
-    console.log('Validating form with category:', selectedCategory);
-
     if (!formData.category) validationErrors.category = 'Category is required';
 
     // New mandatory fields for batch-based entry
     if (!formData.brand) validationErrors.brand = 'Brand is required';
     if (!formData.batch_number) validationErrors.batch_number = 'Batch number is required';
-    if (!formData.quantity || formData.quantity < 1) validationErrors.quantity = 'Quantity must be at least 1';
+    if (!formData.quantity || formData.quantity < 1)
+      validationErrors.quantity = 'Quantity must be at least 1';
     if (!formData.location) validationErrors.location = 'Storage/Location is required';
     if (!formData.warranty_date) validationErrors.warranty_date = 'Warranty date is required';
     if (!formData.condition) validationErrors.condition = 'Condition is required';
@@ -383,11 +376,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     if (formData.idle_release === 'release') {
       // New mandatory release fields
       if (!formData.model) validationErrors.model = 'Model is required when releasing equipment';
-      if (!formData.serial) validationErrors.serial = 'Serial number is required when releasing equipment';
-      if (!formData.assigned_to) validationErrors.assigned_to = 'Assigned To is required when releasing';
-      if (!formData.release_location) validationErrors.release_location = 'Assign To Location is required when releasing';
-      if (!formData.released_by) validationErrors.released_by = 'Released By is required when releasing';
-      if (!formData.release_datetime) validationErrors.release_datetime = 'Release Date & Time is required when releasing';
+      if (!formData.serial)
+        validationErrors.serial = 'Serial number is required when releasing equipment';
+      if (!formData.assigned_to)
+        validationErrors.assigned_to = 'Assigned To is required when releasing';
+      if (!formData.release_location)
+        validationErrors.release_location = 'Assign To Location is required when releasing';
+      if (!formData.released_by)
+        validationErrors.released_by = 'Released By is required when releasing';
+      if (!formData.release_datetime)
+        validationErrors.release_datetime = 'Release Date & Time is required when releasing';
 
       // Stock validation - prevent releasing more than available
       if (formData.remaining_quantity !== undefined && formData.remaining_quantity <= 0) {
@@ -397,32 +395,46 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       // Require serial number/identifier during release for equipment that has it
       if (selectedCategory === 'office' && selectedOfficeType) {
         // Electronic equipment with serial numbers
-        const electronicTypes = ['desktop_computer', 'laptop', 'monitor', 'printer', 'photocopier', 'scanner', 'router', 'telephone'];
+        const electronicTypes = [
+          'desktop_computer',
+          'laptop',
+          'monitor',
+          'printer',
+          'photocopier',
+          'scanner',
+          'router',
+          'telephone',
+        ];
         if (electronicTypes.includes(selectedOfficeType) && !formData.office_serial_id) {
           validationErrors.office_serial_id = 'Serial number is required when releasing equipment';
         }
 
         // Laptop and desktop require screen size, RAM, and storage during release
         if (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') {
-          if (!formData.screen_size) validationErrors.screen_size = 'Screen size is required when releasing this equipment';
+          if (!formData.screen_size)
+            validationErrors.screen_size = 'Screen size is required when releasing this equipment';
           if (!formData.ram) validationErrors.ram = 'RAM is required when releasing this equipment';
-          if (!formData.storage) validationErrors.storage = 'Storage is required when releasing this equipment';
+          if (!formData.storage)
+            validationErrors.storage = 'Storage is required when releasing this equipment';
         }
 
         // Monitor requires size during release for identification
         if (selectedOfficeType === 'monitor' && !formData.office_size) {
-          validationErrors.office_size = 'Size is required when releasing monitor for identification';
+          validationErrors.office_size =
+            'Size is required when releasing monitor for identification';
         }
 
         // Furniture requires dimensions as identifier during release
         const furnitureTypes = ['office_desk', 'office_chair', 'filing_cabinet', 'bookshelf'];
         if (furnitureTypes.includes(selectedOfficeType) && !formData.dimensions) {
-          validationErrors.dimensions = 'Dimensions are required when releasing furniture for identification';
+          validationErrors.dimensions =
+            'Dimensions are required when releasing furniture for identification';
         }
 
         // All office equipment requires brand/model during release for identification
         if (!formData.brand) {
-          validationErrors.brand = 'Brand/Model is required when releasing equipment for identification';
+          validationErrors.brand =
+            'Brand/Model is required when releasing equipment for identification';
         }
       }
 
@@ -441,7 +453,8 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
 
     // Category-specific validation
     if (selectedCategory === 'transport') {
-      if (!formData.plate_number) validationErrors.plate_number = 'Plate number is required for transport equipment';
+      if (!formData.plate_number)
+        validationErrors.plate_number = 'Plate number is required for transport equipment';
     }
 
     if (selectedCategory === 'logistics') {
@@ -449,11 +462,15 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     }
 
     // Clear any lingering serial errors for categories where serial is not required
-    if (selectedCategory === 'transport' || selectedCategory === 'logistics' || selectedCategory === 'office' || selectedCategory === 'other') {
+    if (
+      selectedCategory === 'transport' ||
+      selectedCategory === 'logistics' ||
+      selectedCategory === 'office' ||
+      selectedCategory === 'other'
+    ) {
       delete validationErrors.serial;
     }
 
-    console.log('Validation errors:', validationErrors);
     setErrors(validationErrors);
     return Object.keys(validationErrors).length === 0;
   };
@@ -461,20 +478,23 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   // Real-time validation for key fields
   useEffect(() => {
     if (formData.asset_tag && errors.asset_tag) {
-      setErrors(prev => ({ ...prev, asset_tag: '' }));
+      setErrors((prev) => ({ ...prev, asset_tag: '' }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.asset_tag]);
 
   useEffect(() => {
     if (formData.serial && errors.serial) {
-      setErrors(prev => ({ ...prev, serial: '' }));
+      setErrors((prev) => ({ ...prev, serial: '' }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.serial]);
 
   useEffect(() => {
     if (formData.added_by && errors.added_by) {
-      setErrors(prev => ({ ...prev, added_by: '' }));
+      setErrors((prev) => ({ ...prev, added_by: '' }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.added_by]);
 
   // Real-time duplicate check
@@ -485,19 +505,25 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           const duplicateCheck = await checkDuplicates({
             serial: formData.serial,
             assetTag: formData.asset_tag,
-            excludeId: asset?.id
+            excludeId: asset?.id,
           });
 
           if (duplicateCheck.hasDuplicates) {
-            if (formData.asset_tag && duplicateCheck.duplicates.some(d => d.asset_tag === formData.asset_tag)) {
-              setErrors(prev => ({ ...prev, asset_tag: 'Asset ID already exists' }));
+            if (
+              formData.asset_tag &&
+              duplicateCheck.duplicates.some((d) => d.asset_tag === formData.asset_tag)
+            ) {
+              setErrors((prev) => ({ ...prev, asset_tag: 'Asset ID already exists' }));
             }
-            if (formData.serial && duplicateCheck.duplicates.some(d => d.serial === formData.serial)) {
-              setErrors(prev => ({ ...prev, serial: 'Serial Number already exists' }));
+            if (
+              formData.serial &&
+              duplicateCheck.duplicates.some((d) => d.serial === formData.serial)
+            ) {
+              setErrors((prev) => ({ ...prev, serial: 'Serial Number already exists' }));
             }
           }
         } catch (error) {
-          console.error('Real-time duplicate check failed:', error);
+          // Duplicate check failure is non-fatal; validation will catch duplicates on submit
         }
       }
     };
@@ -509,19 +535,29 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   useEffect(() => {
     if (formData.idle_release === 'release') {
       if (formData.location && errors.location) {
-        setErrors(prev => ({ ...prev, location: '' }));
+        setErrors((prev) => ({ ...prev, location: '' }));
       }
       if (formData.assigned_to && errors.assigned_to) {
-        setErrors(prev => ({ ...prev, assigned_to: '' }));
+        setErrors((prev) => ({ ...prev, assigned_to: '' }));
       }
       if (formData.released_by && errors.released_by) {
-        setErrors(prev => ({ ...prev, released_by: '' }));
+        setErrors((prev) => ({ ...prev, released_by: '' }));
       }
       if (formData.release_datetime && errors.release_datetime) {
-        setErrors(prev => ({ ...prev, release_datetime: '' }));
+        setErrors((prev) => ({ ...prev, release_datetime: '' }));
       }
     }
-  }, [formData.location, formData.assigned_to, formData.released_by, formData.release_datetime, formData.idle_release]);
+  }, [
+    formData.location,
+    formData.assigned_to,
+    formData.released_by,
+    formData.release_datetime,
+    formData.idle_release,
+    errors.assigned_to,
+    errors.location,
+    errors.released_by,
+    errors.release_datetime,
+  ]);
 
   const saveAsset = async () => {
     setLoading(true);
@@ -564,7 +600,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         year_manufactured: formData.year_manufactured || null,
         // Logistics specific fields
         logistics_type: formData.logistics_type || null,
-        quantity: formData.quantity || null,
         brand_make: formData.brand_make || null,
         material: formData.material || null,
         dimensions: formData.dimensions || null,
@@ -595,24 +630,21 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         office_material: formData.office_material || null,
         office_cut_type: formData.office_cut_type || null,
         office_notes: formData.office_notes || null,
-        ...(isEditMode ? { updated_at: new Date().toISOString() } : { created_at: new Date().toISOString() })
+        ...(isEditMode
+          ? { updated_at: new Date().toISOString() }
+          : { created_at: new Date().toISOString() }),
       };
 
       // Explicitly remove id field if present (should not be present for new records)
       if (!isEditMode && payload.id) {
-        console.warn('Removing id field from payload for new record');
         delete payload.id;
       }
-
-      console.log('Payload being sent:', payload);
-      console.log('Is edit mode:', isEditMode);
-      console.log('Has id field:', !!payload.id);
 
       // Prevent saving retired assets
       if (isRetired) {
         setToast({
           message: 'Cannot edit retired assets. This asset is permanently removed from service.',
-          type: 'error'
+          type: 'error',
         });
         setLoading(false);
         return;
@@ -644,47 +676,31 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           payload.remaining_quantity = formData.quantity || 1;
         }
 
-        const { data, error } = await supabase
-          .from('equipment')
-          .insert(payload)
-          .select()
-          .single();
+        const { data, error } = await supabase.from('equipment').insert(payload).select().single();
 
         if (error) throw error;
         savedAsset = data;
       }
 
-      // Log audit entry (don't fail if this errors)
-      try {
-        await logAudit({
-          equipmentId: savedAsset.id,
-          action: isEditMode ? 'UPDATE' : 'CREATE',
-          oldValues: isEditMode ? asset : null,
-          newValues: savedAsset,
-          changedBy: formData.added_by || authUser?.email || 'system',
-          reason: isEditMode ? updateReason : null
-        });
-      } catch (auditErr) {
-        console.error('Audit log failed:', auditErr);
-      }
-
-      console.log('Asset saved successfully, showing success toast');
       // Show success message immediately after successful save
       if (onToast) {
         onToast({
-          message: isEditMode ? 'Equipment updated successfully! Changes have been saved.' : 'Equipment added successfully! You can now view it in the inventory.',
-          type: 'success'
+          message: isEditMode
+            ? 'Equipment updated successfully! Changes have been saved.'
+            : 'Equipment added successfully! You can now view it in the inventory.',
+          type: 'success',
         });
       } else {
         setToast({
-          message: isEditMode ? 'Equipment updated successfully! Changes have been saved.' : 'Equipment added successfully! You can now view it in the inventory.',
-          type: 'success'
+          message: isEditMode
+            ? 'Equipment updated successfully! Changes have been saved.'
+            : 'Equipment added successfully! You can now view it in the inventory.',
+          type: 'success',
         });
       }
 
       // Close modal and reset form (don't fail if these error)
       try {
-        console.log('Starting cleanup operations');
         if (onSaved) onSaved(savedAsset);
         onClose();
         setCurrentStep(1);
@@ -692,19 +708,15 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         setSelectedLogisticsType('');
         setSelectedOfficeType('');
         setFormData(emptyForm);
-        console.log('Cleanup completed');
       } catch (cleanupErr) {
-        console.error('Cleanup failed:', cleanupErr);
+        // Modal cleanup failure should not block the successful save notification
       }
     } catch (err) {
-      console.error('Error saving asset:', err);
-      console.error('Error details:', err.message, err.details, err.hint);
       setToast({
         message: `Failed to save asset: ${err.message || 'Please check your data and try again.'}`,
-        type: 'error'
+        type: 'error',
       });
     } finally {
-      console.log('Setting loading to false');
       setLoading(false);
     }
   };
@@ -712,15 +724,12 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('Form submission started', formData);
-
     const isValid = validateForm();
-    console.log('Form validation result:', isValid, errors);
 
     if (!isValid) {
       setToast({
         message: 'Please fix the validation errors before submitting.',
-        type: 'error'
+        type: 'error',
       });
       return;
     }
@@ -729,7 +738,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     if (duplicateWarning) {
       setToast({
         message: 'Please use a different asset tag or serial number. This one already exists.',
-        type: 'error'
+        type: 'error',
       });
       return;
     }
@@ -740,7 +749,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       // Proceed with save - duplicate checking is done in real-time
       await saveAsset();
     } catch (err) {
-      console.error('Error in handleSubmit:', err);
       setLoading(false);
     }
   };
@@ -748,9 +756,13 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const renderCategorySelection = () => (
     <div className="asset-category-intro">
       <div className="asset-category-rule"></div>
-      <h3 className="modal-title" style={{ marginBottom: '8px' }}>Select Equipment Category</h3>
-      <p className="asset-category-instruction">Choose the type of equipment you want to add to the inventory</p>
-      
+      <h3 className="modal-title" style={{ marginBottom: '8px' }}>
+        Select Equipment Category
+      </h3>
+      <p className="asset-category-instruction">
+        Choose the type of equipment you want to add to the inventory
+      </p>
+
       <div className="grid grid-cols-2 gap-4" style={{ marginTop: '32px' }}>
         {categories.map((category) => (
           <button
@@ -765,7 +777,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
               justifyContent: 'center',
               gap: '12px',
               cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
@@ -777,11 +789,15 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             }}
           >
             <span style={{ fontSize: '48px' }}>{category.icon}</span>
-            <span style={{ 
-              fontWeight: '600', 
-              fontSize: '14px',
-              color: 'var(--text-primary)'
-            }}>{category.name}</span>
+            <span
+              style={{
+                fontWeight: '600',
+                fontSize: '14px',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {category.name}
+            </span>
           </button>
         ))}
       </div>
@@ -791,18 +807,18 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const renderLogisticsTypeSelection = () => (
     <div className="asset-category-intro">
       <div className="asset-category-rule"></div>
-      <h3 className="modal-title" style={{ marginBottom: '8px' }}>Select Logistics Equipment Type</h3>
-      <p className="asset-category-instruction">Choose the specific type of storage & container equipment</p>
-      
-      <button
-        onClick={handleBack}
-        className="back-button"
-        style={{ marginBottom: '24px' }}
-      >
+      <h3 className="modal-title" style={{ marginBottom: '8px' }}>
+        Select Logistics Equipment Type
+      </h3>
+      <p className="asset-category-instruction">
+        Choose the specific type of storage & container equipment
+      </p>
+
+      <button onClick={handleBack} className="back-button" style={{ marginBottom: '24px' }}>
         <ArrowLeft size={16} />
         <span>Back to Categories</span>
       </button>
-      
+
       <div className="grid grid-cols-2 gap-4" style={{ marginTop: '32px' }}>
         {logisticsTypes.map((type) => (
           <button
@@ -817,7 +833,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
               justifyContent: 'center',
               gap: '12px',
               cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
@@ -829,12 +845,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             }}
           >
             <span style={{ fontSize: '48px' }}>{type.icon}</span>
-            <span style={{ 
-              fontWeight: '600', 
-              fontSize: '14px',
-              color: 'var(--text-primary)',
-              textAlign: 'center'
-            }}>{type.name}</span>
+            <span
+              style={{
+                fontWeight: '600',
+                fontSize: '14px',
+                color: 'var(--text-primary)',
+                textAlign: 'center',
+              }}
+            >
+              {type.name}
+            </span>
           </button>
         ))}
       </div>
@@ -844,18 +864,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const renderOfficeTypeSelection = () => (
     <div className="asset-category-intro">
       <div className="asset-category-rule"></div>
-      <h3 className="modal-title" style={{ marginBottom: '8px' }}>Select Office Equipment Type</h3>
+      <h3 className="modal-title" style={{ marginBottom: '8px' }}>
+        Select Office Equipment Type
+      </h3>
       <p className="asset-category-instruction">Choose the specific type of office equipment</p>
-      
-      <button
-        onClick={handleBack}
-        className="back-button"
-        style={{ marginBottom: '24px' }}
-      >
+
+      <button onClick={handleBack} className="back-button" style={{ marginBottom: '24px' }}>
         <ArrowLeft size={16} />
         <span>Back to Categories</span>
       </button>
-      
+
       <div className="grid grid-cols-2 gap-4" style={{ marginTop: '32px' }}>
         {officeTypes.map((type) => (
           <button
@@ -870,7 +888,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
               justifyContent: 'center',
               gap: '8px',
               cursor: 'pointer',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
@@ -882,12 +900,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             }}
           >
             <span style={{ fontSize: '36px' }}>{type.icon}</span>
-            <span style={{ 
-              fontWeight: '600', 
-              fontSize: '13px',
-              color: 'var(--text-primary)',
-              textAlign: 'center'
-            }}>{type.name}</span>
+            <span
+              style={{
+                fontWeight: '600',
+                fontSize: '13px',
+                color: 'var(--text-primary)',
+                textAlign: 'center',
+              }}
+            >
+              {type.name}
+            </span>
           </button>
         ))}
       </div>
@@ -984,7 +1006,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         return (
           <>
             {/* Type-specific fields based on office_type */}
-                        {selectedOfficeType === 'desktop_computer' && (
+            {selectedOfficeType === 'desktop_computer' && (
               <>
                 <div className="form-group">
                   <label className="form-label">Use</label>
@@ -1008,7 +1030,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Unique number/tag"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
               </>
             )}
@@ -1026,7 +1050,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     placeholder="e.g. Mobile work, meetings, field tasks"
                   />
                 </div>
-
               </>
             )}
 
@@ -1081,7 +1104,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
               </>
             )}
@@ -1167,7 +1192,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
               </>
             )}
@@ -1196,7 +1223,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -1251,7 +1280,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
               </>
             )}
@@ -1337,7 +1368,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
               </>
             )}
@@ -1366,7 +1399,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     className={`form-input ${errors.office_serial_id ? 'border-red-500' : ''}`}
                     placeholder="Serial number from manufacturer"
                   />
-                  {errors.office_serial_id && <p className="error-text">{errors.office_serial_id}</p>}
+                  {errors.office_serial_id && (
+                    <p className="error-text">{errors.office_serial_id}</p>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -1597,7 +1632,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             )}
 
             {/* Basic Office Supplies */}
-            {['paper_cutter', 'stapler', 'hole_puncher', 'document_tray', 'calculator', 'whiteboard'].includes(selectedOfficeType) && (
+            {[
+              'paper_cutter',
+              'stapler',
+              'hole_puncher',
+              'document_tray',
+              'calculator',
+              'whiteboard',
+            ].includes(selectedOfficeType) && (
               <>
                 <div className="form-group">
                   <label className="form-label">Use</label>
@@ -1694,25 +1736,25 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         return {
           brand: 'Brand (e.g., Toyota, Ford, Isuzu)',
           location: 'Location (e.g., Parking Lot A, Garage)',
-          description: 'Additional details (e.g., 5-ton truck, diesel engine)'
+          description: 'Additional details (e.g., 5-ton truck, diesel engine)',
         };
       case 'logistics':
         return {
           brand: 'Brand (e.g., CHEP, Loscam, Uline)',
           location: 'Location (e.g., Warehouse A, Loading Dock)',
-          description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
+          description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)',
         };
       case 'office':
         return {
           brand: 'Brand (e.g., Dell, HP, Lenovo)',
           location: 'Location (e.g., IT Room, Office 201)',
-          description: 'Any additional details about this item'
+          description: 'Any additional details about this item',
         };
       default:
         return {
           brand: 'Brand (e.g., Generic, Custom)',
           location: 'Location (e.g., Storage Room, Shelf)',
-          description: 'Additional details'
+          description: 'Additional details',
         };
     }
   };
@@ -1720,10 +1762,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
   const renderEquipmentDetails = () => (
     <div className="modal-body">
       {/* Back Button */}
-      <button
-        onClick={handleBack}
-        className="back-button"
-      >
+      <button onClick={handleBack} className="back-button">
         <ArrowLeft size={16} />
         <span>Change Category</span>
       </button>
@@ -1731,12 +1770,12 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       {/* Category Indicator */}
       <div className="glass-card" style={{ padding: '16px', marginBottom: '24px' }}>
         <span className="selected-category-display">
-          Category: {categories.find(c => c.id === selectedCategory)?.name}
+          Category: {categories.find((c) => c.id === selectedCategory)?.name}
           {selectedCategory === 'logistics' && selectedLogisticsType && (
-            <span> → {logisticsTypes.find(t => t.id === selectedLogisticsType)?.name}</span>
+            <span> → {logisticsTypes.find((t) => t.id === selectedLogisticsType)?.name}</span>
           )}
           {selectedCategory === 'office' && selectedOfficeType && (
-            <span> → {officeTypes.find(t => t.id === selectedOfficeType)?.name}</span>
+            <span> → {officeTypes.find((t) => t.id === selectedOfficeType)?.name}</span>
           )}
         </span>
       </div>
@@ -1848,15 +1887,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         <div className="form-section-header">
           <h4 className="form-section-title">
             {selectedCategory === 'logistics' && selectedLogisticsType
-              ? logisticsTypes.find(t => t.id === selectedLogisticsType)?.name
+              ? logisticsTypes.find((t) => t.id === selectedLogisticsType)?.name
               : selectedCategory === 'office' && selectedOfficeType
-              ? officeTypes.find(t => t.id === selectedOfficeType)?.name
-              : categories.find(c => c.id === selectedCategory)?.name} Details
+                ? officeTypes.find((t) => t.id === selectedOfficeType)?.name
+                : categories.find((c) => c.id === selectedCategory)?.name}{' '}
+            Details
           </h4>
         </div>
-        <div className="form-section-content">
-          {renderCategorySpecificFields()}
-        </div>
+        <div className="form-section-content">{renderCategorySpecificFields()}</div>
       </div>
 
       {/* Status - Only for transport and logistics */}
@@ -1869,7 +1907,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             onChange={handleChange}
             className="form-input asset-category-select"
           >
-            {statusOptions.map(option => (
+            {statusOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -1877,7 +1915,6 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           </select>
         </div>
       )}
-
 
       {/* Last Service Date - Only for transport */}
       {selectedCategory === 'transport' && (
@@ -1926,7 +1963,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           <button
             type="button"
             onClick={() => {
-              setFormData(prev => ({ ...prev, idle_release: 'idle', status: 'available' }));
+              setFormData((prev) => ({ ...prev, idle_release: 'idle', status: 'available' }));
             }}
             className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200 font-semibold ${
               formData.idle_release === 'idle'
@@ -1939,7 +1976,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           <button
             type="button"
             onClick={() => {
-              setFormData(prev => ({ ...prev, idle_release: 'release', status: 'in_use' }));
+              setFormData((prev) => ({ ...prev, idle_release: 'release', status: 'in_use' }));
             }}
             className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all duration-200 font-semibold ${
               formData.idle_release === 'release'
@@ -1991,92 +2028,93 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
               </div>
 
               {/* Specs - Required during release for laptops and desktops */}
-              {selectedCategory === 'office' && (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') && (
-                <>
-                  <div className="form-group">
-                    <label className="form-label">Screen Size *</label>
-                    <select
-                      name="screen_size"
-                      value={formData.screen_size || ''}
-                      onChange={handleChange}
-                      className={`form-input ${errors.screen_size ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select screen size</option>
-                      <option value="13-inch">13-inch</option>
-                      <option value="14-inch">14-inch</option>
-                      <option value="15-inch">15-inch</option>
-                      <option value="16-inch">16-inch</option>
-                      <option value="17-inch">17-inch</option>
-                      <option value="19-inch">19-inch</option>
-                      <option value="21-inch">21-inch</option>
-                      <option value="24-inch">24-inch</option>
-                      <option value="27-inch">27-inch</option>
-                      <option value="32-inch">32-inch</option>
-                    </select>
-                    {errors.screen_size && <p className="error-text">{errors.screen_size}</p>}
-                  </div>
+              {selectedCategory === 'office' &&
+                (selectedOfficeType === 'laptop' || selectedOfficeType === 'desktop_computer') && (
+                  <>
+                    <div className="form-group">
+                      <label className="form-label">Screen Size *</label>
+                      <select
+                        name="screen_size"
+                        value={formData.screen_size || ''}
+                        onChange={handleChange}
+                        className={`form-input ${errors.screen_size ? 'border-red-500' : ''}`}
+                      >
+                        <option value="">Select screen size</option>
+                        <option value="13-inch">13-inch</option>
+                        <option value="14-inch">14-inch</option>
+                        <option value="15-inch">15-inch</option>
+                        <option value="16-inch">16-inch</option>
+                        <option value="17-inch">17-inch</option>
+                        <option value="19-inch">19-inch</option>
+                        <option value="21-inch">21-inch</option>
+                        <option value="24-inch">24-inch</option>
+                        <option value="27-inch">27-inch</option>
+                        <option value="32-inch">32-inch</option>
+                      </select>
+                      {errors.screen_size && <p className="error-text">{errors.screen_size}</p>}
+                    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">RAM *</label>
-                    <select
-                      name="ram"
-                      value={formData.ram || ''}
-                      onChange={handleChange}
-                      className={`form-input ${errors.ram ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select RAM</option>
-                      <option value="4GB">4GB</option>
-                      <option value="8GB">8GB</option>
-                      <option value="16GB">16GB</option>
-                      <option value="32GB">32GB</option>
-                      <option value="64GB">64GB</option>
-                    </select>
-                    {errors.ram && <p className="error-text">{errors.ram}</p>}
-                  </div>
+                    <div className="form-group">
+                      <label className="form-label">RAM *</label>
+                      <select
+                        name="ram"
+                        value={formData.ram || ''}
+                        onChange={handleChange}
+                        className={`form-input ${errors.ram ? 'border-red-500' : ''}`}
+                      >
+                        <option value="">Select RAM</option>
+                        <option value="4GB">4GB</option>
+                        <option value="8GB">8GB</option>
+                        <option value="16GB">16GB</option>
+                        <option value="32GB">32GB</option>
+                        <option value="64GB">64GB</option>
+                      </select>
+                      {errors.ram && <p className="error-text">{errors.ram}</p>}
+                    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Storage *</label>
-                    <select
-                      name="storage"
-                      value={formData.storage || ''}
-                      onChange={handleChange}
-                      className={`form-input ${errors.storage ? 'border-red-500' : ''}`}
-                    >
-                      <option value="">Select storage</option>
-                      <option value="256GB SSD">256GB SSD</option>
-                      <option value="512GB SSD">512GB SSD</option>
-                      <option value="1TB SSD">1TB SSD</option>
-                      <option value="2TB SSD">2TB SSD</option>
-                      <option value="500GB HDD">500GB HDD</option>
-                      <option value="1TB HDD">1TB HDD</option>
-                    </select>
-                    {errors.storage && <p className="error-text">{errors.storage}</p>}
-                  </div>
+                    <div className="form-group">
+                      <label className="form-label">Storage *</label>
+                      <select
+                        name="storage"
+                        value={formData.storage || ''}
+                        onChange={handleChange}
+                        className={`form-input ${errors.storage ? 'border-red-500' : ''}`}
+                      >
+                        <option value="">Select storage</option>
+                        <option value="256GB SSD">256GB SSD</option>
+                        <option value="512GB SSD">512GB SSD</option>
+                        <option value="1TB SSD">1TB SSD</option>
+                        <option value="2TB SSD">2TB SSD</option>
+                        <option value="500GB HDD">500GB HDD</option>
+                        <option value="1TB HDD">1TB HDD</option>
+                      </select>
+                      {errors.storage && <p className="error-text">{errors.storage}</p>}
+                    </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Processor</label>
-                    <select
-                      name="processor"
-                      value={formData.processor || ''}
-                      onChange={handleChange}
-                      className="form-input"
-                    >
-                      <option value="">Select processor (optional)</option>
-                      <option value="Intel i3">Intel i3</option>
-                      <option value="Intel i5">Intel i5</option>
-                      <option value="Intel i7">Intel i7</option>
-                      <option value="Intel i9">Intel i9</option>
-                      <option value="AMD Ryzen 3">AMD Ryzen 3</option>
-                      <option value="AMD Ryzen 5">AMD Ryzen 5</option>
-                      <option value="AMD Ryzen 7">AMD Ryzen 7</option>
-                      <option value="AMD Ryzen 9">AMD Ryzen 9</option>
-                      <option value="Apple M1">Apple M1</option>
-                      <option value="Apple M2">Apple M2</option>
-                      <option value="Apple M3">Apple M3</option>
-                    </select>
-                  </div>
-                </>
-              )}
+                    <div className="form-group">
+                      <label className="form-label">Processor</label>
+                      <select
+                        name="processor"
+                        value={formData.processor || ''}
+                        onChange={handleChange}
+                        className="form-input"
+                      >
+                        <option value="">Select processor (optional)</option>
+                        <option value="Intel i3">Intel i3</option>
+                        <option value="Intel i5">Intel i5</option>
+                        <option value="Intel i7">Intel i7</option>
+                        <option value="Intel i9">Intel i9</option>
+                        <option value="AMD Ryzen 3">AMD Ryzen 3</option>
+                        <option value="AMD Ryzen 5">AMD Ryzen 5</option>
+                        <option value="AMD Ryzen 7">AMD Ryzen 7</option>
+                        <option value="AMD Ryzen 9">AMD Ryzen 9</option>
+                        <option value="Apple M1">Apple M1</option>
+                        <option value="Apple M2">Apple M2</option>
+                        <option value="Apple M3">Apple M3</option>
+                      </select>
+                    </div>
+                  </>
+                )}
 
               {/* Serial Number / Asset Tag - Required during release */}
               <div className="form-group">
@@ -2147,7 +2185,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                     fontSize: '16px',
                     padding: '12px',
                     colorScheme: 'light',
-                    outline: 'none'
+                    outline: 'none',
                   }}
                   onClick={(e) => e.target.showPicker?.()}
                 />
@@ -2176,16 +2214,16 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 </div>
               )}
 
-              {formData.remaining_quantity !== undefined && formData.remaining_quantity > 0 && formData.remaining_quantity <= 3 && (
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
-                  <p className="text-sm font-medium text-yellow-800">
-                    ⚠️ Low Stock Warning
-                  </p>
-                  <p className="text-xs text-yellow-700 mt-1">
-                    Only {formData.remaining_quantity} item(s) remaining in this batch.
-                  </p>
-                </div>
-              )}
+              {formData.remaining_quantity !== undefined &&
+                formData.remaining_quantity > 0 &&
+                formData.remaining_quantity <= 3 && (
+                  <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                    <p className="text-sm font-medium text-yellow-800">⚠️ Low Stock Warning</p>
+                    <p className="text-xs text-yellow-700 mt-1">
+                      Only {formData.remaining_quantity} item(s) remaining in this batch.
+                    </p>
+                  </div>
+                )}
             </div>
           </div>
         </>
@@ -2199,45 +2237,46 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
     <div className="modal-overlay">
       <div className="modal">
         <div className="modal-header">
-          <h2 className="modal-title">
-            {isEditMode ? 'Edit Equipment' : 'Add Asset'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="modal-close"
-          >
+          <h2 className="modal-title">{isEditMode ? 'Edit Equipment' : 'Add Asset'}</h2>
+          <button onClick={onClose} className="modal-close">
             <X size={20} />
           </button>
         </div>
 
         {/* Retired Asset Warning Banner */}
         {isRetired && (
-          <div style={{
-            padding: '12px 16px',
-            margin: '0 24px',
-            backgroundColor: 'var(--bg-red)',
-            border: '1px solid var(--border-red)',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
+          <div
+            style={{
+              padding: '12px 16px',
+              margin: '0 24px',
+              backgroundColor: 'var(--bg-red)',
+              border: '1px solid var(--border-red)',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
             <AlertCircle size={20} style={{ color: 'var(--text-red)' }} />
             <div>
-              <p style={{ 
-                color: 'var(--text-red)', 
-                fontWeight: '600', 
-                fontSize: '14px',
-                margin: 0
-              }}>
+              <p
+                style={{
+                  color: 'var(--text-red)',
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  margin: 0,
+                }}
+              >
                 Retired Asset - View Only
               </p>
-              <p style={{ 
-                color: 'var(--text-red)', 
-                fontSize: '12px',
-                margin: '4px 0 0 0',
-                opacity: 0.8
-              }}>
+              <p
+                style={{
+                  color: 'var(--text-red)',
+                  fontSize: '12px',
+                  margin: '4px 0 0 0',
+                  opacity: 0.8,
+                }}
+              >
                 This asset has been permanently removed from service and cannot be edited.
               </p>
             </div>
@@ -2277,11 +2316,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
           {/* Form Actions */}
           {currentStep === 3 && (
             <div className="modal-footer">
-              <button
-                type="button"
-                onClick={onClose}
-                className="btn btn-secondary"
-              >
+              <button type="button" onClick={onClose} className="btn btn-secondary">
                 Cancel
               </button>
               <button
@@ -2290,7 +2325,15 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
                 className="btn btn-primary"
                 style={isRetired ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
               >
-                {isRetired ? 'View Only' : (loading ? <Loader2 className="animate-spin" size={20} /> : (isEditMode ? 'Update' : 'Add Equipment'))}
+                {isRetired ? (
+                  'View Only'
+                ) : loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : isEditMode ? (
+                  'Update'
+                ) : (
+                  'Add Equipment'
+                )}
               </button>
             </div>
           )}
@@ -2313,10 +2356,14 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
             alignItems: 'center',
             justifyContent: 'center',
             zIndex: 100,
-            borderRadius: '24px'
+            borderRadius: '24px',
           }}
         >
-          <Loader2 className="animate-spin" size={48} style={{ color: 'var(--accent-primary)', marginBottom: '16px' }} />
+          <Loader2
+            className="animate-spin"
+            size={48}
+            style={{ color: 'var(--accent-primary)', marginBottom: '16px' }}
+          />
           <p style={{ color: 'var(--text-primary)', fontSize: '18px', fontWeight: '600' }}>
             {isEditMode ? 'Updating Equipment...' : 'Adding Equipment...'}
           </p>
@@ -2327,20 +2374,9 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
       )}
 
       {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
+      {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );
 };
 
 export default AddAssetModal;
-
-
-
-
-

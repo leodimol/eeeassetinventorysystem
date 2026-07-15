@@ -1,94 +1,12 @@
- import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 /**
- * Log an audit entry for equipment changes
- * @param {Object} params - Audit parameters
- * @param {string} params.equipmentId - Equipment ID
- * @param {string} params.action - CREATE, UPDATE, DELETE, or STATUS_CHANGE
- * @param {Object} params.oldValues - Previous values (for updates/deletes)
- * @param {Object} params.newValues - New values (for creates/updates)
- * @param {string} params.changedBy - Username or identifier
- * @param {string} params.reason - Reason for the change (optional)
- * @returns {Promise<Object>} - Inserted audit log
+ * Equipment changes are now logged server-side by the `equipment_audit_trigger`
+ * in the database. This function is kept as a no-op for backwards compatibility
+ * with existing callers.
  */
-export const logAudit = async ({
-  equipmentId,
-  checkForDuplicates = true,
-  action,
-  oldValues = null,
-  newValues = null,
-  changedBy = 'system',
-  reason = null
-}) => {
-  try {
-    // Calculate field changes for updates
-    let fieldChanges = null;
-    if (action === 'UPDATE' && oldValues && newValues) {
-      fieldChanges = {};
-      const allKeys = new Set([...Object.keys(oldValues), ...Object.keys(newValues)]);
-      
-      for (const key of allKeys) {
-        const oldVal = oldValues[key];
-        const newVal = newValues[key];
-        
-        // Skip internal fields
-        if (key === 'id' || key === 'created_at' || key === 'updated_at') continue;
-        
-        if (JSON.stringify(oldVal) !== JSON.stringify(newVal)) {
-          fieldChanges[key] = {
-            old: oldVal,
-            new: newVal
-          };
-        }
-      }
-    }
-
-    // Check for duplicate audit logs within the last 2 seconds to prevent duplicates
-    // Only check for UPDATE actions, CREATE actions should always be logged
-    if (checkForDuplicates && action === 'UPDATE' && fieldChanges && Object.keys(fieldChanges).length > 0) {
-      const twoSecondsAgo = new Date(Date.now() - 2000).toISOString();
-      const { data: existingLogs } = await supabase
-        .from('audit_logs')
-        .select('*')
-        .eq('equipment_id', equipmentId)
-        .eq('action', action)
-        .gte('changed_at', twoSecondsAgo)
-        .limit(1);
-
-      if (existingLogs && existingLogs.length > 0) {
-        // Compare field changes to see if they're truly duplicates
-        const existingFieldChanges = existingLogs[0].field_changes;
-        if (existingFieldChanges && JSON.stringify(existingFieldChanges) === JSON.stringify(fieldChanges)) {
-          console.log('Duplicate audit log detected (same field changes), skipping:', existingLogs[0].id);
-          return existingLogs[0];
-        }
-      }
-    }
-
-    const { data, error } = await supabase
-      .from('audit_logs')
-      .insert([{
-        equipment_id: equipmentId,
-        action,
-        old_values: oldValues,
-        new_values: newValues,
-        field_changes: fieldChanges,
-        changed_by: changedBy,
-        changed_at: new Date().toISOString(),
-        reason
-      }])
-      .select();
-
-    if (error) {
-      console.error('Audit log error:', error);
-      return null;
-    }
-
-    return data?.[0];
-  } catch (err) {
-    console.error('Failed to log audit:', err);
-    return null;
-  }
+export const logAudit = async () => {
+  return null;
 };
 
 /**
@@ -107,13 +25,11 @@ export const getEquipmentHistory = async (equipmentId, limit = 50) => {
       .limit(limit);
 
     if (error) {
-      console.error('Failed to fetch equipment history:', error);
       return [];
     }
 
     return data || [];
   } catch (err) {
-    console.error('Error fetching equipment history:', err);
     return [];
   }
 };
@@ -132,13 +48,11 @@ export const getRecentAuditLogs = async (limit = 100) => {
       .limit(limit);
 
     if (error) {
-      console.error('Failed to fetch audit logs:', error);
       return [];
     }
 
     return data || [];
   } catch (err) {
-    console.error('Error fetching audit logs:', err);
     return [];
   }
 };
@@ -153,11 +67,11 @@ export const formatAuditLog = (log) => {
   const formattedDate = timestamp.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
   });
   const formattedTime = timestamp.toLocaleTimeString('en-US', {
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   });
 
   let description = '';
@@ -207,15 +121,13 @@ export const formatAuditLog = (log) => {
     description,
     icon,
     color,
-    reason: log.reason
+    reason: log.reason,
   };
 };
 
 // Helper functions
 const formatFieldName = (field) => {
-  return field
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, (l) => l.toUpperCase());
+  return field.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
 };
 
 const formatValue = (value) => {

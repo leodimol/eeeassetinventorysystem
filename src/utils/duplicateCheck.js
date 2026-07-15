@@ -12,12 +12,10 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
   const result = {
     hasDuplicates: false,
     duplicates: [],
-    messages: []
+    messages: [],
   };
 
   try {
-    console.log('Checking duplicates with:', { serial, assetTag, excludeId });
-
     // Check serial number (exact match, only if provided)
     if (serial && serial.trim()) {
       let query = supabase
@@ -31,10 +29,8 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
 
       const { data: serialDups, error: serialError } = await query;
 
-      console.log('Serial check result:', { serial, serialDups, serialError });
-
       if (serialError) {
-        console.error('Error checking serial duplicates:', serialError);
+        // Serial duplicate query failed; let server-side validation catch it
       } else if (serialDups && serialDups.length > 0) {
         result.hasDuplicates = true;
         result.duplicates.push(...serialDups);
@@ -55,14 +51,12 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
 
       const { data: assetDups, error: assetError } = await query;
 
-      console.log('Asset tag check result:', { assetTag, assetDups, assetError });
-
       if (assetError) {
-        console.error('Error checking asset tag duplicates:', assetError);
+        // Asset tag duplicate query failed; let server-side validation catch it
       } else if (assetDups && assetDups.length > 0) {
         // Avoid adding same equipment twice if both serial and asset tag match
-        const newDups = assetDups.filter(dup =>
-          !result.duplicates.some(existing => existing.id === dup.id)
+        const newDups = assetDups.filter(
+          (dup) => !result.duplicates.some((existing) => existing.id === dup.id)
         );
 
         if (newDups.length > 0) {
@@ -73,10 +67,8 @@ export const checkDuplicates = async ({ serial, assetTag, excludeId = null }) =>
       }
     }
 
-    console.log('Final duplicate check result:', result);
     return result;
   } catch (err) {
-    console.error('Duplicate check error:', err);
     return { hasDuplicates: false, duplicates: [], messages: [], error: err.message };
   }
 };
@@ -93,7 +85,7 @@ let debounceTimer = null;
 
 export const debouncedDuplicateCheck = (params, callback, delay = 500) => {
   clearTimeout(debounceTimer);
-  
+
   debounceTimer = setTimeout(async () => {
     const result = await checkDuplicates(params);
     callback(result);
@@ -107,8 +99,8 @@ export const debouncedDuplicateCheck = (params, callback, delay = 500) => {
  */
 export const formatDuplicateWarning = (duplicates) => {
   if (!duplicates || duplicates.length === 0) return '';
-  
-  const items = duplicates.map(dup => {
+
+  const items = duplicates.map((dup) => {
     const parts = [];
     if (dup.model) parts.push(dup.model);
     if (dup.asset_tag) parts.push(`Tag: ${dup.asset_tag}`);

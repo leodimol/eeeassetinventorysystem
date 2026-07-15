@@ -42,7 +42,9 @@ select::-ms-expand {
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg), var(--shadow-glow);
-  transition: background 0.3s, border-color 0.3s;
+  transition:
+    background 0.3s,
+    border-color 0.3s;
 }
 
 .modal-scrollable {
@@ -145,14 +147,14 @@ select::-ms-expand {
 }
 
 /* Date picker icon styling */
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
   filter: invert(1);
   cursor: pointer;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+input[type='date']::-webkit-calendar-picker-indicator:hover,
+input[type='datetime-local']::-webkit-calendar-picker-indicator:hover {
   filter: invert(1) brightness(1.2);
 }
 
@@ -222,8 +224,10 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 .btn-primary {
   background: var(--gradient-primary);
   color: white;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(0,0,0,0.2);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow:
+    0 4px 20px rgba(59, 130, 246, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary::before {
@@ -233,7 +237,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s ease;
 }
 
@@ -243,7 +247,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 
 .btn-primary:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 30px rgba(198, 40, 40, 0.45), 0 4px 12px rgba(0,0,0,0.25);
+  box-shadow:
+    0 8px 30px rgba(198, 40, 40, 0.45),
+    0 4px 12px rgba(0, 0, 0, 0.25);
   filter: brightness(1.1);
 }
 
@@ -264,13 +270,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   -webkit-backdrop-filter: blur(var(--blur-amount));
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .btn-secondary:hover {
   background: var(--bg-tertiary);
   border-color: var(--border-color);
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
 
@@ -416,7 +422,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --border: 240 4% 20%;
     --input: 240 4% 20%;
     --ring: 217 100% 50%;
-    
+
     /* Modern 2025 Variables - Refined Professional Palette */
     --bg-primary: #0a0e1a;
     --bg-secondary: #111827;
@@ -428,11 +434,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --text-tertiary: #94a3b8;
     --border-color: rgba(148, 163, 184, 0.1);
     --border-glass: rgba(148, 163, 184, 0.15);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.28);
-    --shadow-md: 0 8px 32px rgba(0,0,0,0.42);
-    --shadow-lg: 0 16px 64px rgba(0,0,0,0.6);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.28);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.42);
+    --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.6);
     --shadow-glow: 0 0 70px rgba(59, 130, 246, 0.25);
-    
+
     /* Modern Accent Colors (Professional Blue/Indigo Branding) */
     --accent-primary: #3b82f6; /* professional blue */
     --accent-secondary: #6366f1; /* indigo */
@@ -447,13 +453,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --accent-cyan: #06b6d4;
     --accent-lime: #84cc16;
     --accent-rose: #f43f5e;
-    
+
     /* Gradient Definitions */
     --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #6366f1 60%, #4f46e5 100%);
     --gradient-secondary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     --gradient-danger: linear-gradient(135deg, #ef4444 0%, #f43f5e 100%);
     --gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    
+
     --blur-amount: 24px;
     --blur-heavy: 48px;
     --radius-sm: 10px;
@@ -475,9 +481,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --text-tertiary: #555555;
     --border-color: rgba(0, 0, 0, 0.2);
     --border-glass: rgba(0, 0, 0, 0.15);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
-    --shadow-md: 0 4px 24px rgba(0,0,0,0.18);
-    --shadow-lg: 0 12px 48px rgba(0,0,0,0.25);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+    --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.18);
+    --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.25);
     --shadow-glow: 0 0 40px rgba(0, 122, 255, 0.25);
     --accent-primary: #0071e3;
     --accent-secondary: #5856d6;
@@ -527,8 +533,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --text-tertiary: #ff8888;
     --border-color: rgba(255, 50, 50, 0.4);
     --border-glass: rgba(255, 50, 50, 0.25);
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.5);
-    --shadow-md: 0 4px 24px rgba(0,0,0,0.6);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 24px rgba(0, 0, 0, 0.6);
     --shadow-lg: 0 12px 48px rgba(139, 0, 0, 0.5);
     --shadow-glow: 0 0 40px rgba(255, 50, 50, 0.4);
     --accent-primary: #ff2222;
@@ -553,9 +559,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     --text-tertiary: #5a4a3a;
     --border-color: rgba(60, 50, 40, 0.3);
     --border-glass: rgba(60, 50, 40, 0.2);
-    --shadow-sm: 0 1px 3px rgba(60,50,40,0.15);
-    --shadow-md: 0 4px 24px rgba(60,50,40,0.2);
-    --shadow-lg: 0 12px 48px rgba(60,50,40,0.25);
+    --shadow-sm: 0 1px 3px rgba(60, 50, 40, 0.15);
+    --shadow-md: 0 4px 24px rgba(60, 50, 40, 0.2);
+    --shadow-lg: 0 12px 48px rgba(60, 50, 40, 0.25);
     --shadow-glow: 0 0 40px rgba(139, 90, 0, 0.25);
     --accent-primary: #8b4513;
     --accent-secondary: #a0522d;
@@ -573,18 +579,21 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   * {
     @apply border-border;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     @apply antialiased;
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    transition: background-color 0.3s ease, color 0.3s ease;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -721,7 +730,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
   }
 
-    .excel-badge-assigned {
+  .excel-badge-assigned {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(99, 102, 241, 0.15));
     color: var(--accent-primary);
     border-color: rgba(59, 130, 246, 0.28);
@@ -804,12 +813,14 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     -webkit-backdrop-filter: blur(var(--blur-amount));
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md), 0 1px 3px rgba(0,0,0,0.08);
+    box-shadow:
+      var(--shadow-md),
+      0 1px 3px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
   }
-  
+
   .glass-card::before {
     content: '';
     position: absolute;
@@ -817,23 +828,28 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
   }
-  
+
   .glass-card:hover::before {
     opacity: 1;
   }
-  
+
   .light .glass-card {
-    box-shadow: 0 2px 12px rgba(0,0,0,0.12), 0 4px 20px rgba(0,0,0,0.06);
+    box-shadow:
+      0 2px 12px rgba(0, 0, 0, 0.12),
+      0 4px 20px rgba(0, 0, 0, 0.06);
   }
-  
+
   .glass-card:hover {
     transform: translateY(-4px) scale(1.01);
-    box-shadow: var(--shadow-lg), var(--shadow-glow), 0 8px 32px rgba(0,0,0,0.15);
-    border-color: rgba(255,255,255,0.15);
+    box-shadow:
+      var(--shadow-lg),
+      var(--shadow-glow),
+      0 8px 32px rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.15);
   }
 
   /* Solid Card (non-glass) */
@@ -841,9 +857,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     background: var(--bg-secondary);
     border: 1.5px solid var(--border-color);
     border-radius: var(--radius-lg);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   }
-  
+
   /* Glass Button */
   .glass-button {
     background: var(--bg-glass-light);
@@ -854,26 +870,28 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     color: var(--text-primary);
     transition: all 0.2s ease;
   }
-  
+
   .glass-button:hover {
-    background: rgba(255,255,255,0.12);
+    background: rgba(255, 255, 255, 0.12);
     transform: scale(1.02);
   }
-  
+
   .glass-button:active {
     transform: scale(0.98);
   }
-  
+
   /* Primary Gradient Button - Enhanced */
-    .btn-primary {
+  .btn-primary {
     background: var(--gradient-primary);
     border: none;
     border-radius: var(--radius-md);
     color: white;
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow:
+      0 4px 20px rgba(59, 130, 246, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
   }
@@ -885,7 +903,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     transition: left 0.5s ease;
   }
 
@@ -893,12 +911,14 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     left: 100%;
   }
 
-    .btn-primary:hover {
+  .btn-primary:hover {
     transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(0,0,0,0.25);
+    box-shadow:
+      0 8px 30px rgba(59, 130, 246, 0.4),
+      0 4px 12px rgba(0, 0, 0, 0.25);
     filter: brightness(1.1);
   }
-  
+
   .btn-primary:active {
     transform: translateY(-1px) scale(0.98);
   }
@@ -909,17 +929,17 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .btn-secondary:hover {
     background: var(--bg-tertiary);
     border-color: var(--border-color);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
     transform: translateY(-2px);
   }
-  
+
   .btn-secondary:active {
     transform: translateY(0) scale(0.98);
   }
@@ -939,7 +959,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
     transform: translateY(-2px);
   }
-  
+
   .btn-outline:active {
     transform: translateY(0) scale(0.98);
   }
@@ -952,13 +972,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     color: var(--text-secondary);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .btn-ghost:hover {
     background: var(--bg-glass-light);
     color: var(--text-primary);
     transform: translateY(-1px);
   }
-  
+
   .btn-ghost:active {
     transform: translateY(0) scale(0.98);
   }
@@ -972,13 +992,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .btn-danger:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(239, 68, 68, 0.45);
     filter: brightness(1.1);
   }
-  
+
   .btn-danger:active {
     transform: translateY(0) scale(0.98);
   }
@@ -991,17 +1011,17 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-md);
     color: var(--text-primary);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .btn-glass:hover {
     background: var(--bg-glass-light);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transform: translateY(-2px);
-    border-color: rgba(255,255,255,0.15);
+    border-color: rgba(255, 255, 255, 0.15);
   }
-  
+
   .btn-glass:active {
     transform: translateY(0) scale(0.98);
   }
@@ -1020,7 +1040,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
     outline: none;
   }
-  
+
   /* Status Badges */
   .badge {
     padding: 4px 12px;
@@ -1031,28 +1051,29 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     letter-spacing: 0.05em;
     backdrop-filter: blur(10px);
   }
-  
+
   /* Animated Background */
   .gradient-bg {
-    background: linear-gradient(135deg, 
-      var(--bg-primary) 0%, 
-      var(--bg-secondary) 50%, 
+    background: linear-gradient(
+      135deg,
+      var(--bg-primary) 0%,
+      var(--bg-secondary) 50%,
       var(--bg-tertiary) 100%
     );
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
   }
-  
+
   /* Floating Animation */
   .float {
     animation: float 6s ease-in-out infinite;
   }
-  
+
   /* Pulse Glow */
   .pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite;
   }
-  
+
   /* Glass Sidebar */
   .glass-sidebar {
     background: var(--bg-glass);
@@ -1060,7 +1081,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     -webkit-backdrop-filter: blur(var(--blur-heavy));
     border-right: 1px solid var(--border-glass);
   }
-  
+
   /* Modern Scrollbar */
   .modern-scroll::-webkit-scrollbar {
     width: 8px;
@@ -1119,13 +1140,13 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
       radial-gradient(at 80% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
       radial-gradient(at 0% 50%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
       radial-gradient(at 80% 50%, rgba(249, 115, 22, 0.06) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-      var(--bg-primary);
+      radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%), var(--bg-primary);
     animation: meshMove 20s ease infinite;
   }
 
   .gradient-aurora {
-    background: linear-gradient(125deg,
+    background: linear-gradient(
+      125deg,
       rgba(59, 130, 246, 0.08) 0%,
       rgba(99, 102, 241, 0.06) 25%,
       rgba(16, 185, 129, 0.05) 50%,
@@ -1177,7 +1198,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    transition: width 0.3s ease, height 0.3s ease;
+    transition:
+      width 0.3s ease,
+      height 0.3s ease;
   }
 
   .btn-micro:active::after {
@@ -1227,7 +1250,9 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     border-radius: 20px;
     padding: 1.15rem 1.25rem;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
-    transition: transform 0.3s ease, border-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease;
   }
 
   .inventory-stat:hover {
@@ -1373,35 +1398,71 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
     animation: staggerFadeIn 0.4s ease-out forwards;
   }
 
-  .stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
-  .stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
-  .stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
-  .stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
-  .stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
-  .stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
-  .stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
-  .stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+  .stagger-children > *:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  .stagger-children > *:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+  .stagger-children > *:nth-child(3) {
+    animation-delay: 0.15s;
+  }
+  .stagger-children > *:nth-child(4) {
+    animation-delay: 0.2s;
+  }
+  .stagger-children > *:nth-child(5) {
+    animation-delay: 0.25s;
+  }
+  .stagger-children > *:nth-child(6) {
+    animation-delay: 0.3s;
+  }
+  .stagger-children > *:nth-child(7) {
+    animation-delay: 0.35s;
+  }
+  .stagger-children > *:nth-child(8) {
+    animation-delay: 0.4s;
+  }
 
   /* Animations */
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   @keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 0 20px rgba(10, 132, 255, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(10, 132, 255, 0.5); }
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(10, 132, 255, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(10, 132, 255, 0.5);
+    }
   }
 
   @keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   @keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   @keyframes slideIn {
@@ -1416,8 +1477,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   }
 
   @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes scaleIn {
@@ -1432,13 +1497,33 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   }
 
   @keyframes meshMove {
-    0%, 100% { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 50% 50%; }
-    50% { background-position: 100% 100%, 0% 100%, 100% 0%, 0% 0%, 50% 50%; }
+    0%,
+    100% {
+      background-position:
+        0% 0%,
+        100% 0%,
+        0% 100%,
+        100% 100%,
+        50% 50%;
+    }
+    50% {
+      background-position:
+        100% 100%,
+        0% 100%,
+        100% 0%,
+        0% 0%,
+        50% 50%;
+    }
   }
 
   @keyframes auroraFlow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
 
   @keyframes pageSlide {
@@ -1475,8 +1560,12 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   }
 
   @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 
   @keyframes staggerFadeIn {
@@ -1547,7 +1636,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* Custom tooltip animation */
-  .custom-tooltip {
+.custom-tooltip {
   animation: customTooltipFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(26, 26, 46, 0.95);
   border: 1px solid rgba(198, 40, 40, 0.18);
@@ -1558,7 +1647,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   min-width: 120px;
 }
 
-  .tooltip-label {
+.tooltip-label {
   color: var(--accent-primary);
   font-size: 12px;
   font-weight: 600;
@@ -1568,7 +1657,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .tooltip-value {
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   margin: 4px 0;
@@ -1627,7 +1716,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
 }
 
 /* Sidebar tooltip animation */
-  .sidebar-tooltip {
+.sidebar-tooltip {
   position: absolute;
   right: -130px;
   top: 50%;
@@ -1636,7 +1725,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   border: 1px solid rgba(198, 40, 40, 0.18);
   border-radius: 8px;
   padding: 8px 12px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;

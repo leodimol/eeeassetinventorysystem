@@ -16,7 +16,7 @@ export const laptops = [
     location: 'Headquarters',
     condition: 'Good',
     lastMaintenance: '2024-02-01',
-    cost: 1299.99
+    cost: 1299.99,
   },
   {
     id: 'LP002',
@@ -35,7 +35,7 @@ export const laptops = [
     location: 'Headquarters',
     condition: 'Excellent',
     lastMaintenance: '2024-02-15',
-    cost: 1099.99
+    cost: 1099.99,
   },
   {
     id: 'LP003',
@@ -54,7 +54,7 @@ export const laptops = [
     location: 'Headquarters',
     condition: 'Excellent',
     lastMaintenance: '2024-02-20',
-    cost: 1899.99
+    cost: 1899.99,
   },
   {
     id: 'LP004',
@@ -73,7 +73,7 @@ export const laptops = [
     location: 'IT Department',
     condition: 'Fair',
     lastMaintenance: '2024-03-01',
-    cost: 1999.99
+    cost: 1999.99,
   },
   {
     id: 'LP005',
@@ -92,7 +92,7 @@ export const laptops = [
     location: 'Creative Studio',
     condition: 'Good',
     lastMaintenance: '2024-02-28',
-    cost: 2499.99
+    cost: 2499.99,
   },
   {
     id: 'LP006',
@@ -111,7 +111,7 @@ export const laptops = [
     location: 'Warehouse',
     condition: 'New',
     lastMaintenance: null,
-    cost: 3299.99
+    cost: 3299.99,
   },
   {
     id: 'LP007',
@@ -130,7 +130,7 @@ export const laptops = [
     location: 'Disposal',
     condition: 'Poor',
     lastMaintenance: '2024-01-10',
-    cost: 2799.99
+    cost: 2799.99,
   },
   {
     id: 'LP008',
@@ -149,26 +149,106 @@ export const laptops = [
     location: 'Headquarters',
     condition: 'Excellent',
     lastMaintenance: '2024-03-10',
-    cost: 2199.99
-  }
+    cost: 2199.99,
+  },
 ];
 
 export const employees = [
-  { id: 'EMP001', name: 'John Smith', department: 'Engineering', email: 'john.smith@company.com', phone: '+1 555-0101' },
-  { id: 'EMP002', name: 'Sarah Johnson', department: 'Marketing', email: 'sarah.j@company.com', phone: '+1 555-0102' },
-  { id: 'EMP003', name: 'Michael Chen', department: 'Executive', email: 'm.chen@company.com', phone: '+1 555-0103' },
-  { id: 'EMP004', name: 'Emily Davis', department: 'Design', email: 'emily.d@company.com', phone: '+1 555-0104' },
-  { id: 'EMP005', name: 'Robert Wilson', department: 'Engineering', email: 'r.wilson@company.com', phone: '+1 555-0105' },
-  { id: 'EMP006', name: 'Lisa Anderson', department: 'HR', email: 'l.anderson@company.com', phone: '+1 555-0106' },
-  { id: 'EMP007', name: 'David Martinez', department: 'Finance', email: 'd.martinez@company.com', phone: '+1 555-0107' },
-  { id: 'EMP008', name: 'Jennifer Taylor', department: 'Operations', email: 'j.taylor@company.com', phone: '+1 555-0108' }
+  {
+    id: 'EMP001',
+    name: 'John Smith',
+    department: 'Engineering',
+    email: 'john.smith@company.com',
+    phone: '+1 555-0101',
+  },
+  {
+    id: 'EMP002',
+    name: 'Sarah Johnson',
+    department: 'Marketing',
+    email: 'sarah.j@company.com',
+    phone: '+1 555-0102',
+  },
+  {
+    id: 'EMP003',
+    name: 'Michael Chen',
+    department: 'Executive',
+    email: 'm.chen@company.com',
+    phone: '+1 555-0103',
+  },
+  {
+    id: 'EMP004',
+    name: 'Emily Davis',
+    department: 'Design',
+    email: 'emily.d@company.com',
+    phone: '+1 555-0104',
+  },
+  {
+    id: 'EMP005',
+    name: 'Robert Wilson',
+    department: 'Engineering',
+    email: 'r.wilson@company.com',
+    phone: '+1 555-0105',
+  },
+  {
+    id: 'EMP006',
+    name: 'Lisa Anderson',
+    department: 'HR',
+    email: 'l.anderson@company.com',
+    phone: '+1 555-0106',
+  },
+  {
+    id: 'EMP007',
+    name: 'David Martinez',
+    department: 'Finance',
+    email: 'd.martinez@company.com',
+    phone: '+1 555-0107',
+  },
+  {
+    id: 'EMP008',
+    name: 'Jennifer Taylor',
+    department: 'Operations',
+    email: 'j.taylor@company.com',
+    phone: '+1 555-0108',
+  },
 ];
 
 export const maintenanceRecords = [
-  { id: 'MNT001', laptopId: 'LP004', type: 'Screen Repair', date: '2024-03-01', technician: 'Tech Support', cost: 250, notes: 'Replaced faulty display' },
-  { id: 'MNT002', laptopId: 'LP001', type: 'Software Update', date: '2024-02-01', technician: 'IT Dept', cost: 0, notes: 'OS and driver updates' },
-  { id: 'MNT003', laptopId: 'LP002', type: 'Battery Replacement', date: '2024-02-15', technician: 'Tech Support', cost: 150, notes: 'Original battery degraded' },
-  { id: 'MNT004', laptopId: 'LP005', type: 'Keyboard Cleaning', date: '2024-02-28', technician: 'IT Dept', cost: 0, notes: 'Deep cleaning service' }
+  {
+    id: 'MNT001',
+    laptopId: 'LP004',
+    type: 'Screen Repair',
+    date: '2024-03-01',
+    technician: 'Tech Support',
+    cost: 250,
+    notes: 'Replaced faulty display',
+  },
+  {
+    id: 'MNT002',
+    laptopId: 'LP001',
+    type: 'Software Update',
+    date: '2024-02-01',
+    technician: 'IT Dept',
+    cost: 0,
+    notes: 'OS and driver updates',
+  },
+  {
+    id: 'MNT003',
+    laptopId: 'LP002',
+    type: 'Battery Replacement',
+    date: '2024-02-15',
+    technician: 'Tech Support',
+    cost: 150,
+    notes: 'Original battery degraded',
+  },
+  {
+    id: 'MNT004',
+    laptopId: 'LP005',
+    type: 'Keyboard Cleaning',
+    date: '2024-02-28',
+    technician: 'IT Dept',
+    cost: 0,
+    notes: 'Deep cleaning service',
+  },
 ];
 
 export const dashboardStats = {
@@ -183,13 +263,13 @@ export const dashboardStats = {
   monthlyTrend: [
     { month: 'Jan', count: 148 },
     { month: 'Feb', count: 152 },
-    { month: 'Mar', count: 156 }
+    { month: 'Mar', count: 156 },
   ],
   distributionByBrand: [
     { name: 'Dell', value: 45, color: '#c62828' },
     { name: 'HP', value: 30, color: '#10b981' },
     { name: 'Lenovo', value: 18, color: '#f59e0b' },
-    { name: 'Apple', value: 7, color: '#ef4444' }
+    { name: 'Apple', value: 7, color: '#ef4444' },
   ],
   distributionByDepartment: [
     { department: 'Engineering', count: 45 },
@@ -197,12 +277,29 @@ export const dashboardStats = {
     { department: 'Sales', count: 30 },
     { department: 'HR', count: 15 },
     { department: 'Finance', count: 20 },
-    { department: 'Design', count: 21 }
-  ]
+    { department: 'Design', count: 21 },
+  ],
 };
 
-export const departments = ['Engineering', 'Marketing', 'Sales', 'HR', 'Finance', 'Design', 'Operations', 'Executive', 'IT'];
-export const locations = ['Headquarters', 'Creative Studio', 'Warehouse', 'Branch Office A', 'Branch Office B', 'Remote'];
+export const departments = [
+  'Engineering',
+  'Marketing',
+  'Sales',
+  'HR',
+  'Finance',
+  'Design',
+  'Operations',
+  'Executive',
+  'IT',
+];
+export const locations = [
+  'Headquarters',
+  'Creative Studio',
+  'Warehouse',
+  'Branch Office A',
+  'Branch Office B',
+  'Remote',
+];
 export const conditions = ['New', 'Excellent', 'Good', 'Fair', 'Poor'];
 export const statuses = ['active', 'available', 'maintenance', 'retired'];
 export const brands = ['Dell', 'HP', 'Lenovo', 'Apple', 'ASUS', 'Acer'];

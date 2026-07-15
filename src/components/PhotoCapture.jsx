@@ -12,26 +12,26 @@ const PhotoCapture = ({ photoType, onPhotoCapture, onClose }) => {
     return () => {
       stopCamera();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' },
       });
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
     } catch (err) {
-      console.error('Error accessing camera:', err);
       alert('Unable to access camera. Please check permissions.');
     }
   };
 
   const stopCamera = () => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
   };
@@ -40,13 +40,13 @@ const PhotoCapture = ({ photoType, onPhotoCapture, onClose }) => {
     if (videoRef.current && canvasRef.current) {
       const canvas = canvasRef.current;
       const video = videoRef.current;
-      
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
-      
+
       const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      
+
       const imageData = canvas.toDataURL('image/jpeg', 0.8);
       setCapturedImage(imageData);
       stopCamera();
@@ -85,18 +85,9 @@ const PhotoCapture = ({ photoType, onPhotoCapture, onClose }) => {
 
         <div className="relative bg-black rounded-xl overflow-hidden aspect-video mb-4">
           {capturedImage ? (
-            <img
-              src={capturedImage}
-              alt="Captured"
-              className="w-full h-full object-contain"
-            />
+            <img src={capturedImage} alt="Captured" className="w-full h-full object-contain" />
           ) : (
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              className="w-full h-full object-cover"
-            />
+            <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
           )}
           <canvas ref={canvasRef} className="hidden" />
         </div>

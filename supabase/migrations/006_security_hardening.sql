@@ -1,111 +1,18 @@
--- Asset Inventory System Schema
--- This is the canonical, secure schema for the React/Vite frontend.
--- Run this in the Supabase SQL Editor to set up a fresh project.
+-- Security hardening migration
+-- Applies the following changes to an existing database:
+-- 1. Makes added_by nullable so the frontend default does not break inserts.
+-- 2. Replaces legacy auth.role()/auth.email() RLS checks with auth.jwt()->>role.
+-- 3. Adds an is_admin() helper backed by app_metadata/user_metadata role claim.
+-- 4. Adds a server-side audit trigger so the client no longer needs to write audit_logs.
+-- 5. Removes legacy permissive audit_logs/deleted_assets insert policies.
 
--- Create equipment table
-CREATE TABLE IF NOT EXISTS equipment (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    model TEXT,
-    brand TEXT,
-    equipment_type TEXT NOT NULL,
-    asset_tag TEXT UNIQUE,
-    serial TEXT,
-    location TEXT,
-    assigned_to TEXT,
-    added_by TEXT DEFAULT 'system',
-    idle_release TEXT,
-    released_by TEXT,
-    release_datetime TIMESTAMP WITH TIME ZONE,
-    status TEXT DEFAULT 'available',
-    condition TEXT DEFAULT 'new',
-    last_service DATE DEFAULT CURRENT_DATE,
-    purchase_date DATE,
-    warranty_date DATE,
-    processor TEXT,
-    ram TEXT,
-    storage TEXT,
-    accessories TEXT,
-    plate_number TEXT,
-    engine_number TEXT,
-    chassis_number TEXT,
-    fuel_type TEXT,
-    capacity TEXT,
-    year_manufactured TEXT,
-    logistics_type TEXT,
-    quantity INTEGER DEFAULT 1,
-    remaining_quantity INTEGER DEFAULT 1,
-    batch_number TEXT,
-    brand_make TEXT,
-    material TEXT,
-    dimensions TEXT,
-    load_capacity TEXT,
-    features TEXT,
-    type TEXT,
-    color TEXT,
-    design TEXT,
-    volume_capacity TEXT,
-    finish TEXT,
-    serial_id TEXT,
-    notes TEXT,
-    office_type TEXT,
-    specs TEXT,
-    use TEXT,
-    office_quantity TEXT,
-    office_serial_id TEXT,
-    office_condition TEXT,
-    office_status TEXT,
-    office_features TEXT,
-    office_type_field TEXT,
-    office_size TEXT,
-    office_capacity TEXT,
-    office_ports TEXT,
-    office_lock TEXT,
-    office_tier TEXT,
-    office_material TEXT,
-    office_cut_type TEXT,
-    office_notes TEXT,
-    date_added TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Create audit_logs table for tracking all equipment changes server-side
-CREATE TABLE IF NOT EXISTS audit_logs (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    equipment_id UUID REFERENCES equipment(id) ON DELETE CASCADE,
-    action TEXT NOT NULL CHECK (action IN ('CREATE', 'UPDATE', 'DELETE', 'STATUS_CHANGE')),
-    old_values JSONB,
-    new_values JSONB,
-    field_changes JSONB,
-    changed_by TEXT,
-    changed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    reason TEXT
-);
-
-CREATE INDEX IF NOT EXISTS idx_audit_logs_equipment_id ON audit_logs(equipment_id);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_changed_at ON audit_logs(changed_at DESC);
-CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
-
--- Create deleted_assets table to track deletion history
-CREATE TABLE IF NOT EXISTS deleted_assets (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    original_equipment_id UUID NOT NULL,
-    model TEXT,
-    brand TEXT,
-    equipment_type TEXT NOT NULL,
-    asset_tag TEXT,
-    serial TEXT,
-    location TEXT,
-    status TEXT,
-    condition TEXT,
-    deleted_by TEXT,
-    deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    reason TEXT
-);
+-- Fix added_by nullability to avoid insert failures when the client sends null
+ALTER TABLE equipment ALTER COLUMN added_by DROP NOT NULL;
+ALTER TABLE equipment ALTER COLUMN added_by SET DEFAULT 'system';
 
 -- Helper function to determine if the current user is an admin.
--- Admins should be configured by setting app_metadata.role = 'admin'
--- via a secure Supabase/Edge Function or the service role key.
+-- Configure an admin by setting app_metadata.role = 'admin' via a secure
+-- Supabase Edge Function or the service role key.
 CREATE OR REPLACE FUNCTION is_admin()
 RETURNS BOOLEAN AS $$
 BEGIN
@@ -124,23 +31,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Enable Row Level Security (RLS)
-ALTER TABLE equipment ENABLE ROW LEVEL SECURITY;
-ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE deleted_assets ENABLE ROW LEVEL SECURITY;
-
--- Drop legacy policies if they exist to avoid conflicts on re-runs
+-- Replace legacy equipment RLS policies
 DROP POLICY IF EXISTS "Equipment Select Authenticated" ON equipment;
 DROP POLICY IF EXISTS "Equipment Insert Authenticated" ON equipment;
 DROP POLICY IF EXISTS "Equipment Update Authenticated" ON equipment;
 DROP POLICY IF EXISTS "Equipment Delete Admin" ON equipment;
-DROP POLICY IF EXISTS "Audit Logs Select Authenticated" ON audit_logs;
-DROP POLICY IF EXISTS "Audit Logs Insert Authenticated" ON audit_logs;
-DROP POLICY IF EXISTS "Audit Logs Delete Admin" ON audit_logs;
-DROP POLICY IF EXISTS "Deleted Assets Select Authenticated" ON deleted_assets;
-DROP POLICY IF EXISTS "Deleted Assets Insert Authenticated" ON deleted_assets;
 
--- Equipment table policies
 CREATE POLICY "Equipment Select Authenticated" ON equipment
   FOR SELECT USING ((auth.jwt() ->> 'role') = 'authenticated');
 
@@ -155,7 +51,11 @@ CREATE POLICY "Equipment Delete Admin" ON equipment
     (auth.jwt() ->> 'role') = 'authenticated' AND is_admin()
   );
 
--- Audit logs are read-only from the client; inserts happen via database triggers
+-- Replace legacy audit_logs RLS policies: read-only from client
+DROP POLICY IF EXISTS "Audit Logs Select Authenticated" ON audit_logs;
+DROP POLICY IF EXISTS "Audit Logs Insert Authenticated" ON audit_logs;
+DROP POLICY IF EXISTS "Audit Logs Delete Admin" ON audit_logs;
+
 CREATE POLICY "Audit Logs Select Authenticated" ON audit_logs
   FOR SELECT USING ((auth.jwt() ->> 'role') = 'authenticated');
 
@@ -164,11 +64,14 @@ CREATE POLICY "Audit Logs Delete Admin" ON audit_logs
     (auth.jwt() ->> 'role') = 'authenticated' AND is_admin()
   );
 
--- Deleted assets are read-only from the client; inserts happen via database triggers
+-- Replace legacy deleted_assets RLS policies: read-only from client
+DROP POLICY IF EXISTS "Deleted Assets Select Authenticated" ON deleted_assets;
+DROP POLICY IF EXISTS "Deleted Assets Insert Authenticated" ON deleted_assets;
+
 CREATE POLICY "Deleted Assets Select Authenticated" ON deleted_assets
   FOR SELECT USING ((auth.jwt() ->> 'role') = 'authenticated');
 
--- Trigger function to archive deleted assets
+-- Update the deleted_assets trigger to use the secure current_user_id()
 CREATE OR REPLACE FUNCTION log_deleted_asset()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -204,7 +107,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Trigger function to record all equipment changes in audit_logs
+-- Create a comprehensive server-side audit trigger
 CREATE OR REPLACE FUNCTION log_equipment_change()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -248,7 +151,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Attach triggers
+-- Clean up legacy triggers and apply the new one
 DROP TRIGGER IF EXISTS on_equipment_delete ON equipment;
 DROP TRIGGER IF EXISTS on_equipment_update ON equipment;
 DROP TRIGGER IF EXISTS on_equipment_insert ON equipment;

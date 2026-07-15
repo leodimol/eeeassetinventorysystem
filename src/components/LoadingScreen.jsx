@@ -1,9 +1,12 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 
-const LoadingScreen = ({ message = "Loading Inventory System..." }) => {
+const LoadingScreen = ({ message = 'Loading Inventory System...' }) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'var(--bg-primary)' }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ background: 'var(--bg-primary)' }}
+    >
       <style>{`
         @keyframes glow-pulse {
           0%, 100% {
@@ -28,16 +31,22 @@ const LoadingScreen = ({ message = "Loading Inventory System..." }) => {
         {/* Logo */}
         <div className="relative">
           {/* Unique glow animation effect */}
-          <div className="absolute inset-0 blur-3xl animate-pulse" style={{ 
-            background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
-            opacity: '0.5',
-            animation: 'glow-pulse 2s ease-in-out infinite'
-          }}></div>
-          
+          <div
+            className="absolute inset-0 blur-3xl animate-pulse"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))',
+              opacity: '0.5',
+              animation: 'glow-pulse 2s ease-in-out infinite',
+            }}
+          ></div>
+
           {/* Logo container */}
-          <div className="relative p-4" style={{ 
-            animation: 'float 3s ease-in-out infinite'
-          }}>
+          <div
+            className="relative p-4"
+            style={{
+              animation: 'float 3s ease-in-out infinite',
+            }}
+          >
             <img
               src="/loadingscreen.logo.png"
               alt="EEE Logo"
@@ -48,15 +57,22 @@ const LoadingScreen = ({ message = "Loading Inventory System..." }) => {
               }}
             />
             <div className="absolute inset-4 items-center justify-center hidden">
-              <Loader2 className="w-16 h-16 animate-spin" style={{ color: 'var(--accent-primary)' }} />
+              <Loader2
+                className="w-16 h-16 animate-spin"
+                style={{ color: 'var(--accent-primary)' }}
+              />
             </div>
           </div>
         </div>
 
         {/* Text */}
         <div className="text-center space-y-3">
-          <h1 className="text-3xl font-bold tracking-wide" style={{ color: 'var(--text-primary)' }}>EEE Asset Inventory</h1>
-          <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>{message}</p>
+          <h1 className="text-3xl font-bold tracking-wide" style={{ color: 'var(--text-primary)' }}>
+            EEE Asset Inventory
+          </h1>
+          <p className="text-base font-medium" style={{ color: 'var(--text-secondary)' }}>
+            {message}
+          </p>
         </div>
 
         {/* Spinner */}

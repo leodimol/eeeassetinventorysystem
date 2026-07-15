@@ -22,21 +22,21 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
     success: <CheckCircle size={24} style={{ color: 'var(--accent-green)' }} />,
     error: <XCircle size={24} style={{ color: 'var(--accent-red)' }} />,
     warning: <AlertTriangle size={24} style={{ color: 'var(--accent-orange)' }} />,
-    info: <Info size={24} style={{ color: 'var(--accent-blue)' }} />
+    info: <Info size={24} style={{ color: 'var(--accent-blue)' }} />,
   };
 
   const borderColors = {
     success: 'var(--accent-green)',
     error: 'var(--accent-red)',
     warning: 'var(--accent-orange)',
-    info: 'var(--accent-blue)'
+    info: 'var(--accent-blue)',
   };
 
   const bgColors = {
     success: 'rgba(34, 197, 94, 0.1)',
     error: 'rgba(239, 68, 68, 0.1)',
     warning: 'rgba(249, 115, 22, 0.1)',
-    info: 'rgba(59, 130, 246, 0.1)'
+    info: 'rgba(59, 130, 246, 0.1)',
   };
 
   return (
@@ -50,10 +50,13 @@ const Toast = ({ message, type = 'success', duration = 3000, onClose }) => {
         border: `2px solid ${borderColors[type]}`,
         minWidth: '420px',
         maxWidth: '520px',
-        boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${borderColors[type]}20`
+        boxShadow: `0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px ${borderColors[type]}20`,
       }}
     >
-      <div className="flex-shrink-0 p-2 rounded-xl" style={{ background: `${borderColors[type]}20` }}>
+      <div
+        className="flex-shrink-0 p-2 rounded-xl"
+        style={{ background: `${borderColors[type]}20` }}
+      >
         {icons[type]}
       </div>
       <div className="flex-1">

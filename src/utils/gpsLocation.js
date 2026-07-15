@@ -8,16 +8,15 @@ export const getFullLocation = async () => {
       return {
         success: false,
         error: 'Geolocation not supported',
-        location: 'Unknown'
+        location: 'Unknown',
       };
     }
 
     const position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        resolve,
-        reject,
-        { timeout: 10000, enableHighAccuracy: true }
-      );
+      navigator.geolocation.getCurrentPosition(resolve, reject, {
+        timeout: 10000,
+        enableHighAccuracy: true,
+      });
     });
 
     return {
@@ -25,14 +24,13 @@ export const getFullLocation = async () => {
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
       accuracy: position.coords.accuracy,
-      timestamp: position.timestamp
+      timestamp: position.timestamp,
     };
   } catch (error) {
-    console.error('GPS location error:', error);
     return {
       success: false,
       error: error.message,
-      location: 'Unknown'
+      location: 'Unknown',
     };
   }
 };
@@ -51,7 +49,6 @@ export const getAddressFromCoords = async (lat, lng) => {
     const data = await response.json();
     return data.display_name || 'Unknown location';
   } catch (error) {
-    console.error('Reverse geocoding error:', error);
     return 'Unknown location';
   }
 };

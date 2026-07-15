@@ -1,4 +1,4 @@
-76-- Create audit_logs table for tracking all equipment changes
+-- Create audit_logs table for tracking all equipment changes
 CREATE TABLE IF NOT EXISTS audit_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   equipment_id UUID REFERENCES equipment(id) ON DELETE CASCADE,
@@ -11,17 +11,26 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   ip_address INET
 );
 
--- Create index for efficient queries
-CREATE INDEX idx_audit_logs_equipment_id ON audit_logs(equipment_id);
-CREATE INDEX idx_audit_logs_changed_at ON audit_logs(changed_at DESC);
-CREATE INDEX idx_audit_logs_action ON audit_logs(action);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_equipment_id ON audit_logs(equipment_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_changed_at ON audit_logs(changed_at DESC);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_action ON audit_logs(action);
 
 -- Enable RLS on audit_logs
 ALTER TABLE audit_logs ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow all operations for authenticated users
-CREATE POLICY "Allow all operations on audit_logs" ON audit_logs
-  FOR ALL USING (true) WITH CHECK (true);9 
+-- Audit logs are read-only from the client; writes happen via database triggers
+DROP POLICY IF EXISTS "Allow all operations on audit_logs" ON audit_logs;
+DROP POLICY IF EXISTS "Audit Logs Select Authenticated" ON audit_logs;
+DROP POLICY IF EXISTS "Audit Logs Delete Admin" ON audit_logs;
+
+CREATE POLICY "Audit Logs Select Authenticated" ON audit_logs
+  FOR SELECT USING ((auth.jwt() ->> 'role') = 'authenticated');
+
+CREATE POLICY "Audit Logs Delete Admin" ON audit_logs
+  FOR DELETE USING (
+    (auth.jwt() ->> 'role') = 'authenticated' AND
+    COALESCE(auth.jwt() -> 'app_metadata' ->> 'role', auth.jwt() -> 'user_metadata' ->> 'role') = 'admin'
+  );
 
 -- Create function to automatically log equipment changes
 CREATE OR REPLACE FUNCTION log_equipment_change()
@@ -45,8 +54,7 @@ BEGIN
   ELSIF TG_OP = 'UPDATE' THEN
     old_data := to_jsonb(OLD);
     new_data := to_jsonb(NEW);
-    
-    -- Calculate field changes
+
     FOR key IN SELECT jsonb_object_keys(new_data)
     LOOP
       IF old_data->key IS DISTINCT FROM new_data->key THEN
@@ -59,7 +67,7 @@ BEGIN
         );
       END IF;
     END LOOP;
-    
+
     INSERT INTO audit_logs (equipment_id, action, old_values, new_values, field_changes)
     VALUES (NEW.id, 'UPDATE', old_data, new_data, changes);
     RETURN NEW;
