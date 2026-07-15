@@ -2716,7 +2716,6 @@ function App() {
                           </th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Asset</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Asset Tag</th>
-                          <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Serial</th>
                           {filters.category === 'logistics' && (
                             <>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Batch Number</th>
@@ -2829,13 +2828,6 @@ function App() {
                                 </td>
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                   {item.asset_tag || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
-                                </td>
-                                <td
-                                  className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]"
-                                  style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}
-                                  onClick={(e) => { e.stopPropagation(); setSelectedCell({ row: index, col: 2 }); }}
-                                >
-                                  {item.serial || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                 </td>
                                 {filters.category === 'logistics' && (
                                   <>
