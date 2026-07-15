@@ -2719,8 +2719,10 @@ function App() {
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Serial</th>
                           {filters.category === 'logistics' && (
                             <>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Batch Number</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Qty</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Remaining</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Logistics Type</th>
-                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Quantity</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Material</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Dimensions</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Load Capacity</th>
@@ -2728,14 +2730,19 @@ function App() {
                           )}
                           {filters.category === 'office' && (
                             <>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Batch Number</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Qty</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Remaining</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Office Type</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Specs</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Use</th>
-                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Quantity</th>
                             </>
                           )}
                           {filters.category === 'transport' && (
                             <>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Batch Number</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Qty</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Remaining</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Plate Number</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Engine Number</th>
                               <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Fuel Type</th>
@@ -2833,10 +2840,16 @@ function App() {
                                 {filters.category === 'logistics' && (
                                   <>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                      {item.logistics_type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                      {item.batch_number || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                     </td>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                       {item.quantity || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.remaining_quantity !== undefined ? item.remaining_quantity : <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.logistics_type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                     </td>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                       {item.material || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
@@ -2852,6 +2865,15 @@ function App() {
                                 {filters.category === 'office' && (
                                   <>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.batch_number || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.quantity || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.remaining_quantity !== undefined ? item.remaining_quantity : <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                       {item.office_type || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                     </td>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
@@ -2860,13 +2882,19 @@ function App() {
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                       {item.use || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                     </td>
-                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                      {item.office_quantity || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
-                                    </td>
                                   </>
                                 )}
                                 {filters.category === 'transport' && (
                                   <>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.batch_number || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.quantity || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.remaining_quantity !== undefined ? item.remaining_quantity : <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
                                     <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                       {item.plate_number || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
                                     </td>
