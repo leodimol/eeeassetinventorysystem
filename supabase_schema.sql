@@ -257,3 +257,19 @@ UPDATE equipment
 SET date_added = created_at
 WHERE date_added IS NULL;
 
+-- Set quantity and remaining_quantity for existing records
+-- For existing records, set quantity to 1 (each record represents one item)
+UPDATE equipment
+SET quantity = 1
+WHERE quantity IS NULL;
+
+-- Set remaining_quantity based on status
+-- If status is 'available' or NULL, set remaining_quantity to 1
+-- If status is 'in_use' or similar, set remaining_quantity to 0
+UPDATE equipment
+SET remaining_quantity = CASE
+  WHEN status = 'in_use' OR status = 'maintenance' OR status = 'retired' THEN 0
+  ELSE 1
+END
+WHERE remaining_quantity IS NULL;
+
