@@ -15,18 +15,16 @@ export const UserProvider = ({ children }) => {
     });
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setCurrentUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  return (
-    <UserContext.Provider value={{ currentUser, loading }}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={{ currentUser, loading }}>{children}</UserContext.Provider>;
 };
 
 export const useUser = () => {
