@@ -1700,7 +1700,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         return {
           brand: 'Brand (e.g., CHEP, Loscam, Uline)',
           location: 'Location (e.g., Warehouse A, Loading Dock)',
-          description: 'Additional details (e.g., Wooden pallet, 1200x1000mm)'
+          description: 'Any additional details about this item'
         };
       case 'office':
         return {
@@ -1712,7 +1712,7 @@ const AddAssetModal = ({ isOpen, onClose, asset = null, onSaved, authUser, onToa
         return {
           brand: 'Brand (e.g., Generic, Custom)',
           location: 'Location (e.g., Storage Room, Shelf)',
-          description: 'Additional details'
+          description: 'Any additional details about this item'
         };
     }
   };
