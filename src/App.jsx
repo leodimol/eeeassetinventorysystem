@@ -2750,7 +2750,12 @@ function App() {
                             </>
                           )}
                           {!filters.category && (
-                            <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Type</th>
+                            <>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Batch Number</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Qty</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Remaining</th>
+                              <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Type</th>
+                            </>
                           )}
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Location</th>
                           <th className="text-left font-bold text-xs uppercase tracking-wider text-[var(--text-primary)]" style={{ color: 'var(--accent-primary)', borderRight: '1px solid var(--border-color)', letterSpacing: '0.1em', fontWeight: '800', padding: generalSettings.compactView ? '4px 4px' : '12px 12px', fontSize: generalSettings.compactView ? '10px' : '12px' }}>Assigned</th>
@@ -2905,12 +2910,23 @@ function App() {
                                   </>
                                 )}
                                 {!filters.category && (
-                                  <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
-                                    {(item.category === 'other' || item.equipment_type === 'other') 
-                                      ? 'other' 
-                                      : (item.type || item.equipment_type || item.category || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>)
-                                    }
-                                  </td>
+                                  <>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.batch_number || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.quantity || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {item.remaining_quantity !== undefined ? item.remaining_quantity : <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
+                                    </td>
+                                    <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
+                                      {(item.category === 'other' || item.equipment_type === 'other') 
+                                        ? 'other' 
+                                        : (item.type || item.equipment_type || item.category || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>)
+                                      }
+                                    </td>
+                                  </>
                                 )}
                                 <td className="text-sm text-[var(--text-primary)] border-r border-[var(--border-color)]" style={{ padding: generalSettings.compactView ? '2px 4px' : '8px 12px', fontSize: generalSettings.compactView ? '11px' : '14px' }}>
                                   {item.location || <span style={{ color: 'var(--accent-orange)', fontSize: '10px' }}>⚠️ Empty</span>}
